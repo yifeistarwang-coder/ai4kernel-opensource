@@ -16,6 +16,13 @@ jobs:
         with:
           python-version: "3.11"
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
       - name: Validate data files
         run: |
           python3 -m json.tool data/seeds.json > /dev/null
@@ -27,6 +34,38 @@ jobs:
         run: |
           python3 scripts/build_docs.py
           git diff --exit-code -- docs/ data/architecture.json
+
+      - name: Build site
+        run: |
+          python3 scripts/build_site.py --out dist
+          test -f dist/index.html
+          test -f dist/data/site-data.json
+          test -f dist/assets/style.css
+          test -f dist/assets/app.js
+          test -f dist/docs/02-engineering-knowledge.md
+
+      - name: Check site output is inert
+        run: |
+          python3 - <<'PY'
+          import json, re, sys
+          data = json.load(open("dist/data/site-data.json", encoding="utf-8"))
+          if len(data["repos"]) != 61:
+              sys.exit(f"expected 61 repos, got {len(data['repos'])}")
+          # 第三方 README 文本进 Markdown 前必须已转义，否则会被 marked 渲染成标记
+          for name in ("docs/01-repo-index.md", "docs/02-engineering-knowledge.md", "docs/03-comparison.md"):
+              text = open(name, encoding="utf-8").read()
+              bad = re.findall(r"<(?!/?sub>)[a-zA-Z][a-zA-Z0-9]*[ >]", text)
+              if bad:
+                  sys.exit(f"{name} contains unescaped markup: {sorted(set(bad))[:5]}")
+              # 闭合的 ** 前是标点、后面紧跟汉字时，CommonMark 不把它当作粗体闭合
+              punct = set("：:。，,；;、!！?？）)】」』*_~ `")
+              for m in re.finditer(r"\*\*(?!\s)([^*\n]+?)\*\*", text):
+                  prev = text[m.end() - 3] if m.end() >= 3 else ""
+                  nxt = text[m.end()] if m.end() < len(text) else ""
+                  if prev in punct and nxt and not nxt.isspace() and nxt not in punct:
+                      sys.exit(f"{name}:{text[:m.start()].count(chr(10)) + 1} bold marker will not render: {m.group(0)[:50]!r}")
+          print("site output ok")
+          PY
 
       - name: Check index completeness
         run: |
@@ -54,3 +93,8 @@ jobs:
               sys.exit(1)
           print(f"ok: {len(repos)} repos, {len(covered)} with architecture records")
           PY
+
+      - name: Browser regression tests
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:browser

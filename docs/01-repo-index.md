@@ -108,7 +108,7 @@
 | [NVIDIA/SOL-ExecBench](https://github.com/NVIDIA/SOL-ExecBench) | `Apache-2.0` | Python | NVIDIA | 真实模型算子 → 正确性与硬件效率评测 | 328 | A benchmark of real-world DL kernel problems  |
 | [parallelcodefoundry/ParEval](https://github.com/parallelcodefoundry/ParEval) | `MIT` | C++ | CPU、NVIDIA | 任务描述 → 并行程序 | 47 | Parallel Code Evaluation Benchmark |
 | [SakanaAI/robust-kbench](https://github.com/SakanaAI/robust-kbench) | `Apache-2.0` | Python | NVIDIA | PyTorch → CUDA + 稳健验证 | 107 | 围绕 Agent 生成 kernel 的稳健性、验证和优化进行评测。 |
-| [ScalingIntelligence/KernelBench](https://github.com/ScalingIntelligence/KernelBench) | `NOASSERTION` | Jupyter Notebook | NVIDIA | PyTorch → GPU kernel | 1302 | KernelBench: Can LLMs Write GPU Kernels? - Benchmark + Toolkit with Torch -> CUDA (+ more DSLs) |
+| [ScalingIntelligence/KernelBench](https://github.com/ScalingIntelligence/KernelBench) | `NOASSERTION` | Jupyter Notebook | NVIDIA | PyTorch → GPU kernel | 1302 | KernelBench: Can LLMs Write GPU Kernels? - Benchmark + Toolkit with Torch -&gt; CUDA (+ more DSLs) |
 | [Snowflake-AI-Research/fastkernels](https://github.com/Snowflake-AI-Research/fastkernels) | `Apache-2.0` | Python | NVIDIA | 生产模型模块 → kernel 生成与模型内评测 | 10 | 在生产模型接口和真实调用路径中复核生成 kernel 的有效收益。 |
 | [thunlp/TritonBench](https://github.com/thunlp/TritonBench) | `Apache-2.0` | Python | NVIDIA | 自然语言 / PyTorch → Triton | 143 | TritonBench: Benchmarking Large Language Model Capabilities for Generating Triton Operators |
 | [wzzll123/MultiKernelBench](https://github.com/wzzll123/MultiKernelBench) | `NOASSERTION` | Python | NVIDIA、Ascend、TPU、Intel、Other | PyTorch → 多后端 kernel | 75 | MultiArchKernelBench: A Multi-Platform Benchmark for Kernel Generation |
@@ -132,7 +132,7 @@
 | [AMD-AGI/Apex](https://github.com/AMD-AGI/Apex) | `MIT` | Python | AMD | Serving bottleneck → ROCm kernel | 78 | Agents, and RL environment, for optimizing GPU kernels on AMD ROCm using LLM agents. Benchmarks LLM serving wo… |
 | [AMD-AGI/GEAK](https://github.com/AMD-AGI/GEAK) | `Apache-2.0` | Python | AMD | 算子任务 → Triton | 197 | Generating Efficient AI-Centric Kernels |
 | [Anjiang-Wei/Astra](https://github.com/Anjiang-Wei/Astra) | `—` | Python | NVIDIA | SGLang CUDA → 优化 CUDA | 19 | 从 SGLang 的现成 CUDA 实现出发，让专门 Agent 协作进行生成、测试、profile 和规划。 |
-| [meta-pytorch/KernelAgent](https://github.com/meta-pytorch/KernelAgent) | `Apache-2.0` | Python | NVIDIA、Intel | PyTorch → 优化 GPU kernel | 610 | Autonomous GPU Kernel Generation & Optimization via Deep Agents |
+| [meta-pytorch/KernelAgent](https://github.com/meta-pytorch/KernelAgent) | `Apache-2.0` | Python | NVIDIA、Intel | PyTorch → 优化 GPU kernel | 610 | Autonomous GPU Kernel Generation &amp; Optimization via Deep Agents |
 | [mindspore-ai/akg](https://github.com/mindspore-ai/akg) | `Apache-2.0` | Python | NVIDIA、Ascend、CPU、Other | 算子任务 → 多后端 kernel | 264 | AKG (Auto Kernel Generator) is an optimizer for operators in Deep Learning Networks, which provides the abilit… |
 | [OptimAI-Lab/CudaForge](https://github.com/OptimAI-Lab/CudaForge) | `MIT` | Python | NVIDIA | PyTorch → CUDA 生成与优化 | 94 | Official Repo of CudaForge |
 | [RightNow-AI/autokernel](https://github.com/RightNow-AI/autokernel) | `MIT` | Python | NVIDIA | PyTorch模型 → 瓶颈提取与kernel替换 | 1614 | Autoresearch for GPU kernels. Give it any PyTorch model, go to sleep, wake up to optimized Triton kernels. |
@@ -150,7 +150,7 @@
 | [BytedTsinghua-SIA/CUDA-Agent](https://github.com/BytedTsinghua-SIA/CUDA-Agent) | `—` | Python | NVIDIA | PyTorch → CUDA | 1346 | CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation |
 | [CSJianYang/Industrial-Coder](https://github.com/CSJianYang/Industrial-Coder) | `—` | Python | NVIDIA、Other | 工业代码 / GPU kernel 优化 | 118 | 32B 工业代码基础模型，统一芯片设计、GPU kernel、嵌入式和编译器优化等场景。 |
 | [hgl71964/cuasmrl](https://github.com/hgl71964/cuasmrl) | `MIT` | C++ | NVIDIA | CUDA cubin/SASS → 调度优化 | 19 | 在 NVIDIA SASS 指令层把调度改写建模为 assembly game，以 PPO 和实机吞吐奖励优化既有 CUDA kernel。 |
-| [hkust-nlp/KernelGYM](https://github.com/hkust-nlp/KernelGYM) | `—` | Python | NVIDIA | PyTorch → Triton | 216 | [KernelGYM & Dr. Kernel] A distributed GPU environment and a collection of RL training methods to support RL f… |
+| [hkust-nlp/KernelGYM](https://github.com/hkust-nlp/KernelGYM) | `—` | Python | NVIDIA | PyTorch → Triton | 216 | [KernelGYM &amp; Dr. Kernel] A distributed GPU environment and a collection of RL training methods to support … |
 | [ornith-ai/CUDA-L1](https://github.com/ornith-ai/CUDA-L1) | `MIT` | Python | NVIDIA | CUDA kernel → 优化实现 | 327 | CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning |
 | [ornith-ai/CUDA-L2](https://github.com/ornith-ai/CUDA-L2) | `MIT` | Cuda | NVIDIA | HGEMM 配置 → 优化 CUDA kernel | 486 | CUDA-L2: Surpassing cuBLAS Performance for Matrix Multiplication through Reinforcement Learning |
 | [QiMeng-IPRC/QiMeng-Kernel](https://github.com/QiMeng-IPRC/QiMeng-Kernel) | `Apache-2.0` | — | NVIDIA | PyTorch → Triton/CUDA kernel | 10 | [AAAI 2026] QiMeng-Kernel: Macro-Thinking Micro-Coding Paradigm for LLM-Based High-Performance GPU Kernel Gene… |

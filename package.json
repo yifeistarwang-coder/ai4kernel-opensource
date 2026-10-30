@@ -1,0 +1,17 @@
+{
+  "name": "ai4kernel-opensource",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Index of open-source AI4Kernel projects, with abstracted engineering knowledge and cross-project comparison",
+  "homepage": "https://yifeistarwang-coder.github.io/ai4kernel-opensource/",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "python3 scripts/build_site.py",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  }
+}

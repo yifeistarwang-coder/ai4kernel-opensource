@@ -1,6 +1,15 @@
 # README 原文缓存：不提交，避免第三方 README 的版权与再分发问题
 .cache/
 
+# 站点构建产物：由 scripts/build_site.py 生成，Pages 部署时重建
+dist/
+
+# Node
+node_modules/
+
+# 浏览器测试截图
+test-results/
+
 # Python
 __pycache__/
 *.pyc

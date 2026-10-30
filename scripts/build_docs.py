@@ -16,6 +16,8 @@ import json
 import os
 from collections import Counter, defaultdict
 
+from sanitize import sanitize
+
 GROUP_ORDER = ["foundation", "benchmark", "search", "agent", "training"]
 GROUP_LABELS = {
     "benchmark": "评测与验证",
@@ -703,7 +705,7 @@ def doc_engineering_knowledge(repos, snapshot):
     )
     out.append(
         "> **证据边界**：结论来自仓库 README、顶层目录结构与 GitHub API 元数据。"
-        "**没有审计源码实现，没有运行过任何项目，没有复现任何论文数字。**"
+        "**没有审计源码实现，没有运行过任何项目，没有复现任何论文数字**。"
         "本文描述的是「公开材料显示项目这样组织」，不是「项目实现正确」。\n"
     )
 
@@ -1010,6 +1012,11 @@ def main():
 
     batch_files = glob.glob(os.path.join(args.arch_dir, "batch*.json"))
     arch = merge_architecture(repos, batch_files)
+
+    # 上游 README 与 GitHub 描述里的 < > & 必须转义，否则会被 marked 渲染成标记
+    repos = sanitize(repos)
+    hf = sanitize(hf)
+    other = sanitize(other)
 
     os.makedirs(args.out_dir, exist_ok=True)
     with open(os.path.join(args.out_dir, "01-repo-index.md"), "w", encoding="utf-8") as f:

@@ -2,7 +2,7 @@
 
 这份文档从 61 个开源项目里提炼**可复用的工程知识**：一个 kernel 优化项目通常由哪些层组成、常见的架构形态有哪几种、别人已经踩过并且解决掉的工程问题有哪些、以及如果要自己搭一个项目应该怎么起步。
 
-> **证据边界**：结论来自仓库 README、顶层目录结构与 GitHub API 元数据。**没有审计源码实现，没有运行过任何项目，没有复现任何论文数字。**本文描述的是「公开材料显示项目这样组织」，不是「项目实现正确」。
+> **证据边界**：结论来自仓库 README、顶层目录结构与 GitHub API 元数据。**没有审计源码实现，没有运行过任何项目，没有复现任何论文数字**。本文描述的是「公开材料显示项目这样组织」，不是「项目实现正确」。
 
 ## 1. kernel 项目的参考分层
 
@@ -55,8 +55,8 @@
 
 **各项目的具体做法**：
 
-- `BonnieW05/KernelBenchX`——评测被切成 call（能否编译运行）→ exe（数值正确性）→ perf（性能）三个顺序阶段，每阶段单独落 JSONL 到 intermediate/ 目录，这样失败原因能定位到具体阶段。提交物形态设计得比较灵活：一个 JSONL 文件（每行含 predict 与 file，若无 file 则需带含 Functional Description 与 Wrapper Entry Information 的 instruction）、单个 .py 文件（basename 必须与 data/kernelbenchx/ 中的任务同名，且若文件内含 146 个 # 组成的分隔线，只取线以上内容作为提交）、或一个目录（递归收集 .py 与 .jsonl）。为了保证提交可执行，规定了「顶层可调用函数必须叫 kernel_function 或与任务 stem 同名」的执行契约。性能评测不与固定参考比，而是按机器隔离存放 GPU 匹配的 golden timing（metrics/golden_results/<machine>/），解析优先级为环境变量 KERNELBENCHX_GOLDEN_RESULTS_DIR → KERNELBENCHX_GOLDEN_MACHINE → 默认 5090，缺失的机器可用 run_missing_benchmarks.py 重新生成。输出统一为 metrics.json（逐任务）与 summary.json（通过率与加速比汇总）。相比上游 TritonBench，它强调更严格的正确性校验、扩展的任务覆盖（量化、多精度）与正确性/效率统一的评测流水线。
-- `CUDA-Bench/CUDABench`——任务集被压在一个 JSONL 文件里，每条记录自成一体：id 与 task_name 标识任务，inputs/outputs 描述张量形状与数据类型，三档难度 prompt 分别对应引导式实现（给出算法描述与显式 CUDA 实现指引）、算法式规范（只给算法描述、不给硬件提示）与概念检索式（只给任务名），评测三件套 bench.cu（参考 CUDA C++ 实现）、gen.py（生成随机二进制输入与参考输出）和 compare.py（校验生成 kernel）也内嵌在同一条记录里，使得任务定义、参考实现与打分逻辑完全自包含。生成侧由 Generate/main.py 负责，按 --api_option 选择 API provider、--model_name 选模型、--samples 指定采样次数，默认参数集中在 Generate/config.py 中，结果按 Results/<api>/<model>_<level>_pass<k>.jsonl 命名，把 provider、模型、难度与采样序号编码进文件名，便于多模型多难度横向对比。评测侧 Evaluate/manager.py 以 full 子命令接收结果文件路径，负责编译、运行与用 Nsight Compute 剖析，整体是「生成只落 JSONL、评测单独吃同一文件」的解耦结构。仓库还提供 figs/overview.png 说明整体流程图。
+- `BonnieW05/KernelBenchX`——评测被切成 call（能否编译运行）→ exe（数值正确性）→ perf（性能）三个顺序阶段，每阶段单独落 JSONL 到 intermediate/ 目录，这样失败原因能定位到具体阶段。提交物形态设计得比较灵活：一个 JSONL 文件（每行含 predict 与 file，若无 file 则需带含 Functional Description 与 Wrapper Entry Information 的 instruction）、单个 .py 文件（basename 必须与 data/kernelbenchx/ 中的任务同名，且若文件内含 146 个 # 组成的分隔线，只取线以上内容作为提交）、或一个目录（递归收集 .py 与 .jsonl）。为了保证提交可执行，规定了「顶层可调用函数必须叫 kernel_function 或与任务 stem 同名」的执行契约。性能评测不与固定参考比，而是按机器隔离存放 GPU 匹配的 golden timing（metrics/golden_results/&lt;machine&gt;/），解析优先级为环境变量 KERNELBENCHX_GOLDEN_RESULTS_DIR → KERNELBENCHX_GOLDEN_MACHINE → 默认 5090，缺失的机器可用 run_missing_benchmarks.py 重新生成。输出统一为 metrics.json（逐任务）与 summary.json（通过率与加速比汇总）。相比上游 TritonBench，它强调更严格的正确性校验、扩展的任务覆盖（量化、多精度）与正确性/效率统一的评测流水线。
+- `CUDA-Bench/CUDABench`——任务集被压在一个 JSONL 文件里，每条记录自成一体：id 与 task_name 标识任务，inputs/outputs 描述张量形状与数据类型，三档难度 prompt 分别对应引导式实现（给出算法描述与显式 CUDA 实现指引）、算法式规范（只给算法描述、不给硬件提示）与概念检索式（只给任务名），评测三件套 bench.cu（参考 CUDA C++ 实现）、gen.py（生成随机二进制输入与参考输出）和 compare.py（校验生成 kernel）也内嵌在同一条记录里，使得任务定义、参考实现与打分逻辑完全自包含。生成侧由 Generate/main.py 负责，按 --api_option 选择 API provider、--model_name 选模型、--samples 指定采样次数，默认参数集中在 Generate/config.py 中，结果按 Results/&lt;api&gt;/&lt;model&gt;_&lt;level&gt;_pass&lt;k&gt;.jsonl 命名，把 provider、模型、难度与采样序号编码进文件名，便于多模型多难度横向对比。评测侧 Evaluate/manager.py 以 full 子命令接收结果文件路径，负责编译、运行与用 Nsight Compute 剖析，整体是「生成只落 JSONL、评测单独吃同一文件」的解耦结构。仓库还提供 figs/overview.png 说明整体流程图。
 - `ISO-Bench/ISO-Bench`——仓库把造题与跑 agent 明确分开：commit_to_dataset.py 从真实仓库（vLLM/SGLang）的性能提交出发，经 PerfCommitAnalyzer 与 LLM 生成性能测试，产出 jsonl 数据集；ISO-Bench/ 子目录提供 plan→prepare→report 的 agent 运行 CLI，可在 TRAE、Claude Code、Codex、OpenHands 之间切换。每个任务在同一个 Docker 环境下做三方对比：基线父提交、人类专家提交、agent 补丁，并跑 vLLM serving/throughput 基准。除此之外还有 LLM 软指标分析（任务理解、技术重叠、提速可能性）与基于 lm-eval 的正确性校验作为旁路评估。
 - `NVIDIA/SOL-ExecBench`——以 problem 目录为评测单元：definition.json 给出函数签名、张量形状、dtype 与参考实现，workload.jsonl 逐行给出具体输入与容差阈值，solution.json 单独提交源码与构建信息。评测在 Docker 容器内由 sol-execbench CLI 完成，先排查多种形式的 reward hacking，再与参考实现做数值正确性比对，最后在可复现条件下计时。排名用 SOL-Score：以 B200 的理论 roofline（由 SOLAR 解析求得）为基准给自定义 kernel 打分，而不是只报相对加速比；同一框架覆盖 PyTorch、Triton、CUTLASS、cuDNN、CuTe DSL、cuTile、CUDA C++ 多种 DSL。
 - `SakanaAI/robust-kbench`——每个任务是一个目录（tasks/mnist_linear、tasks/layernorm 等），覆盖基础算子、卷积、Transformer 块与原版 KernelBench 题，并区分 forward 与 backward。run_filter.py 先做六项鲁棒性检查：输出范围不被压到 [-0.01,0.01]、标准差大于 0.01、跨轴变化大于 0.01、初始化设置影响、输入配置影响，以及 LLM 判定的低效代码，先把可被钻空子的题目筛掉。评测侧拆成 compile/test/eval/profile 四个独立函数，由 ParallelKernelExecutor 并行编排，并提供 KernelBench、torch benchmark 与 Triton do_bench 三套计时互相印证，避免单一计时口径被针对性针对。
@@ -101,7 +101,7 @@
 **各项目的具体做法**：
 
 - `0satan0/KernelMem`——仓库是一个以脚本为中心的实验型系统：main_memory_latest.py 解析 CLI 后，串起「读 PyTorch 任务 → 让 LLM 生成 CUDA kernel → 编译运行 → 剖析 → 修复/再优化」的多轮循环，所有产物按任务落盘到 code/、evaluation/、profile/、figures/ 目录。记忆机制被显式拆成两层：短期记忆是当前轮的 kernel 代码片段、错误日志与剖析结果，经 _build_history_block 组装成 Markdown 直接嵌入优化提示；长期记忆是 memorybank/ 下人工沉淀的硬件瓶颈与常见 kernel 结构知识。结构性决策在于把「评判」拆成 prompts/ 下多个 judger_* 模块（优化策略判断、编译超时分析、运行错误分析），由规则化的判官把 profiler 原始指标翻译成可执行的修复建议，再交回 LLM，而不是让 LLM 直接读原始 profile 文本。另有 optimization_tree.json 记录所有 kernel 的父子谱系与提速比，summary.json/summary.csv 汇总跨任务平均加速比与 token 用量，并支持按 summary 过滤掉不可运行任务以增量重跑。
-- `AMD-AGI/Apex`——workload_optimizer.py 是唯一 CLI，把整条链路拆成 benchmark → identify → optimize → integrate → benchmark-final → score → report 这些可单步也可一次跑完的子命令，结构上是典型的「剖析驱动选靶 + agent 改写 + 独立评分 + 回注验证」。评分不自己实现，而是委托给外部 Magpie 框架，仓库内只保留 graders/ 下的配置生成、ground truth 注册与缓存隔离（cache_manager）以保证可复现的评测条件。评分公式分为 kernel 级（compiled×20 + correct×100 + 分段 speedup 分，S<1 时给回退惩罚）与模型级（0.7×归一化 kernel 分 + 0.3×端到端吞吐提升比）两层，且只有同时编译并正确才计入加速分。优化产物通过 hot-patch 回注 site-packages：aiter/vllm/sglang 的 Triton .py 可直接替换并由 Triton JIT 自动重编译，aiter 的 .so 用 hipcc 重编译后替换，而系统级共享库与单体 _C.so 明确不支持，需重新编译源码；补丁在基准结束后会被还原。agent 侧不内置 agent 循环，而是通过 agents/backends.py 调 Claude Code / Codex / Cursor CLI，配合两层提示词（系统提示定义角色、MCP 工具清单与反作弊规则；任务提示带 GPU 架构参数、源码位置、剖析数据与知识库洞察）和 5 个 MCP 服务（源码检索、kernel RAG、GPU 信息、融合建议、Magpie 评测）扩展 agent 能力，跨轮经验沉淀在 pipeline/knowledge_base.py，反思在 reflector.py，最终以 export-rl 把轨迹导出为 RL/SFT 数据集，形成训练回流闭环。
+- `AMD-AGI/Apex`——workload_optimizer.py 是唯一 CLI，把整条链路拆成 benchmark → identify → optimize → integrate → benchmark-final → score → report 这些可单步也可一次跑完的子命令，结构上是典型的「剖析驱动选靶 + agent 改写 + 独立评分 + 回注验证」。评分不自己实现，而是委托给外部 Magpie 框架，仓库内只保留 graders/ 下的配置生成、ground truth 注册与缓存隔离（cache_manager）以保证可复现的评测条件。评分公式分为 kernel 级（compiled×20 + correct×100 + 分段 speedup 分，S&lt;1 时给回退惩罚）与模型级（0.7×归一化 kernel 分 + 0.3×端到端吞吐提升比）两层，且只有同时编译并正确才计入加速分。优化产物通过 hot-patch 回注 site-packages：aiter/vllm/sglang 的 Triton .py 可直接替换并由 Triton JIT 自动重编译，aiter 的 .so 用 hipcc 重编译后替换，而系统级共享库与单体 _C.so 明确不支持，需重新编译源码；补丁在基准结束后会被还原。agent 侧不内置 agent 循环，而是通过 agents/backends.py 调 Claude Code / Codex / Cursor CLI，配合两层提示词（系统提示定义角色、MCP 工具清单与反作弊规则；任务提示带 GPU 架构参数、源码位置、剖析数据与知识库洞察）和 5 个 MCP 服务（源码检索、kernel RAG、GPU 信息、融合建议、Magpie 评测）扩展 agent 能力，跨轮经验沉淀在 pipeline/knowledge_base.py，反思在 reflector.py，最终以 export-rl 把轨迹导出为 RL/SFT 数据集，形成训练回流闭环。
 - `AMD-AGI/GEAK`——最重要的架构决策是把控制流从模型里挪出来：预算循环、fan-out、验证与停止条件全部写成确定性 JS（kernel_workflow.js / e2e_workflow.js），LLM 只在分析、策略与优化这些需要判断的环节被调用，因此运行可复现。kernel_workflow 采用 Director → TechLead → 算法/内存/计算/host_runtime 专家的分层结构，多轮且预算可控，并要求每个补丁由独立 agent 验证通过后才被接受，避免生成者自评。e2e_workflow 是包在 kernel 层之上的系统层：先 preflight 环境，再对运行中的 server 做 profile，按 Amdahl（pct_gpu_time × achievable_speedup）给热点排序，然后「先拉成本最低的杠杆」——配置/后端扫描 → 头部 GEMM 与 attention bake-off → 可编辑 kernel 里程碑循环；每个被接受的改动以可逆 overlay 方式叠回，并用 warm-server 交错 A/B（0.5% 带宽 + engagement proof + 输出 parity）作为放行门槛。跨轮记忆被显式建模为 insight blackboard 与 hypothesis ledger 两个构件，最佳补丁产物落在 kb_artifacts 作为下次运行的 warm-start 源。GPU 访问通过 flock 脚本串行化，因此可以一个 kernel 一个 agent 并行跑而安全共享同一 GPU。
 - `Anjiang-Wei/Astra`——README 非常精简，可确证的事实有限。仓库主体是单一脚本 cuda_kernel_optimizer_multi.py，通过 CLI 传入初始 .cu 文件路径、对比类型标签、基线函数名与生成的 PyBind 导出函数名，函数内部按 --compare-kind（rmsnorm / silu / mergestate / generic 等）分支决定测试生成提示。基线默认取 sgl_kernel 模块中的实现（若为空则自动回退到 sglang.sgl_kernel），说明对比对象取自 SGLang 的 kernel 实现。生成代码被期望导出一个与基线同名的顶层函数，供后续正确性与性能对比。迭代次数由 --max-iterations 控制（默认 5）。每次运行的结果写入带时间戳的 cuda_optimization_runs/ 目录以保留多次运行记录。README 未展开 agent 组成、角色划分与具体打分方式，因此这些细节不做推断。
 - `Dogacel/auto-gpu-kernel`——FlashInfer 赛道与任意 Git 仓库共用同一个 BenchmarkAdapter 抽象：FlashInferAdapter 打包 kernel 源码走本地或 Modal 后端执行，GeneratedTaskAdapter 运行 setup agent 生成的 validate.py 与 benchmark.py。任务描述外置为 task.toml（objective/measure/validate/hints 及硬件约束），首轮用一次 setup turn 让 agent 现场生成验证与测量适配器，之后由 kbench 负责 quick/full 基线、归一化测量与配对 A/B。作者明确的设计取舍是只给 agent 关键原则而不给长指令，以免 harness 被逐渐 hack。
@@ -109,7 +109,7 @@
 - `RightNow-AI/autokernel`——把 agent 的作用域限制为只改 kernel.py 一个文件，跑固定 bench.py 后按结果保留或回滚，保证 diff 可读、回滚干净，同时评测脚本本身不被 agent 触碰。流程按 profile（torch.profiler 按 GPU 时间排序并判定 compute/memory bound）→ extract（把瓶颈抽成独立 Triton 或 CUDA C++ kernel）→ orchestrate（用 Amdahl 定律决定下一个优化对象）→ verify（把优化 kernel 塞回模型做端到端正确性与总加速比）串起来。设计上正确性优先于性能：先与 PyTorch 对拍再计时，错的立即回滚；实验结果以 results.tsv 纯文本追加，program.md 里写足 6 层优化手册与崩溃处理，让 agent 能连续跑十小时不卡住。
 - `StigLidu/AdaExplore`——仓库按 Adapt/Explore 两阶段切分目录：synthesis/ 生成多样化 kernel 任务，agent/ 在其上运行并把重复的编译/运行失败蒸馏成跨任务规则写入技能记忆文件，skill_memory/ 负责离线抽取或更新该记忆，记忆再被注入后续 prompt。Explore 阶段用 MCTS 把候选组织成搜索树，交替进行局部精修与结构性重写以保持多样性。评测走 online_judge/app_with_queue.py 提供的 API 服务，按 GPU 设并发上限并排队，请求路由到最空闲 GPU，执行放在隔离子进程以防崩溃或非法访存拖垮主服务。
 - `caoshiyi/K-Search`——核心在 k_search/kernel_generators/：除基础 LLM 生成器外还提供 world-model-aware 生成器，配套 world_model.py（结构化 JSON schema）、world_model_manager.py（init/refine/select 生命周期）与专用 prompt 模板，世界模型编码瓶颈假设、设计备选与优化策略来指导下一轮动作。任务侧由 task_base.py 定义统一协议，各 benchmark 以适配器接入（FlashInfer-Bench、GPUMode TriMul、KernelBench、MLX）。解法、评测报告与世界模型快照全部落盘，可从已有解法或世界模型状态续跑，并内置 OpenEvolve/ShinkaEvolve 基线做同目标对照。
-- `meta-pytorch/KernelAgent`——先用 AutoRouter 对问题做 AST 静态分析（注意力块、转置卷积、控制流、长算子链）决定走轻量直连路径还是完整 Fuser 流水线，路由决策缓存在 .fuse/router_cache.json 并可回退。Fuser 侧由 LLM 输出 JSON 子图描述（算子、shape、dtype、参数），按 shape 签名去重复用 kernel，Dispatcher 并行拉起多个 TritonKernelAgent 进程，Composer 把已验证 kernel 拼回单个 Triton 程序并跑自测。生成侧 worker 池迭代让 LLM 改进代码，在沙箱子进程中执行单测并禁止 PyTorch fallback，只有打印 PASS 且退出码 0 才算成功。优化侧以 NCU 28 项指标 + roofline 判定驱动 LLM 诊断与改写，对 PyTorch 参考做数值校验，再用 CUDA event 计时跟踪 best-so-far 并在性能退化时回滚。所有阶段产物落盘到 .fuse/<run_id> 与 .optimize/<run_id> 以支持复现。
+- `meta-pytorch/KernelAgent`——先用 AutoRouter 对问题做 AST 静态分析（注意力块、转置卷积、控制流、长算子链）决定走轻量直连路径还是完整 Fuser 流水线，路由决策缓存在 .fuse/router_cache.json 并可回退。Fuser 侧由 LLM 输出 JSON 子图描述（算子、shape、dtype、参数），按 shape 签名去重复用 kernel，Dispatcher 并行拉起多个 TritonKernelAgent 进程，Composer 把已验证 kernel 拼回单个 Triton 程序并跑自测。生成侧 worker 池迭代让 LLM 改进代码，在沙箱子进程中执行单测并禁止 PyTorch fallback，只有打印 PASS 且退出码 0 才算成功。优化侧以 NCU 28 项指标 + roofline 判定驱动 LLM 诊断与改写，对 PyTorch 参考做数值校验，再用 CUDA event 计时跟踪 best-so-far 并在性能退化时回滚。所有阶段产物落盘到 .fuse/&lt;run_id&gt; 与 .optimize/&lt;run_id&gt; 以支持复现。
 - `taratt/cutegen`——核心抽象是多后端共用一条流水线：CUDA、CuTe、PTX、Triton 四个后端复用同一套编译、正确性检查、CUDA event 计时、Nsight Compute 剖析、重试修复与节点持久化逻辑，后端只由 KERNEL_BACKEND 环境变量切换。PTX 路径走 CUDA Driver API 集成，结果保存在 saved_nodes/ptx/ 下。剖析是可选且可延迟的，USE_PROFILING=false 即关闭 ncu，另有按类别设定剖析深度的样例脚本，以控制 profiling 开销。节点式持久化让每个中间结果都可离线重放复现，replay_saved_nodes.py 能用与评测完全一致的流程重新计时。README 还区分了实验入口与 GPU 集成自检脚本两类命令。
 - `ucb-bar/autocomp`——主循环是 search/ 里的 beam 束搜索：每轮先生成若干策略方案（planning），再据此产出代码实现（code_models 可与规划模型不同），由评测后端打分后保留 beam_size 个候选进入下一轮。硬件被抽象成三元组：每个目标同时需要一个懂该硬件的优化 agent、一个负责编译与跑分的 evaluation backend、一个描述实例的 hw_config 类，三者按固定子目录命名（trn/tpu/gemmini/kernelbench/gpumode/metal/saturn/xnnpack），新增硬件按 ADDING_HARDWARE_SUPPORT.md 接入。Agent Builder 则从本地目录、PDF、网页文档自动生成硬件专属 agent 并落到 agent_builder/.built/。
 - `zhang677/AccelOpt`——核心机制是迭代生成 kernel，并把遇到的「慢 kernel→快 kernel」对比 curate 成优化记忆再注入下一轮提示，从而免去专家提供的硬件特定优化知识。角色分工上，executor 负责生成新 kernel，Fixer 专门修复失败的 kernel，README 明确两组 agent 可使用不同模型。产物流转靠结构化存储：生成结果用 templates/schema_v2.txt 的 SQL schema 存入 supabase kernel 数据库，NKIBench 与 FlashInfer-Bench 共用类似 schema。评测侧提供可插拔的 profiling 服务（NKIKernel.profile），并用「相对硬件可达峰值的百分比」衡量 agent 是否真正穷尽优化空间。
@@ -131,7 +131,7 @@
 - `QiMeng-IPRC/QiMeng-Kernel`——论文官方实现的公开版本，核心是 Macro-Thinking Micro-Coding 范式，但 README 基本只给出三个脚本入口：train.sh 启动训练并接受 base_model 与 num_envs 参数（说明是带并行环境的训练），inference.sh 用 checkpoint 配合外部 LLM API 生成 kernel，eval_generations.sh 在指定 benchmark 与子集上评测生成结果。结果以 KernelBench 与 TritonBench 两套榜单图片呈现，仓库未披露内部目录结构、模型结构或奖励设计。README 明确说明仓库仍在积极开发中，训练与离线数据集将于近期发布。
 - `QiMeng-IPRC/QiMeng-MuPa`——核心是 mutual-supervised learning：一个模型做串行到并行代码翻译，另一个做单元测试生成，两者互为验证条件，产出可用于 SFT 的数据，scripts/build_sft.sh 用 vllm 做批量推理完成这一步。随后是 co-evolve 阶段，直接复用 LLaMA-Factory 在该数据上微调，得到 Qwen3-0.6B-translator 模型（已发布在 HuggingFace）。评测侧用 eval_pass_k.sh 计算 Pass@k，测试集为 resources 下自带单元测试的 jsonl；环境用 uv.lock 保证完全可复现。README 强调端到端的训练与评测代码尚未发布。
 - `RLsys-Foundation/TritonForge`——仓库由两块组成：SLIME/ 是打过 bug 修复与优化的 RL 框架，slime_plugins 提供可插拔的自定义生成器与奖励函数；KBenchEval/ 是基于 KernelBench 的评测框架。SFT 与 RL 两阶段共用同一个 SLIME 框架，RL 阶段在 KernelBench Level 1-2 上做最多 3 轮迭代，奖励由编译成功、功能正确与 speedup 三项组成，折扣因子 gamma 取 0.4。训练与推理解耦：用 SGLang 起服务做 rollout，NVIDIA 与 AMD 各有一套 Docker 镜像分别锁定 CUDA 12.6.1 与 ROCm 6.3.4，并开放全部中间 checkpoint 与训练配方以便复现。
-- `ScalingIntelligence/kernelbench-tinker`——KernelBench 以 git submodule 嵌入并从本地路径安装成 Python 包，环境从 KernelBench 取题并用 Tinker Renderer 格式化为观测；动作是模型产出的候选 kernel，环境解析响应中的 <KERNEL> 块后送到 Modal 隔离 GPU 容器编译、测试并 profile，再把正确性、加速比与静态检查结果按 RewardConfig 折成标量奖励。扩展点是 KernelBenchEnvGroupBuilder（分组归一化实现 GRPO）与 KernelBenchDatasetBuilder（按 level 划分训练/评估集）。
+- `ScalingIntelligence/kernelbench-tinker`——KernelBench 以 git submodule 嵌入并从本地路径安装成 Python 包，环境从 KernelBench 取题并用 Tinker Renderer 格式化为观测；动作是模型产出的候选 kernel，环境解析响应中的 &lt;KERNEL&gt; 块后送到 Modal 隔离 GPU 容器编译、测试并 profile，再把正确性、加速比与静态检查结果按 RewardConfig 折成标量奖励。扩展点是 KernelBenchEnvGroupBuilder（分组归一化实现 GRPO）与 KernelBenchDatasetBuilder（按 level 划分训练/评估集）。
 - `Wangyaoyuu/SparseRL`——把预训练代码 LLM 当作随机策略：输入稀疏矩阵的行/列索引，用正弦嵌入编码动态稀疏模式，模型输出稀疏算子（SpMV、SpMM）的 CUDA kernel。训练链为预训练扩域 → SFT 学映射 → PPO 优化，RL 阶段用编译器与执行器反馈构造含编译、正确性、执行时间的层次奖励。README 自述只提供 SFT 与 PPO 的最小可跑流水线，数据以 .mtx 或 JSONL 两种形式喂入。
 - `hkust-nlp/KernelGYM`——整体是分布式评测服务：客户端 → FastAPI → Redis 任务队列 → 各节点 GPU worker，worker 内部再用子进程池隔离 CUDA 错误。核心抽象拆成 Backend（编译/加载/运行）、Toolkit（正确性与性能逻辑）、Workflow Controller（编排）三层，并以 register_backend/register_toolkit 方式支持扩展到物理模拟、渲染等新 GPU 任务类型。计时统一用 CUDA event 而非 wall-clock，并支持 warmup 与多次 trial。仓库内另有 drkernel/ 目录，提供与 VERL 框架对接的分布式 RL 训练、基于编译/正确性/性能的多维奖励函数与训练脚本。
 - `ornith-ai/CUDA-L1`——README 描述的是研究成果与发布产物，而非训练代码入口：核心是对比式强化学习框架，用比较学习的方式增强 CUDA 优化。发布物按 GPU 型号分别组织（h100.json 等），每行一个 JSON 对象，记录 KernelBench 的 level_id/task_id、参考 CUDA 代码、CUDA-L1 生成的 custom_code、CUDA Graph 版本代码，以及 default、torch.compile、torch.compile+ReduceOverhead、CUDA Graph 四种基线下的时间比 score。评测在 A100、3090、H100、H20、L40 上对照四组基线统计 mean/max/分位数加速比与成功数。README 明确披露了 RL 阶段的 reward hacking 风险（利用计时测量与缓存结果）并列出对应修复项。
@@ -470,11 +470,11 @@
 - 用 INFERENCE_BENCH_* 环境变量统一指定共享存储路径便于集群迁移　<sub>（`aisa-group/InferenceBench`）</sub>
 - 世界模型快照与解法 JSONL 全量落盘，支持断点续跑与事后分析　<sub>（`caoshiyi/K-Search`）</sub>
 - 评测提供 local 与 Modal 双后端，便于无 GPU 环境复现　<sub>（`caoshiyi/K-Search`）</sub>
-- 把平台依赖拆到 requirements/requirements_<platform>.txt 便于多芯片维护　<sub>（`flagos-ai/KernelGenBench`）</sub>
+- 把平台依赖拆到 requirements/requirements_&lt;platform&gt;.txt 便于多芯片维护　<sub>（`flagos-ai/KernelGenBench`）</sub>
 - 构建顺序固定为 triton → pytorch → 重装 triton，保证 ptxas/cuobjdump 与宿主版本一致　<sub>（`hgl71964/cuasmrl`）</sub>
 - 把算子实现按固定目录约定组织，便于上游贡献与运行时动态替换　<sub>（`meta-pytorch/BackendBench`）</sub>
 - prompt 用 Jinja 模板管理，便于版本化与统一改造　<sub>（`meta-pytorch/KernelAgent`）</sub>
-- 每阶段写 run 目录 (.fuse/<run_id>、.optimize/<run_id>)，可复现并支持单会话重跑　<sub>（`meta-pytorch/KernelAgent`）</sub>
+- 每阶段写 run 目录 (.fuse/&lt;run_id&gt;、.optimize/&lt;run_id&gt;)，可复现并支持单会话重跑　<sub>（`meta-pytorch/KernelAgent`）</sub>
 - 安装脚本默认装 PyTorch nightly 并使用其捆绑的 Triton 版本，避免版本错配　<sub>（`meta-pytorch/tritonbench`）</sub>
 - 用 git submodule 固定第三方 kernel 来源版本，保证可比与可复现　<sub>（`meta-pytorch/tritonbench`）</sub>
 - 离线与 server 双模式评测，server 模式按目标 QPS 压测贴近服务场景　<sub>（`ornith-ai/CUDA-L2`）</sub>
@@ -575,7 +575,7 @@
 - 为每个算子提供独立 op_tests 便于回归与按算子验证　<sub>（`ROCm/aiter`）</sub>
 - 发布自动化校验分支/tag 一致性与 wheel 集合完整性，宁可不发也不发半套　<sub>（`ROCm/aiter`）</sub>
 - README 明确提示发现异常高加速比时需人工复核　<sub>（`SakanaAI/robust-kbench`）</sub>
-- W&B 记录每轮分数、生成代码与世界模型快照　<sub>（`caoshiyi/K-Search`）</sub>
+- W&amp;B 记录每轮分数、生成代码与世界模型快照　<sub>（`caoshiyi/K-Search`）</sub>
 - 以 --api-format 描述协议而非固定 provider，兼容任意兼容端点　<sub>（`flagos-ai/KernelGenBench`）</sub>
 - 提供 --single-test 单算子冒烟入口便于快速验证链路　<sub>（`flagos-ai/KernelGenBench`）</sub>
 - 区分结构化数据集与源码仓库两类数据资源分别归类　<sub>（`flagos-ai/awesome-LLM-driven-kernel-generation`）</sub>
@@ -736,7 +736,7 @@
 - 测试 CUDA/HIP 题目需 NVIDIA 与 AMD GPU 及各自软件栈　<sub>（`parallelcodefoundry/ParEval`）</sub>
 - 需要 Python 3.7+、支持 C++17 与 OpenMP 的编译器、Make、CMake 与 MPI 实现　<sub>（`parallelcodefoundry/ParEval`）</sub>
 - FP16×FP8 等组合要求 SM80 以上平台（V100 不支持）　<sub>（`tile-ai/BitBLAS`）</sub>
-- wheel 仅支持 Ubuntu 20.04+、CUDA>=11.0、Python>=3.8，其他环境需源码编译　<sub>（`tile-ai/BitBLAS`）</sub>
+- wheel 仅支持 Ubuntu 20.04+、CUDA&gt;=11.0、Python&gt;=3.8，其他环境需源码编译　<sub>（`tile-ai/BitBLAS`）</sub>
 - TMA/WGMMA/TMEM 等特性依赖对应 GPU 架构，不支持的形状需回退路径　<sub>（`tile-ai/tilelang`）</sub>
 - NVIDIA GPU 需 Compute Capability 8.0+，AMD 需 ROCm 6.2+，CPU 后端仍在开发　<sub>（`triton-lang/triton`）</sub>
 - 仅支持 Linux　<sub>（`triton-lang/triton`）</sub>
@@ -770,7 +770,7 @@
 - 需先执行 install_triton.sh 或设置 AITER_USE_SYSTEM_TRITON 才能安装　<sub>（`ROCm/aiter`）</sub>
 - Triton 通常只能达到 cuBLAS 的 80-95%，极致性能需改用 CUDA C++　<sub>（`RightNow-AI/autokernel`）</sub>
 - 依赖 conda 环境与 cu124 版 PyTorch，ncu/clang 剖析需额外开关　<sub>（`SakanaAI/robust-kbench`）</sub>
-- ROCm 需 >=7.1，README 建议用 docker 镜像规避环境复杂度　<sub>（`ScalingIntelligence/KernelBench`）</sub>
+- ROCm 需 &gt;=7.1，README 建议用 docker 镜像规避环境复杂度　<sub>（`ScalingIntelligence/KernelBench`）</sub>
 - 基线时间受集群功耗与软件版本影响，README 建议自行生成基线　<sub>（`ScalingIntelligence/KernelBench`）</sub>
 - 生成的 kernel 可能触发 CUDA illegal memory access 导致崩溃　<sub>（`ScalingIntelligence/kernelbench-tinker`）</sub>
 - 自述为论文的简化开源版本，非完整系统复现　<sub>（`StigLidu/AdaExplore`）</sub>
@@ -787,7 +787,7 @@
 - 最近一次更新为 2026 年 8 月，时效性依赖人工维护　<sub>（`qhy991/Awesome-LLM-Kernel-Agent`）</sub>
 - CUDA 12.8 及以上需额外重装 cu128 版 torch　<sub>（`taratt/cutegen`）</sub>
 - 需手动安装 NCU 与 CUTLASS，并正确设置 NSIGHT_COMPUTE_BIN、CUTLASS_BASE_PATH、CUDACXX　<sub>（`taratt/cutegen`）</sub>
-- 需固定 triton 3.1.0 与 torch>=2.5.1，并手动修改 eval_G/eval_T 中的 py_interpreter 路径　<sub>（`thunlp/TritonBench`）</sub>
+- 需固定 triton 3.1.0 与 torch&gt;=2.5.1，并手动修改 eval_G/eval_T 中的 py_interpreter 路径　<sub>（`thunlp/TritonBench`）</sub>
 - Ascend 950 后端需 USE_ASCEND=ON 源码编译，依赖 CANN 与 torch_npu　<sub>（`tile-ai/tilelang`）</sub>
 - ROCm 路径需宿主安装 ROCm 运行时，CI 仅覆盖 gfx942，gfx950 尚未覆盖　<sub>（`tile-ai/tilelang`）</sub>
 - LLVM 无稳定 API，不能用任意 LLVM 版本构建　<sub>（`triton-lang/triton`）</sub>

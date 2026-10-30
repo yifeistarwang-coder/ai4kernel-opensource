@@ -275,7 +275,7 @@ Tile primitives for speedy kernels
 | --- | --- |
 | 角色 | DSL / kernel 表达层 |
 | 架构模式 | header-only CUDA DSL: tile 原语 + Load-Store-Compute-Finish 生产者/消费者模板 |
-| 入口 | `#include "kittens.cuh" (header-only，无需安装)`、`cd kernels/gemm/bf16_h100 && make && make run`、`cd tests && make -j (编译上千个 kernel)`、`./unit_tests printout (执行单测并输出失败详情)`、`cd llama_demo && bash demo_8b.sh / cd lolcats_demo && bash demo_8b.sh` |
+| 入口 | `#include "kittens.cuh" (header-only，无需安装)`、`cd kernels/gemm/bf16_h100 &amp;&amp; make &amp;&amp; make run`、`cd tests &amp;&amp; make -j (编译上千个 kernel)`、`./unit_tests printout (执行单测并输出失败详情)`、`cd llama_demo &amp;&amp; bash demo_8b.sh / cd lolcats_demo &amp;&amp; bash demo_8b.sh` |
 | 基础层 | CUDA-C++ |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Hopper (H100/H200)、NVIDIA Blackwell (B200) |
@@ -338,7 +338,7 @@ AI Tensor Engine for ROCm
 | --- | --- |
 | 角色 | 执行运行时底座 |
 | 架构模式 | 多后端算子库: Triton/CK/ASM/Opus/FlyDSL 并存 + 统一 C++ 与 Python API |
-| 入口 | `git clone --recursive https://github.com/ROCm/aiter.git && ./.github/scripts/install_triton.sh`、`AITER_USE_SYSTEM_TRITON=1 python3 -m pip install -e .`、`python3 op_tests/test_mha.py (也可用 test_mla/test_moe/test_gemm_a8w8 等)`、`AITER_MAX_JOBS=8 python3 -m aiter.aot.pa (AOT 预编译)`、`pip install -r requirements-triton-comms.txt (启用 Iris 通信算子)` |
+| 入口 | `git clone --recursive https://github.com/ROCm/aiter.git &amp;&amp; ./.github/scripts/install_triton.sh`、`AITER_USE_SYSTEM_TRITON=1 python3 -m pip install -e .`、`python3 op_tests/test_mha.py (也可用 test_mla/test_moe/test_gemm_a8w8 等)`、`AITER_MAX_JOBS=8 python3 -m aiter.aot.pa (AOT 预编译)`、`pip install -r requirements-triton-comms.txt (启用 Iris 通信算子)` |
 | 基础层 | Triton、HIP、torch |
 | 硬件厂商 | AMD |
 | 硬件架构 | AMD CDNA (MI100/MI200)、AMD CDNA 3 (MI300X)、AMD RDNA (Radeon) |
@@ -506,7 +506,7 @@ KernelBenchX: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 评测三段式: call→exe→perf 分阶段流水线 + 机器级 golden 基线 |
-| 入口 | `bash scripts/run_eval.sh [--bench-timeout SEC] <source> <output_dir> <gpus>`、`bash scripts/run_eval_from_files.sh [--bench-timeout SEC] <source> <output_dir> <gpus>`、`python metrics/run_missing_benchmarks.py --machine 4090 --all`、`examples/Examples.ipynb` |
+| 入口 | `bash scripts/run_eval.sh [--bench-timeout SEC] &lt;source&gt; &lt;output_dir&gt; &lt;gpus&gt;`、`bash scripts/run_eval_from_files.sh [--bench-timeout SEC] &lt;source&gt; &lt;output_dir&gt; &lt;gpus&gt;`、`python metrics/run_missing_benchmarks.py --machine 4090 --all`、`examples/Examples.ipynb` |
 | 基础层 | Triton |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Blackwell (B200)、NVIDIA Ampere (A100)、NVIDIA Ada (L40S/4090) |
@@ -517,7 +517,7 @@ KernelBenchX: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels
 | 星标 | 54 |
 | 最近推送 | 2026-06-01 |
 
-> 评测被切成 call（能否编译运行）→ exe（数值正确性）→ perf（性能）三个顺序阶段，每阶段单独落 JSONL 到 intermediate/ 目录，这样失败原因能定位到具体阶段。提交物形态设计得比较灵活：一个 JSONL 文件（每行含 predict 与 file，若无 file 则需带含 Functional Description 与 Wrapper Entry Information 的 instruction）、单个 .py 文件（basename 必须与 data/kernelbenchx/ 中的任务同名，且若文件内含 146 个 # 组成的分隔线，只取线以上内容作为提交）、或一个目录（递归收集 .py 与 .jsonl）。为了保证提交可执行，规定了「顶层可调用函数必须叫 kernel_function 或与任务 stem 同名」的执行契约。性能评测不与固定参考比，而是按机器隔离存放 GPU 匹配的 golden timing（metrics/golden_results/<machine>/），解析优先级为环境变量 KERNELBENCHX_GOLDEN_RESULTS_DIR → KERNELBENCHX_GOLDEN_MACHINE → 默认 5090，缺失的机器可用 run_missing_benchmarks.py 重新生成。输出统一为 metrics.json（逐任务）与 summary.json（通过率与加速比汇总）。相比上游 TritonBench，它强调更严格的正确性校验、扩展的任务覆盖（量化、多精度）与正确性/效率统一的评测流水线。
+> 评测被切成 call（能否编译运行）→ exe（数值正确性）→ perf（性能）三个顺序阶段，每阶段单独落 JSONL 到 intermediate/ 目录，这样失败原因能定位到具体阶段。提交物形态设计得比较灵活：一个 JSONL 文件（每行含 predict 与 file，若无 file 则需带含 Functional Description 与 Wrapper Entry Information 的 instruction）、单个 .py 文件（basename 必须与 data/kernelbenchx/ 中的任务同名，且若文件内含 146 个 # 组成的分隔线，只取线以上内容作为提交）、或一个目录（递归收集 .py 与 .jsonl）。为了保证提交可执行，规定了「顶层可调用函数必须叫 kernel_function 或与任务 stem 同名」的执行契约。性能评测不与固定参考比，而是按机器隔离存放 GPU 匹配的 golden timing（metrics/golden_results/&lt;machine&gt;/），解析优先级为环境变量 KERNELBENCHX_GOLDEN_RESULTS_DIR → KERNELBENCHX_GOLDEN_MACHINE → 默认 5090，缺失的机器可用 run_missing_benchmarks.py 重新生成。输出统一为 metrics.json（逐任务）与 summary.json（通过率与加速比汇总）。相比上游 TritonBench，它强调更严格的正确性校验、扩展的任务覆盖（量化、多精度）与正确性/效率统一的评测流水线。
 
 ### [CUDA-Bench/CUDABench](https://github.com/CUDA-Bench/CUDABench)
 
@@ -527,7 +527,7 @@ KernelBenchX: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 评测三段式: dataset-generate-evaluate（编译 + ncu 剖析） |
-| 入口 | `python Generate/main.py`、`python Generate/main.py --api_option deepseek --model_name deepseek-reasoner --samples 3`、`python Evaluate/manager.py full <path_to_results_file>` |
+| 入口 | `python Generate/main.py`、`python Generate/main.py --api_option deepseek --model_name deepseek-reasoner --samples 3`、`python Evaluate/manager.py full &lt;path_to_results_file&gt;` |
 | 基础层 | CUDA-C++ |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | — |
@@ -538,7 +538,7 @@ KernelBenchX: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels
 | 星标 | 20 |
 | 最近推送 | 2026-03-04 |
 
-> 任务集被压在一个 JSONL 文件里，每条记录自成一体：id 与 task_name 标识任务，inputs/outputs 描述张量形状与数据类型，三档难度 prompt 分别对应引导式实现（给出算法描述与显式 CUDA 实现指引）、算法式规范（只给算法描述、不给硬件提示）与概念检索式（只给任务名），评测三件套 bench.cu（参考 CUDA C++ 实现）、gen.py（生成随机二进制输入与参考输出）和 compare.py（校验生成 kernel）也内嵌在同一条记录里，使得任务定义、参考实现与打分逻辑完全自包含。生成侧由 Generate/main.py 负责，按 --api_option 选择 API provider、--model_name 选模型、--samples 指定采样次数，默认参数集中在 Generate/config.py 中，结果按 Results/<api>/<model>_<level>_pass<k>.jsonl 命名，把 provider、模型、难度与采样序号编码进文件名，便于多模型多难度横向对比。评测侧 Evaluate/manager.py 以 full 子命令接收结果文件路径，负责编译、运行与用 Nsight Compute 剖析，整体是「生成只落 JSONL、评测单独吃同一文件」的解耦结构。仓库还提供 figs/overview.png 说明整体流程图。
+> 任务集被压在一个 JSONL 文件里，每条记录自成一体：id 与 task_name 标识任务，inputs/outputs 描述张量形状与数据类型，三档难度 prompt 分别对应引导式实现（给出算法描述与显式 CUDA 实现指引）、算法式规范（只给算法描述、不给硬件提示）与概念检索式（只给任务名），评测三件套 bench.cu（参考 CUDA C++ 实现）、gen.py（生成随机二进制输入与参考输出）和 compare.py（校验生成 kernel）也内嵌在同一条记录里，使得任务定义、参考实现与打分逻辑完全自包含。生成侧由 Generate/main.py 负责，按 --api_option 选择 API provider、--model_name 选模型、--samples 指定采样次数，默认参数集中在 Generate/config.py 中，结果按 Results/&lt;api&gt;/&lt;model&gt;_&lt;level&gt;_pass&lt;k&gt;.jsonl 命名，把 provider、模型、难度与采样序号编码进文件名，便于多模型多难度横向对比。评测侧 Evaluate/manager.py 以 full 子命令接收结果文件路径，负责编译、运行与用 Nsight Compute 剖析，整体是「生成只落 JSONL、评测单独吃同一文件」的解耦结构。仓库还提供 figs/overview.png 说明整体流程图。
 
 ### [facebookresearch/kernel_bench_verified](https://github.com/facebookresearch/kernel_bench_verified)
 
@@ -569,7 +569,7 @@ Welcome to KernelBench-Verified. This repository provides a robust, realistic ev
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 多来源算子集 + 双赛道（LLM Pass@K / Agent 迭代）+ 多芯片后端 |
-| 入口 | `pip install -r requirements/requirements_nvidia.txt && pip install -e .`、`python scripts/generate_kernel_and_verify.py --op-name aten::add --single-test --api-format openai --model-name your-model --base-url https://your-provider.example/v1 --api-key your-key`、`docs/source/getting-started/index.md`、`docs/source/operation-guide/llm-track/index.md`、`docs/source/operation-guide/agent-track/index.md` |
+| 入口 | `pip install -r requirements/requirements_nvidia.txt &amp;&amp; pip install -e .`、`python scripts/generate_kernel_and_verify.py --op-name aten::add --single-test --api-format openai --model-name your-model --base-url https://your-provider.example/v1 --api-key your-key`、`docs/source/getting-started/index.md`、`docs/source/operation-guide/llm-track/index.md`、`docs/source/operation-guide/agent-track/index.md` |
 | 基础层 | Triton、torch |
 | 硬件厂商 | NVIDIA、Ascend、Other |
 | 硬件架构 | — |
@@ -611,7 +611,7 @@ A benchmark framework for evaluating AI agents on software performance optimizat
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 评测三段式: 提交挖掘造题(commit→LLM 测试) - agent 运行 CLI(plan/prepare/report) - 三方性能对比 |
-| 入口 | `python commit_to_dataset.py configs/experiments.yaml`、`python -m bench.cli plan tasks/vllm.yaml --out state/plan.json`、`python -m bench.cli prepare tasks/vllm.yaml --from-plan state/plan.json --bench-cfg bench.yaml`、`python -m bench.cli report state/runs/<run_id>`、`python -m bench.cli doctor --bench-cfg bench.yaml`、`python scripts/runners/run_3way_benchmarks.py --agent-type trae_gpt5 --commits 8aa1485f`、`python scripts/generate_soft_metrics.py --agent claude_code --project vllm`、`load_dataset('ISO-Bench/ISO-Bench', split='test')` |
+| 入口 | `python commit_to_dataset.py configs/experiments.yaml`、`python -m bench.cli plan tasks/vllm.yaml --out state/plan.json`、`python -m bench.cli prepare tasks/vllm.yaml --from-plan state/plan.json --bench-cfg bench.yaml`、`python -m bench.cli report state/runs/&lt;run_id&gt;`、`python -m bench.cli doctor --bench-cfg bench.yaml`、`python scripts/runners/run_3way_benchmarks.py --agent-type trae_gpt5 --commits 8aa1485f`、`python scripts/generate_soft_metrics.py --agent claude_code --project vllm`、`load_dataset('ISO-Bench/ISO-Bench', split='test')` |
 | 基础层 | vLLM、SGLang |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Hopper (H100/H200) |
@@ -653,7 +653,7 @@ Evaluating Large Language Models for CUDA Code Generation ComputeEval is a frame
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | datapack 版本化题库 + Podman 沙箱评测 + 单发与 agent 两种生成器 |
-| 入口 | `compute_eval_generate generate_samples --model gpt-5 --solutions_per_problem 5`、`compute_eval_harness generate_samples --num_shots 3 --demonstrations_dir ..`、`compute_eval_harness harbor generate --agent claude-code --model <id>`、`compute_eval_harness harbor optimize --agent claude-code --model <id>`、`compute_eval evaluate_functional_correctness --release=2026-2 --mode=podman --k='(1,3)'`、`compute_eval_build_profiler (编译 libcuda_profile.so)` |
+| 入口 | `compute_eval_generate generate_samples --model gpt-5 --solutions_per_problem 5`、`compute_eval_harness generate_samples --num_shots 3 --demonstrations_dir ..`、`compute_eval_harness harbor generate --agent claude-code --model &lt;id&gt;`、`compute_eval_harness harbor optimize --agent claude-code --model &lt;id&gt;`、`compute_eval evaluate_functional_correctness --release=2026-2 --mode=podman --k='(1,3)'`、`compute_eval_build_profiler (编译 libcuda_profile.so)` |
 | 基础层 | CUDA-C++、CUTLASS、torch |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Blackwell (B200) |
@@ -674,7 +674,7 @@ A benchmark of real-world DL kernel problems
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 问题目录格式 (definition+workload) + 容器内 CLI 评测 + roofline 式 SOL-Score 排名 |
-| 入口 | `./scripts/download_data.sh`、`./scripts/run_docker.sh --build`、`sol-execbench <problem_dir> --solution solution.json`、`sol-execbench --definition def.json --workload wkl.jsonl --solution sol.json`、`uv run scripts/run_dataset.py data/SOL-ExecBench/benchmark --solution-name solution.py`、`src/sol_execbench/sol_score.py (SOL-Score 评分)` |
+| 入口 | `./scripts/download_data.sh`、`./scripts/run_docker.sh --build`、`sol-execbench &lt;problem_dir&gt; --solution solution.json`、`sol-execbench --definition def.json --workload wkl.jsonl --solution sol.json`、`uv run scripts/run_dataset.py data/SOL-ExecBench/benchmark --solution-name solution.py`、`src/sol_execbench/sol_score.py (SOL-Score 评分)` |
 | 基础层 | torch、Triton、CUTLASS、CUDA-C++ |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Blackwell (B200) |
@@ -695,7 +695,7 @@ Parallel Code Evaluation Benchmark
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 离线三段式流水线: prompts → generate → drivers → analysis |
-| 入口 | `python generate/generate.py (生成 LLM 输出)`、`python drivers/run-all.py (评测输出)`、`python analysis/metrics.py (后处理与指标)`、`cd drivers/cpp && make (构建 C++ driver)` |
+| 入口 | `python generate/generate.py (生成 LLM 输出)`、`python drivers/run-all.py (评测输出)`、`python analysis/metrics.py (后处理与指标)`、`cd drivers/cpp &amp;&amp; make (构建 C++ driver)` |
 | 基础层 | CUDA-C++、HIP |
 | 硬件厂商 | CPU、NVIDIA |
 | 硬件架构 | — |
@@ -731,7 +731,7 @@ Parallel Code Evaluation Benchmark
 
 ### [ScalingIntelligence/KernelBench](https://github.com/ScalingIntelligence/KernelBench)
 
-KernelBench: Can LLMs Write GPU Kernels? - Benchmark + Toolkit with Torch -> CUDA (+ more DSLs)
+KernelBench: Can LLMs Write GPU Kernels? - Benchmark + Toolkit with Torch -&gt; CUDA (+ more DSLs)
 
 | 项 | 内容 |
 | --- | --- |
@@ -821,7 +821,7 @@ PTXBench: an open-source environment for kernel agents with architecture-specifc
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | Profiling 服务 + 双通道 agent（多轮模型循环 / 编码代理网关）+ Fixit 与 KernelGen 两条 SFT 数据线 |
-| 入口 | `python multiturn/scripts/render.py --check`、`python multiturn/run_parallel_v2.py --config <cfg> --definition <name> --test-path <path> --model <model> --service-url http://localhost:10000`、`bash ptxbench-eval/examples/gemini_gemm/run_experiment.sh`、`bash ptxbench-eval/examples/gpt56_gemm/run_experiment.sh`、`bash scripts/reproduce_fixit.sh --check / 00`、`bash scripts/reproduce_kernelgen.sh --check / 00`、`curl -fsS http://localhost:10000/health` |
+| 入口 | `python multiturn/scripts/render.py --check`、`python multiturn/run_parallel_v2.py --config &lt;cfg&gt; --definition &lt;name&gt; --test-path &lt;path&gt; --model &lt;model&gt; --service-url http://localhost:10000`、`bash ptxbench-eval/examples/gemini_gemm/run_experiment.sh`、`bash ptxbench-eval/examples/gpt56_gemm/run_experiment.sh`、`bash scripts/reproduce_fixit.sh --check / 00`、`bash scripts/reproduce_kernelgen.sh --check / 00`、`curl -fsS http://localhost:10000/health` |
 | 基础层 | Triton、CUDA-C++ |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Hopper (H100/H200) |
@@ -863,7 +863,7 @@ Winner 🏆 (Agent-only) MLSys 2026 - FlashInfer AI Kernel Generation Contest fo
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | 双 CLI 分层: 优化 agent(kopt) + 验证基准(kbench)，共用统一 BenchmarkAdapter |
-| 入口 | `kopt init <definition.json> --backend modal --gpu B200`、`kopt init-task task.toml`、`kopt run work/<task> -n 20 --model anthropic/claude-opus-5 --thinking low`、`kopt watch . (本地 127.0.0.1:8765)`、`kbench bench --quick / --stride 2 / 完整`、`kbench ab --a experiments/exp_3/solution_fused.py`、`omp (运行优化 agent 的宿主 CLI)` |
+| 入口 | `kopt init &lt;definition.json&gt; --backend modal --gpu B200`、`kopt init-task task.toml`、`kopt run work/&lt;task&gt; -n 20 --model anthropic/claude-opus-5 --thinking low`、`kopt watch . (本地 127.0.0.1:8765)`、`kbench bench --quick / --stride 2 / 完整`、`kbench ab --a experiments/exp_3/solution_fused.py`、`omp (运行优化 agent 的宿主 CLI)` |
 | 基础层 | FlashInfer |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Blackwell (B200)、NVIDIA Hopper (H100/H200) |
@@ -884,7 +884,7 @@ Winner 🏆 (Agent-only) MLSys 2026 - FlashInfer AI Kernel Generation Contest fo
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | 两阶段: Adapt(合成任务-失败蒸馏-技能记忆) + Explore(MCTS 树搜索) |
-| 入口 | `python synthesis/generate_data.py --server_type azure --model_name gpt-5-mini --prompt_style composite --input_levels 1 --num_generations 200 --num_examples_per_request 3 --temperature 1.0`、`python synthesis/rename.py --source_path ... --data_path datasets/KernelBench_syn/... --force`、`python agent/agent_entry.py --config config/SYN-v1/config_SYN-v1_none_MCTS.yaml`、`python skill_memory/skill_memory.py --log-dir outputs/example_run --knowledge-store-path outputs/example_run/general_memory.txt --server openai --model-name gpt-5-mini --max-logs 3000 --seed 42`、`bash online_judge/start_server.sh`、`python -m uvicorn online_judge.app_with_queue:app --host 0.0.0.0 --port 12017`、`python tool_scripts/stats.py --log_folder outputs/KB-l2_AdaExplore_50 --step 50`、`python tool_scripts/re_evaluate.py --log_folder outputs/<run> --num_correct_trials 5 --num_perf_trials 100 --use_remote_eval` |
+| 入口 | `python synthesis/generate_data.py --server_type azure --model_name gpt-5-mini --prompt_style composite --input_levels 1 --num_generations 200 --num_examples_per_request 3 --temperature 1.0`、`python synthesis/rename.py --source_path ... --data_path datasets/KernelBench_syn/... --force`、`python agent/agent_entry.py --config config/SYN-v1/config_SYN-v1_none_MCTS.yaml`、`python skill_memory/skill_memory.py --log-dir outputs/example_run --knowledge-store-path outputs/example_run/general_memory.txt --server openai --model-name gpt-5-mini --max-logs 3000 --seed 42`、`bash online_judge/start_server.sh`、`python -m uvicorn online_judge.app_with_queue:app --host 0.0.0.0 --port 12017`、`python tool_scripts/stats.py --log_folder outputs/KB-l2_AdaExplore_50 --step 50`、`python tool_scripts/re_evaluate.py --log_folder outputs/&lt;run&gt; --num_correct_trials 5 --num_perf_trials 100 --use_remote_eval` |
 | 基础层 | torch、Triton |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Ampere (A100) |
@@ -905,7 +905,7 @@ Autocomp: Optimize any AI kernel, anywhere.
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | Agent 工具循环 + 束搜索 + 可插拔硬件目标（agent/backend/hw_config 三件套） |
-| 入口 | `python -m autocomp.search.run_search`、`python -m autocomp.agent_builder.run_agent_builder --agent-name <name> --source-dir <dir> --agent-scope "..."`、`pip install "autocomp[agent-builder]"`、`WANDB_MODE=disabled pytest` |
+| 入口 | `python -m autocomp.search.run_search`、`python -m autocomp.agent_builder.run_agent_builder --agent-name &lt;name&gt; --source-dir &lt;dir&gt; --agent-scope "..."`、`pip install "autocomp[agent-builder]"`、`WANDB_MODE=disabled pytest` |
 | 基础层 | vLLM |
 | 硬件厂商 | NVIDIA、TPU、Trainium、CPU、Other |
 | 硬件架构 | TPU v6e、TPU v5、NVIDIA Ada (L40S/4090) |
@@ -947,7 +947,7 @@ AgentKernelArena is a platform for evaluating and training AI agents for GPU ker
 | --- | --- |
 | 角色 | 评测基准 |
 | 架构模式 | 受控实验平台: 统一任务契约 + 多 agent 适配层 + 独立评测打分 + A/B 对照 |
-| 入口 | `make docker-run CONFIG=example_configs/quickstart_claude_mi300.yaml RUN_ARGS="--run-suffix baseline"`、`make docker-run CONFIG=example_configs/quickstart_claude_mi300.yaml RUN_ARGS="--run-suffix treatment"`、`make docker-parallel-run CONFIG=$CONFIG_PATH GPU_IDS=0,1,2,3`、`make slurm-run CONFIG=config_codex_mi355x_spur.yaml`、`make slurm-parallel-submit CONFIG=example_configs/benchmark_cursor_mi355x.yaml`、`make docker-smoke / make docker-check-agents CONFIG=$CONFIG_PATH`、`python3 src/tools/compare_runs.py workspace_.../run_<ts>_baseline workspace_.../run_<ts>_treatment`、`python3 main.py` |
+| 入口 | `make docker-run CONFIG=example_configs/quickstart_claude_mi300.yaml RUN_ARGS="--run-suffix baseline"`、`make docker-run CONFIG=example_configs/quickstart_claude_mi300.yaml RUN_ARGS="--run-suffix treatment"`、`make docker-parallel-run CONFIG=$CONFIG_PATH GPU_IDS=0,1,2,3`、`make slurm-run CONFIG=config_codex_mi355x_spur.yaml`、`make slurm-parallel-submit CONFIG=example_configs/benchmark_cursor_mi355x.yaml`、`make docker-smoke / make docker-check-agents CONFIG=$CONFIG_PATH`、`python3 src/tools/compare_runs.py workspace_.../run_&lt;ts&gt;_baseline workspace_.../run_&lt;ts&gt;_treatment`、`python3 main.py` |
 | 基础层 | HIP、Triton、torch、AITer、vLLM、SGLang |
 | 硬件厂商 | AMD |
 | 硬件架构 | AMD CDNA 3 (MI300X)、AMD CDNA (MI100/MI200)、AMD RDNA (Radeon) |
@@ -979,7 +979,7 @@ Agents, and RL environment, for optimizing GPU kernels on AMD ROCm using LLM age
 | 星标 | 78 |
 | 最近推送 | 2026-09-25 |
 
-> workload_optimizer.py 是唯一 CLI，把整条链路拆成 benchmark → identify → optimize → integrate → benchmark-final → score → report 这些可单步也可一次跑完的子命令，结构上是典型的「剖析驱动选靶 + agent 改写 + 独立评分 + 回注验证」。评分不自己实现，而是委托给外部 Magpie 框架，仓库内只保留 graders/ 下的配置生成、ground truth 注册与缓存隔离（cache_manager）以保证可复现的评测条件。评分公式分为 kernel 级（compiled×20 + correct×100 + 分段 speedup 分，S<1 时给回退惩罚）与模型级（0.7×归一化 kernel 分 + 0.3×端到端吞吐提升比）两层，且只有同时编译并正确才计入加速分。优化产物通过 hot-patch 回注 site-packages：aiter/vllm/sglang 的 Triton .py 可直接替换并由 Triton JIT 自动重编译，aiter 的 .so 用 hipcc 重编译后替换，而系统级共享库与单体 _C.so 明确不支持，需重新编译源码；补丁在基准结束后会被还原。agent 侧不内置 agent 循环，而是通过 agents/backends.py 调 Claude Code / Codex / Cursor CLI，配合两层提示词（系统提示定义角色、MCP 工具清单与反作弊规则；任务提示带 GPU 架构参数、源码位置、剖析数据与知识库洞察）和 5 个 MCP 服务（源码检索、kernel RAG、GPU 信息、融合建议、Magpie 评测）扩展 agent 能力，跨轮经验沉淀在 pipeline/knowledge_base.py，反思在 reflector.py，最终以 export-rl 把轨迹导出为 RL/SFT 数据集，形成训练回流闭环。
+> workload_optimizer.py 是唯一 CLI，把整条链路拆成 benchmark → identify → optimize → integrate → benchmark-final → score → report 这些可单步也可一次跑完的子命令，结构上是典型的「剖析驱动选靶 + agent 改写 + 独立评分 + 回注验证」。评分不自己实现，而是委托给外部 Magpie 框架，仓库内只保留 graders/ 下的配置生成、ground truth 注册与缓存隔离（cache_manager）以保证可复现的评测条件。评分公式分为 kernel 级（compiled×20 + correct×100 + 分段 speedup 分，S&lt;1 时给回退惩罚）与模型级（0.7×归一化 kernel 分 + 0.3×端到端吞吐提升比）两层，且只有同时编译并正确才计入加速分。优化产物通过 hot-patch 回注 site-packages：aiter/vllm/sglang 的 Triton .py 可直接替换并由 Triton JIT 自动重编译，aiter 的 .so 用 hipcc 重编译后替换，而系统级共享库与单体 _C.so 明确不支持，需重新编译源码；补丁在基准结束后会被还原。agent 侧不内置 agent 循环，而是通过 agents/backends.py 调 Claude Code / Codex / Cursor CLI，配合两层提示词（系统提示定义角色、MCP 工具清单与反作弊规则；任务提示带 GPU 架构参数、源码位置、剖析数据与知识库洞察）和 5 个 MCP 服务（源码检索、kernel RAG、GPU 信息、融合建议、Magpie 评测）扩展 agent 能力，跨轮经验沉淀在 pipeline/knowledge_base.py，反思在 reflector.py，最终以 export-rl 把轨迹导出为 RL/SFT 数据集，形成训练回流闭环。
 
 ### [AMD-AGI/GEAK](https://github.com/AMD-AGI/GEAK)
 
@@ -1010,7 +1010,7 @@ Generating Efficient AI-Centric Kernels
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | 单脚本多 agent 循环 + 基线对比（compare-kind 参数化分支） |
-| 入口 | `python3 cuda_kernel_optimizer_multi.py --api-key <OPENAI_API_KEY> --initial-kernel-path <PATH_TO_INIT_CUDA_FILE> --compare-kind <KERNEL_TYPE> --baseline-func <BASELINE_FUNCTION_NAME> --generated-export-func <EXPORT_FUNCTION_NAME>` |
+| 入口 | `python3 cuda_kernel_optimizer_multi.py --api-key &lt;OPENAI_API_KEY&gt; --initial-kernel-path &lt;PATH_TO_INIT_CUDA_FILE&gt; --compare-kind &lt;KERNEL_TYPE&gt; --baseline-func &lt;BASELINE_FUNCTION_NAME&gt; --generated-export-func &lt;EXPORT_FUNCTION_NAME&gt;` |
 | 基础层 | CUDA-C++、SGLang |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | — |
@@ -1025,7 +1025,7 @@ Generating Efficient AI-Centric Kernels
 
 ### [meta-pytorch/KernelAgent](https://github.com/meta-pytorch/KernelAgent)
 
-Autonomous GPU Kernel Generation & Optimization via Deep Agents
+Autonomous GPU Kernel Generation &amp; Optimization via Deep Agents
 
 | 项 | 内容 |
 | --- | --- |
@@ -1042,7 +1042,7 @@ Autonomous GPU Kernel Generation & Optimization via Deep Agents
 | 星标 | 610 |
 | 最近推送 | 2026-09-08 |
 
-> 先用 AutoRouter 对问题做 AST 静态分析（注意力块、转置卷积、控制流、长算子链）决定走轻量直连路径还是完整 Fuser 流水线，路由决策缓存在 .fuse/router_cache.json 并可回退。Fuser 侧由 LLM 输出 JSON 子图描述（算子、shape、dtype、参数），按 shape 签名去重复用 kernel，Dispatcher 并行拉起多个 TritonKernelAgent 进程，Composer 把已验证 kernel 拼回单个 Triton 程序并跑自测。生成侧 worker 池迭代让 LLM 改进代码，在沙箱子进程中执行单测并禁止 PyTorch fallback，只有打印 PASS 且退出码 0 才算成功。优化侧以 NCU 28 项指标 + roofline 判定驱动 LLM 诊断与改写，对 PyTorch 参考做数值校验，再用 CUDA event 计时跟踪 best-so-far 并在性能退化时回滚。所有阶段产物落盘到 .fuse/<run_id> 与 .optimize/<run_id> 以支持复现。
+> 先用 AutoRouter 对问题做 AST 静态分析（注意力块、转置卷积、控制流、长算子链）决定走轻量直连路径还是完整 Fuser 流水线，路由决策缓存在 .fuse/router_cache.json 并可回退。Fuser 侧由 LLM 输出 JSON 子图描述（算子、shape、dtype、参数），按 shape 签名去重复用 kernel，Dispatcher 并行拉起多个 TritonKernelAgent 进程，Composer 把已验证 kernel 拼回单个 Triton 程序并跑自测。生成侧 worker 池迭代让 LLM 改进代码，在沙箱子进程中执行单测并禁止 PyTorch fallback，只有打印 PASS 且退出码 0 才算成功。优化侧以 NCU 28 项指标 + roofline 判定驱动 LLM 诊断与改写，对 PyTorch 参考做数值校验，再用 CUDA event 计时跟踪 best-so-far 并在性能退化时回滚。所有阶段产物落盘到 .fuse/&lt;run_id&gt; 与 .optimize/&lt;run_id&gt; 以支持复现。
 
 ### [mindspore-ai/akg](https://github.com/mindspore-ai/akg)
 
@@ -1094,7 +1094,7 @@ Autoresearch for GPU kernels. Give it any PyTorch model, go to sleep, wake up to
 | --- | --- |
 | 角色 | Agent 搜索循环 |
 | 架构模式 | 固定评测 + 编辑-评测-保留/回滚 循环，单文件作用域 + Amdahl 定律调度 |
-| 入口 | `uv sync && uv run prepare.py`、`uv run profile.py --model models/llama_7b.py --class-name LlamaModel --input-shape 1,512 --dtype float16`、`uv run extract.py --top 5 --backend triton\|cuda`、`uv run bench.py`、`uv run verify.py`、`uv run export_hf.py --name my_matmul`、`uv run kernelbench/bridge.py fetch --source hf --level 1 / setup --level 1 --problem 1`、`uv run kernelbench/bench_kb.py / uv run kernelbench/scorer.py --level 1`、`对 agent 下达指令: Read program.md and let's kick off a new experiment` |
+| 入口 | `uv sync &amp;&amp; uv run prepare.py`、`uv run profile.py --model models/llama_7b.py --class-name LlamaModel --input-shape 1,512 --dtype float16`、`uv run extract.py --top 5 --backend triton\|cuda`、`uv run bench.py`、`uv run verify.py`、`uv run export_hf.py --name my_matmul`、`uv run kernelbench/bridge.py fetch --source hf --level 1 / setup --level 1 --problem 1`、`uv run kernelbench/bench_kb.py / uv run kernelbench/scorer.py --level 1`、`对 agent 下达指令: Read program.md and let's kick off a new experiment` |
 | 基础层 | Triton、CUDA-C++、torch |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Hopper (H100/H200)、NVIDIA Ampere (A100)、NVIDIA Ada (L40S/4090)、AMD CDNA 3 (MI300X) |
@@ -1199,7 +1199,7 @@ AMDKernelVault A research and engineering playground for HIP and Triton kernel g
 | --- | --- |
 | 角色 | 训练流水线 |
 | 架构模式 | 全栈训练框架: CPT-SFT-RL 三段流水线 + 数据生成器 + 独立验证服务 |
-| 入口 | `cd cpt && bash run_train_cpt.sh`、`cd sft && bash run_train_full_sft.sh`、`cd rl/rl4kernel_hip && bash scripts/train/react_single_turn_v1_hip2hip.sh --train <parquet> --val <parquet> --sf-url http://host:8080/run_code`、`cd rl/rl4kernel_hip/hip_kernel_evaluation_server && HIP_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./setup_server_req_deploy_hip2hip_batch.sh`、`cd hip-kernel-generator && pip install -e ./torch_modu2func_kit[dev] && pip install -e ./torch2hip_kit[dev] && pip install -e ./py_hip_kernel2kernel_kit[dev]`、`huggingface-cli download amd/hip_llm_dataset --repo-type dataset --local-dir hip_llm_dataset` |
+| 入口 | `cd cpt &amp;&amp; bash run_train_cpt.sh`、`cd sft &amp;&amp; bash run_train_full_sft.sh`、`cd rl/rl4kernel_hip &amp;&amp; bash scripts/train/react_single_turn_v1_hip2hip.sh --train &lt;parquet&gt; --val &lt;parquet&gt; --sf-url http://host:8080/run_code`、`cd rl/rl4kernel_hip/hip_kernel_evaluation_server &amp;&amp; HIP_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 ./setup_server_req_deploy_hip2hip_batch.sh`、`cd hip-kernel-generator &amp;&amp; pip install -e ./torch_modu2func_kit[dev] &amp;&amp; pip install -e ./torch2hip_kit[dev] &amp;&amp; pip install -e ./py_hip_kernel2kernel_kit[dev]`、`huggingface-cli download amd/hip_llm_dataset --repo-type dataset --local-dir hip_llm_dataset` |
 | 基础层 | HIP、Triton、torch |
 | 硬件厂商 | AMD |
 | 硬件架构 | AMD CDNA 3 (MI300X) |
@@ -1283,7 +1283,7 @@ CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation
 | --- | --- |
 | 角色 | 编译器底座 |
 | 架构模式 | Triton 编译器主仓 + 附加 cuasmrl 包的 fork 结构 |
-| 入口 | `python -m venv .venv --prompt triton && pip install -e python`、`pip install -e cuasmrl (需先 clone CuAssembler 并设置 PYTHONPATH)`、`git clone https://github.com/hgl71964/CuAssembler.git` |
+| 入口 | `python -m venv .venv --prompt triton &amp;&amp; pip install -e python`、`pip install -e cuasmrl (需先 clone CuAssembler 并设置 PYTHONPATH)`、`git clone https://github.com/hgl71964/CuAssembler.git` |
 | 基础层 | Triton、CUDA-C++ |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | — |
@@ -1298,7 +1298,7 @@ CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation
 
 ### [hkust-nlp/KernelGYM](https://github.com/hkust-nlp/KernelGYM)
 
-[KernelGYM & Dr. Kernel] A distributed GPU environment and a collection of RL training methods to support RL for Kernel Generations [ICML 2026]
+[KernelGYM &amp; Dr. Kernel] A distributed GPU environment and a collection of RL training methods to support RL for Kernel Generations [ICML 2026]
 
 | 项 | 内容 |
 | --- | --- |
@@ -1325,7 +1325,7 @@ CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning
 | --- | --- |
 | 角色 | 训练流水线 |
 | 架构模式 | 对比式 RL 训练 + 产物仓库 (逐行 JSON 记录 ref/custom/cuda_graph 代码与四组 score) |
-| 入口 | `取 optimized_cuda_code/<device>.json 中的代码片段在对应 GPU 上逐条运行复现`、`在 KernelBench 的 250 个 PyTorch workload 上评测 speedup 与成功率` |
+| 入口 | `取 optimized_cuda_code/&lt;device&gt;.json 中的代码片段在对应 GPU 上逐条运行复现`、`在 KernelBench 的 250 个 PyTorch workload 上评测 speedup 与成功率` |
 | 基础层 | CUDA-C++、torch |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | NVIDIA Ampere (A100)、NVIDIA Hopper (H100/H200)、NVIDIA Ada (L40S/4090) |
@@ -1367,7 +1367,7 @@ CUDA-L2: Surpassing cuBLAS Performance for Matrix Multiplication through Reinfor
 | --- | --- |
 | 角色 | 训练流水线 |
 | 架构模式 | 训练-推理-评测三段脚本化流水线 (train / inference / eval_generations) |
-| 入口 | `pip install -r requirements.txt && pip install -e .`、`bash scripts/train.sh <base_model> <num_envs>`、`bash scripts/inference.sh <checkpoint_path> <llm_api_baseurl> <llm_api_key> <llm_api_model> <dataset_name>`、`bash scripts/eval_generations.sh <benchmark> <run_dir> <subset_name>` |
+| 入口 | `pip install -r requirements.txt &amp;&amp; pip install -e .`、`bash scripts/train.sh &lt;base_model&gt; &lt;num_envs&gt;`、`bash scripts/inference.sh &lt;checkpoint_path&gt; &lt;llm_api_baseurl&gt; &lt;llm_api_key&gt; &lt;llm_api_model&gt; &lt;dataset_name&gt;`、`bash scripts/eval_generations.sh &lt;benchmark&gt; &lt;run_dir&gt; &lt;subset_name&gt;` |
 | 基础层 | — |
 | 硬件厂商 | NVIDIA |
 | 硬件架构 | — |
@@ -1441,7 +1441,7 @@ Tinker ↔ KernelBench Integration enabling RL for GPU Kernel Generation
 | 星标 | 31 |
 | 最近推送 | 2026-03-05 |
 
-> KernelBench 以 git submodule 嵌入并从本地路径安装成 Python 包，环境从 KernelBench 取题并用 Tinker Renderer 格式化为观测；动作是模型产出的候选 kernel，环境解析响应中的 <KERNEL> 块后送到 Modal 隔离 GPU 容器编译、测试并 profile，再把正确性、加速比与静态检查结果按 RewardConfig 折成标量奖励。扩展点是 KernelBenchEnvGroupBuilder（分组归一化实现 GRPO）与 KernelBenchDatasetBuilder（按 level 划分训练/评估集）。
+> KernelBench 以 git submodule 嵌入并从本地路径安装成 Python 包，环境从 KernelBench 取题并用 Tinker Renderer 格式化为观测；动作是模型产出的候选 kernel，环境解析响应中的 &lt;KERNEL&gt; 块后送到 Modal 隔离 GPU 容器编译、测试并 profile，再把正确性、加速比与静态检查结果按 RewardConfig 折成标量奖励。扩展点是 KernelBenchEnvGroupBuilder（分组归一化实现 GRPO）与 KernelBenchDatasetBuilder（按 level 划分训练/评估集）。
 
 ### [Wangyaoyuu/SparseRL](https://github.com/Wangyaoyuu/SparseRL)
 
@@ -1514,7 +1514,7 @@ A repository with academic works about Kernel generation with LLM Agent
 | --- | --- |
 | 角色 | 综述清单 |
 | 架构模式 | YAML 数据源 + Makefile 渲染 Mermaid 分类图/时间线 + 标记区块自动回写 README |
-| 入口 | `cd llm_kernel_agent_landscape && make all (校验+渲染+同步 README)`、`cd llm_kernel_agent_landscape && make svg pptx drawio`、`编辑 data/entries.yaml 新增论文或系统`、`编辑 data/timeline.yaml / data/timeline_dates.yaml 调整时间线` |
+| 入口 | `cd llm_kernel_agent_landscape &amp;&amp; make all (校验+渲染+同步 README)`、`cd llm_kernel_agent_landscape &amp;&amp; make svg pptx drawio`、`编辑 data/entries.yaml 新增论文或系统`、`编辑 data/timeline.yaml / data/timeline_dates.yaml 调整时间线` |
 | 基础层 | —（综述清单，不构建于底座） |
 | 硬件厂商 | — |
 | 硬件架构 | — |

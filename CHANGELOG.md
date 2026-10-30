@@ -3,6 +3,28 @@
 本文件记录本仓的结构性变化。数据快照的变化不在此逐条列出，
 以 `data/repos.json` 的 `landscape_snapshot` 字段与各文件内容为准。
 
+## 2026-10-30 — 站点版
+
+把三个交付物做成静态站点，部署在 GitHub Pages。
+
+### 新增
+
+- **站点**（`site/` → `dist/`）：四个视图——概览、仓库索引、项目对比、抽象知识。
+  - 仓库索引可搜索，按分类 / 厂商 / 许可 / 主语言筛选，按列排序，点行打开项目详情抽屉
+  - 项目对比四个标签页（架构 / 基础层 / 硬件厂商 / 硬件架构）外加「厂商 × 角色」交叉表
+  - 抽象知识页渲染 `docs/02-engineering-knowledge.md`
+- **站点生成**（`scripts/build_site.py`）：装配 `dist/`，含 `robots.txt`、`sitemap.xml`、`.nojekyll`。
+- **浏览器回归测试**（`tests/browser.mjs`）：逐视图检查渲染、筛选、排序、标签页、抽屉，
+  并断言无控制台报错与失败请求；CI 中执行。
+- **Pages 部署**（`.github/workflows/deploy-pages.yml`）。
+
+### 安全
+
+- 上游 README 与 GitHub 描述里的 `<`、`>`、`&` 在写进 Markdown 前统一转义
+  （`scripts/sanitize.py`），避免第三方仓库的 README 注入标记。
+- 站点渲染 Markdown 时再过一遍 DOMPurify。
+- CI 增加两项断言：Markdown 中不得出现未转义标记；粗体标记的闭合位置不得导致 CommonMark 解析失败。
+
 ## 2026-10-30 — 首版
 
 从 [AI4Kernel Landscape](https://github.com/yifeistarwang-coder/ai4kernel_landscape)

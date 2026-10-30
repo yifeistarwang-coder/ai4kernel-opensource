@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI4Kernel 开源索引</title>
+<meta name="description" content="AI4Kernel 已开源项目索引：61 个开源仓库的索引、抽象工程知识与跨项目对比。">
+<meta property="og:title" content="AI4Kernel 开源索引">
+<meta property="og:description" content="61 个已开源 kernel 优化项目的索引、抽象工程知识与跨项目对比。">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="./assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c1522'/%3E%3Crect x='7' y='7' width='18' height='18' rx='5' fill='%235eead4'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="#/">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span>AI4Kernel 开源索引</span>
+    <span class="brand-sub">Open-Source Index</span>
+  </a>
+
+  <nav class="nav" id="nav">
+    <a href="#/overview" data-view="overview">概览</a>
+    <a href="#/index" data-view="index">仓库索引</a>
+    <a href="#/compare" data-view="compare">项目对比</a>
+    <a href="#/knowledge" data-view="knowledge">抽象知识</a>
+  </nav>
+
+  <div class="header-search">
+    <input id="global-search" type="search" placeholder="搜索仓库 / 组织 / 任务" autocomplete="off" aria-label="搜索仓库">
+  </div>
+</header>
+
+<main>
+  <!-- ------------------------------------------------------------ 概览 -->
+  <section class="page" id="page-overview" hidden>
+    <div class="hero">
+      <span class="eyebrow">AI4Kernel · Open Source</span>
+      <h1>把 AI4Kernel 的开源部分，整理成一份能查、能比、能用的索引</h1>
+      <p>
+        研究目录收录了 129 个 AI4Kernel 相关工作，但只有一部分真正开源。
+        本站把有可核查公开仓库的部分抽出来，按<strong>可获取性</strong>和<strong>工程结构</strong>重新编排：
+        每条都能看到许可、硬件、评测方式，以及它自己写下来的限制。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#/index">浏览 61 个仓库</a>
+        <a class="button" href="#/compare">四个对比轴</a>
+        <a class="button" href="#/knowledge">工程知识</a>
+      </div>
+      <div class="stat-row" id="hero-stats"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>三个交付物</h2>
+        <p>每份都能单独使用</p>
+      </div>
+      <div class="card-grid">
+        <a class="card" href="#/index">
+          <span class="card-index">01 / INDEX</span>
+          <h3>开源仓库索引</h3>
+          <p>61 个 GitHub 仓库与 11 个模型 / 数据集产物。按分类、组织、许可分表，记录每个仓库的顶层目录结构与 README 要点。</p>
+          <span class="card-meta">搜索 · 筛选 · 逐项目详情 →</span>
+        </a>
+        <a class="card" href="#/knowledge">
+          <span class="card-index">02 / KNOWLEDGE</span>
+          <h3>抽象知识</h3>
+          <p>七层参考分层、七种架构形态、340 条按主题归类的工程实践、项目自述限制，以及从零搭建一个 kernel 优化项目的脚手架与里程碑。</p>
+          <span class="card-meta">分层 · 模式 · 实践 · 陷阱 →</span>
+        </a>
+        <a class="card" href="#/compare">
+          <span class="card-index">03 / COMPARE</span>
+          <h3>项目对比</h3>
+          <p>架构、基础层、硬件厂商、硬件架构四个对比轴，含厂商 × 角色交叉表与 61 份单项目档案。</p>
+          <span class="card-meta">四轴对照 · 交叉表 · 档案 →</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>架构形态</h2>
+        <p>按「有没有评测闭环、有没有 Agent 闭环、是不是底座」划分</p>
+      </div>
+      <div class="bars" id="shape-bars"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>硬件厂商分布</h2>
+        <p>这条路在哪个生态里被验证过</p>
+      </div>
+      <div class="bars" id="vendor-bars"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>反馈信号漏斗</h2>
+        <p>59 个有工作关联的开源项目声明的反馈信号</p>
+      </div>
+      <div class="bars" id="feedback-bars"></div>
+      <p class="note" style="margin-top:14px">
+        正确性与运行时几乎是标配，编译稍低，而真正指导优化的 profile 只有四分之一左右。
+        这解释了为什么多数开源系统的提升主要来自「多试几次」，而不是「知道该改哪里」。
+      </p>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>许可分布</h2>
+        <p>GitHub API 对仓库默认许可证的识别结果</p>
+      </div>
+      <div class="bars" id="license-bars"></div>
+      <p class="note" style="margin-top:14px">
+        <code>NOASSERTION</code> 表示仓库内有许可证文件但 API 未能归一化，空白表示未声明许可证。
+        <strong>商用前必须回到上游 <code>LICENSE</code> 核对</strong>，本站不做兼容性背书。
+      </p>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------- 仓库索引 -->
+  <section class="page" id="page-index" hidden>
+    <div class="section-head">
+      <h2>开源仓库索引</h2>
+      <p id="index-caption"></p>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar-search">
+        <input id="idx-search" type="search" placeholder="搜索仓库名、组织、任务、说明" autocomplete="off" aria-label="搜索仓库">
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">分类</span>
+        <select class="filter" id="idx-group"></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">厂商</span>
+        <select class="filter" id="idx-vendor"></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">许可</span>
+        <select class="filter" id="idx-license"></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">主语言</span>
+        <select class="filter" id="idx-lang"></select>
+      </div>
+      <span class="result-count" id="idx-count"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data" id="idx-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="canonical">仓库</th>
+            <th class="sortable" data-sort="group">分类</th>
+            <th class="sortable" data-sort="license">许可</th>
+            <th class="sortable" data-sort="primary_language">主语言</th>
+            <th>硬件</th>
+            <th>说明</th>
+            <th class="sortable" data-sort="stars" style="text-align:right">星标</th>
+          </tr>
+        </thead>
+        <tbody id="idx-body"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="idx-empty" hidden>没有匹配的仓库。试试放宽筛选条件。</div>
+  </section>
+
+  <!-- -------------------------------------------------------- 项目对比 -->
+  <section class="page" id="page-compare" hidden>
+    <div class="section-head">
+      <h2>项目对比</h2>
+      <p>架构 · 基础层 · 硬件厂商 · 硬件架构</p>
+    </div>
+
+    <div class="tabs" id="compare-tabs">
+      <button class="tab active" data-panel="cmp-arch">架构</button>
+      <button class="tab" data-panel="cmp-base">基础层</button>
+      <button class="tab" data-panel="cmp-vendor">硬件厂商</button>
+      <button class="tab" data-panel="cmp-archchip">硬件架构</button>
+      <button class="tab" data-panel="cmp-matrix">厂商 × 角色</button>
+    </div>
+
+    <div class="tab-panel" id="cmp-arch">
+      <div class="card-grid" style="margin-bottom:22px" id="cmp-arch-cards"></div>
+      <div class="table-wrap">
+        <table class="data" id="cmp-arch-table">
+          <thead>
+            <tr>
+              <th>项目</th><th>角色</th><th>架构模式</th><th>评测</th><th>Agent 循环</th><th>验证机制</th>
+            </tr>
+          </thead>
+          <tbody id="cmp-arch-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cmp-base" hidden>
+      <p class="note" style="margin-bottom:18px">
+        「基础」指项目直接构建其上的 kernel 表达层或运行时。综述清单不构建在任何底座上，
+        因此不计入这张表。
+      </p>
+      <div class="table-wrap">
+        <table class="data" id="cmp-base-table">
+          <thead><tr><th>基础层</th><th>项目数</th><th>使用该基础的项目</th></tr></thead>
+          <tbody id="cmp-base-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cmp-vendor" hidden>
+      <div class="table-wrap">
+        <table class="data" id="cmp-vendor-table">
+          <thead><tr><th>厂商</th><th>项目数</th><th>项目</th></tr></thead>
+          <tbody id="cmp-vendor-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cmp-archchip" hidden>
+      <p class="note" style="margin-bottom:18px">
+        绝大多数项目只写「一张 NVIDIA GPU」，能定位到具体代际的是少数——
+        这也是跨项目对比加速比并不可靠的原因之一。
+      </p>
+      <div class="table-wrap">
+        <table class="data" id="cmp-chip-table">
+          <thead><tr><th>硬件架构</th><th>项目数</th><th>项目</th></tr></thead>
+          <tbody id="cmp-chip-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="cmp-matrix" hidden>
+      <p class="note" style="margin-bottom:18px">
+        把「硬件厂商」和「架构角色」交叉，能看出每个生态里开源的是哪一层。
+      </p>
+      <div class="table-wrap">
+        <table class="data" id="cmp-matrix-table">
+          <thead id="cmp-matrix-head"></thead>
+          <tbody id="cmp-matrix-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------- 抽象知识 -->
+  <section class="page" id="page-knowledge" hidden>
+    <div class="section-head">
+      <h2>抽象知识</h2>
+      <p>工程实践与项目架构搭建</p>
+    </div>
+    <article class="prose" id="knowledge-body">
+      <div class="loading">正在载入文档…</div>
+    </article>
+  </section>
+</main>
+
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="项目详情">
+  <div class="drawer-head">
+    <button class="drawer-close" id="drawer-close" aria-label="关闭">✕</button>
+    <h2 class="drawer-title" id="drawer-title"></h2>
+  </div>
+  <div class="drawer-body" id="drawer-body"></div>
+</aside>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>
+      AI4Kernel 开源索引 · 数据快照见
+      <a href="https://github.com/yifeistarwang-coder/ai4kernel_landscape">AI4Kernel Landscape</a>
+    </span>
+    <span class="footer-links">
+      <a href="https://github.com/yifeistarwang-coder/ai4kernel-opensource">GitHub 仓库</a>
+      <a href="./docs/01-repo-index.md">仓库索引 (md)</a>
+      <a href="./docs/02-engineering-knowledge.md">抽象知识 (md)</a>
+      <a href="./docs/03-comparison.md">项目对比 (md)</a>
+    </span>
+  </div>
+</footer>
+
+<script src="./assets/marked.js"></script>
+<script src="./assets/purify.min.js"></script>
+<script src="./assets/app.js"></script>
+</body>
+</html>

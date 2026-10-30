@@ -1,21 +1,43 @@
 # AI4Kernel 开源索引
 
+**在线浏览：https://yifeistarwang-coder.github.io/ai4kernel-opensource/**
+
 把 [AI4Kernel Landscape](https://github.com/yifeistarwang-coder/ai4kernel_landscape) 研究目录里
 **已经开源**的产物单独整理成一份可检索、可对比的索引。
 
 Landscape 是研究目录，收录 129 个 AI4Kernel 相关工作（论文、框架、模型、数据）。
 其中 **61 个有公开 GitHub 仓库**，另有 **10 个 HuggingFace 模型 / 数据集** 和
-**1 个其他平台仓库**。本仓把这些开源产物重新组织成三个可用的交付物。
+**1 个其他平台仓库**。本仓把这些开源产物重新组织成三个可用的交付物，并做成一个静态站点。
 
 ---
 
 ## 三个交付物
 
-| # | 交付物 | 内容 | 入口 |
-| --- | --- | --- | --- |
-| 1 | **开源仓库索引** | 61 个 GitHub 仓库 + 11 个模型/数据集产物：许可、组织、语言、硬件、任务、README 摘要、顶部目录结构 | [docs/01-repo-index.md](docs/01-repo-index.md) |
-| 2 | **抽象知识** | 从 61 个项目里提炼的可复用工程知识：七层参考分层、七种架构形态、340 条工程实践、项目自述限制、从零搭建的脚手架与里程碑 | [docs/02-engineering-knowledge.md](docs/02-engineering-knowledge.md) |
-| 3 | **项目对比** | 四个对比轴：架构、基础层、硬件厂商、硬件架构；含全量对照表与 61 份单项目档案 | [docs/03-comparison.md](docs/03-comparison.md) |
+| # | 交付物 | 内容 | 文档 | 站点视图 |
+| --- | --- | --- | --- | --- |
+| 1 | **开源仓库索引** | 61 个 GitHub 仓库 + 11 个模型/数据集产物：许可、组织、语言、硬件、任务、README 摘要、顶部目录结构 | [docs/01-repo-index.md](docs/01-repo-index.md) | 仓库索引 |
+| 2 | **抽象知识** | 从 61 个项目里提炼的可复用工程知识：七层参考分层、七种架构形态、340 条工程实践、项目自述限制、从零搭建的脚手架与里程碑 | [docs/02-engineering-knowledge.md](docs/02-engineering-knowledge.md) | 抽象知识 |
+| 3 | **项目对比** | 四个对比轴：架构、基础层、硬件厂商、硬件架构；含全量对照表与 61 份单项目档案 | [docs/03-comparison.md](docs/03-comparison.md) | 项目对比 |
+
+站点的 Markdown 版本与仓库里的文档是同一份内容，由 `scripts/build_docs.py` 一次生成。
+
+---
+
+## 站点
+
+静态站点，无框架无构建步骤，部署在 GitHub Pages：
+
+- **概览** — 关键统计、架构形态分布、硬件厂商分布、反馈信号漏斗、许可分布
+- **仓库索引** — 61 行可搜索、可按分类/厂商/许可/语言筛选、按列排序的表格；点任意一行打开项目详情抽屉
+- **项目对比** — 架构 / 基础层 / 硬件厂商 / 硬件架构四个标签页，外加「厂商 × 角色」交叉表
+- **抽象知识** — 完整渲染 `docs/02-engineering-knowledge.md`
+
+本地预览：
+
+```bash
+python3 scripts/build_site.py
+python3 -m http.server 4173 --directory dist
+```
 
 ---
 
@@ -45,8 +67,9 @@ python3 scripts/fetch_metadata.py --seeds data/seeds.json --out data/github-meta
 # 3. 合并索引
 python3 scripts/build_index.py --landscape ../ai4kernel_landscape --out data/repos.json --csv data/repos.csv
 
-# 4. 生成文档
+# 4. 生成文档与站点
 python3 scripts/build_docs.py
+python3 scripts/build_site.py
 ```
 
 ---
@@ -70,7 +93,11 @@ ai4kernel-opensource/
 │   ├── 01-repo-index.md          # 交付物 1
 │   ├── 02-engineering-knowledge.md  # 交付物 2
 │   └── 03-comparison.md          # 交付物 3
-└── scripts/                      # 可复现的生成管线
+├── site/                         # 站点源码
+│   ├── index.html                # 应用外壳
+│   └── assets/                   # 样式、脚本、字体、第三方库（含各自许可）
+├── scripts/                      # 可复现的生成管线
+└── tests/browser.mjs             # 站点浏览器回归测试
 ```
 
 ---
@@ -93,6 +120,19 @@ ai4kernel-opensource/
 
 ---
 
+## 测试
+
+```bash
+npm ci
+npm run build          # 构建站点到 dist/
+npm run test:browser   # 浏览器回归测试（Playwright）
+```
+
+浏览器测试会启动本地服务，逐个视图检查渲染、筛选、排序、标签页与详情抽屉，
+并断言没有控制台报错与失败请求。CI 里同样跑这一套。
+
+---
+
 ## 与 Landscape 的关系
 
 ```
@@ -107,6 +147,9 @@ ai4kernel_landscape  ──►  build_seeds.py  ──►  seeds.json
                             │
                             ▼
                       build_docs.py ──► docs/*.md
+                            │
+                            ▼
+                      build_site.py ──► dist/ ──► GitHub Pages
 ```
 
 Landscape 仍然保留全部研究笔记、证据分级与阅读记录；本仓只负责其中「已开源」的那一部分，
@@ -116,6 +159,9 @@ Landscape 仍然保留全部研究笔记、证据分级与阅读记录；本仓�
 
 ## 许可
 
-- `scripts/` 下的代码：[MIT](LICENSE)
-- 本仓撰写的文档与索引内容：[CC BY 4.0](LICENSE-CONTENT)
+- `scripts/`、`tests/` 下的代码：[MIT](LICENSE)
+- 本仓撰写的文档、索引内容与站点：[CC BY 4.0](LICENSE-CONTENT)
 - 索引中出现的第三方仓库名称、URL 与元数据归各自作者所有，此处仅用于标识与比较
+- `site/assets/` 下的第三方库各自保留许可文件：
+  [marked](site/assets/MARKED-LICENSE)（MIT）、[DOMPurify](site/assets/DOMPURIFY-LICENSE)（MPL-2.0 / Apache-2.0）、
+  [Space Grotesk](site/assets/fonts/SPACE-GROTESK-LICENSE)、[JetBrains Mono](site/assets/fonts/JETBRAINS-MONO-LICENSE)（SIL OFL 1.1）

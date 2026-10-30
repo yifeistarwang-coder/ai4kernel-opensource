@@ -1,0 +1,243 @@
+/* 站点冒烟测试：逐个视图检查渲染、交互与控制台错误。
+ *
+ * 需要 playwright：
+ *   NODE_PATH=../ai4kernel_landscape/node_modules node tests/browser.mjs
+ * 服务站点：
+ *   python3 -m http.server 4173 --directory dist
+ */
+import { chromium } from 'playwright';
+import { spawn } from 'node:child_process';
+import { setTimeout as sleep } from 'node:timers/promises';
+
+const PORT = Number(process.env.PORT || 0);
+const SHOTS = process.env.SHOTS || 'test-results';
+
+const problems = [];
+const note = (msg) => problems.push(msg);
+
+function startServer() {
+  // 端口用 0 由内核分配，避免撞上机器上已在运行的其它服务
+  const proc = spawn('python3', ['-u', '-m', 'http.server', '0', '--directory', 'dist'], {
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return proc;
+}
+
+function resolvePort(proc) {
+  return new Promise((resolve, reject) => {
+    let buffer = '';
+    const timer = setTimeout(() => reject(new Error('server did not report a port')), 10000);
+    const scan = (chunk) => {
+      buffer += chunk.toString();
+      const match = buffer.match(/port (\d+)/);
+      if (match) {
+        clearTimeout(timer);
+        resolve(Number(match[1]));
+      }
+    };
+    proc.stdout.on('data', scan);
+    proc.stderr.on('data', scan);
+    proc.on('exit', (code) => {
+      clearTimeout(timer);
+      reject(new Error(`server exited with ${code}`));
+    });
+  });
+}
+
+async function waitForServer(base, retries = 40) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const res = await fetch(`${base}/index.html`);
+      if (res.ok) return true;
+    } catch {
+      /* 还没起来 */
+    }
+    await sleep(250);
+  }
+  return false;
+}
+
+async function main() {
+  const server = startServer();
+  const port = await resolvePort(server);
+  const BASE = `http://127.0.0.1:${port}`;
+  if (!(await waitForServer(BASE))) {
+    console.error('server did not start');
+    server.kill();
+    process.exit(1);
+  }
+
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
+
+  const consoleErrors = [];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') consoleErrors.push(msg.text());
+  });
+  page.on('pageerror', (err) => consoleErrors.push(`pageerror: ${err.message}`));
+
+  const failedRequests = [];
+  page.on('response', (res) => {
+    if (res.status() >= 400) failedRequests.push(`${res.status()} ${res.url()}`);
+  });
+
+  // ---------------------------------------------------------- 概览
+  await page.goto(`${BASE}/index.html#/overview`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#hero-stats .stat', { timeout: 10000 });
+
+  const statCount = await page.locator('#hero-stats .stat').count();
+  if (statCount !== 5) note(`overview: expected 5 hero stats, got ${statCount}`);
+
+  const shapeBars = await page.locator('#shape-bars .bar-row').count();
+  if (shapeBars < 5) note(`overview: shape bars too few (${shapeBars})`);
+
+  const vendorBars = await page.locator('#vendor-bars .bar-row').count();
+  if (vendorBars < 3) note(`overview: vendor bars too few (${vendorBars})`);
+
+  const feedbackBars = await page.locator('#feedback-bars .bar-row').count();
+  if (feedbackBars < 3) note(`overview: feedback bars too few (${feedbackBars})`);
+
+  await page.screenshot({ path: `${SHOTS}/overview.png`, fullPage: true });
+
+  // ---------------------------------------------------------- 索引
+  await page.click('a[data-view="index"]');
+  await page.waitForSelector('#idx-body tr', { timeout: 10000 });
+
+  const rowCount = await page.locator('#idx-body tr').count();
+  if (rowCount !== 61) note(`index: expected 61 rows, got ${rowCount}`);
+
+  // 搜索
+  await page.fill('#idx-search', 'triton');
+  await sleep(320);
+  const filtered = await page.locator('#idx-body tr').count();
+  if (filtered === 0 || filtered >= rowCount) note(`index: search "triton" gave ${filtered} rows`);
+  const caption = await page.textContent('#idx-count');
+  if (!caption.includes('/ 61')) note(`index: count caption wrong: ${caption}`);
+
+  await page.fill('#idx-search', '');
+  await sleep(320);
+
+  // 分类筛选
+  const groupOptions = await page.locator('#idx-group option').count();
+  if (groupOptions < 6) note(`index: group filter has ${groupOptions} options`);
+
+  await page.selectOption('#idx-group', 'foundation');
+  await sleep(220);
+  const foundationRows = await page.locator('#idx-body tr').count();
+  if (foundationRows !== 9) note(`index: foundation filter gave ${foundationRows} rows, expected 9`);
+  await page.selectOption('#idx-group', '');
+  await sleep(220);
+
+  // 厂商筛选
+  await page.selectOption('#idx-vendor', 'AMD');
+  await sleep(220);
+  const amdRows = await page.locator('#idx-body tr').count();
+  if (amdRows !== 12) note(`index: AMD filter gave ${amdRows} rows, expected 12`);
+  await page.selectOption('#idx-vendor', '');
+  await sleep(220);
+
+  // 排序
+  await page.click('#idx-table th[data-sort="stars"]');
+  await sleep(220);
+  const firstStar = await page.locator('#idx-body tr').first().locator('td').last().textContent();
+  if (!firstStar || firstStar.trim() === '—') note('index: star sort produced empty first row');
+
+  // 空结果
+  await page.fill('#idx-search', 'zzzzznotarealrepo');
+  await sleep(320);
+  if (await page.locator('#idx-empty').isHidden()) note('index: empty state not shown for no matches');
+  await page.fill('#idx-search', '');
+  await sleep(320);
+
+  await page.screenshot({ path: `${SHOTS}/index.png`, fullPage: true });
+
+  // ---------------------------------------------------------- 抽屉
+  await page.locator('#idx-body tr').first().click();
+  await page.waitForSelector('#drawer.open', { timeout: 5000 });
+  await sleep(400); // 等抽屉滑入动画结束，否则截图停在过渡中间
+  const drawerTitle = await page.textContent('#drawer-title');
+  if (!drawerTitle || !drawerTitle.includes('/')) note(`drawer: bad title ${drawerTitle}`);
+  const drawerBody = await page.textContent('#drawer-body');
+  for (const section of ['基本信息', '架构模式', '主要模块']) {
+    if (!drawerBody.includes(section)) note(`drawer: missing section ${section}`);
+  }
+  await page.screenshot({ path: `${SHOTS}/drawer.png` });
+  await page.click('#drawer-close');
+  await page.waitForSelector('#drawer:not(.open)', { timeout: 5000 });
+
+  // ---------------------------------------------------------- 对比
+  await page.click('a[data-view="compare"]');
+  await page.waitForSelector('#cmp-arch-body tr', { timeout: 10000 });
+
+  const archRows = await page.locator('#cmp-arch-body tr').count();
+  if (archRows !== 61) note(`compare: arch table has ${archRows} rows, expected 61`);
+
+  const shapeCards = await page.locator('#cmp-arch-cards .card').count();
+  if (shapeCards !== 7) note(`compare: expected 7 shape cards, got ${shapeCards}`);
+
+  await page.click('.tab[data-panel="cmp-base"]');
+  await page.waitForSelector('#cmp-base-body tr', { timeout: 5000 });
+  const baseRows = await page.locator('#cmp-base-body tr').count();
+  if (baseRows < 10) note(`compare: base layer table has ${baseRows} rows`);
+
+  await page.click('.tab[data-panel="cmp-vendor"]');
+  await page.waitForSelector('#cmp-vendor-body tr', { timeout: 5000 });
+  const vendorRows = await page.locator('#cmp-vendor-body tr').count();
+  if (vendorRows < 4) note(`compare: vendor table has ${vendorRows} rows`);
+
+  await page.click('.tab[data-panel="cmp-archchip"]');
+  await page.waitForSelector('#cmp-chip-body tr', { timeout: 5000 });
+  const chipRows = await page.locator('#cmp-chip-body tr').count();
+  if (chipRows < 6) note(`compare: hw arch table has ${chipRows} rows`);
+
+  await page.click('.tab[data-panel="cmp-matrix"]');
+  await page.waitForSelector('#cmp-matrix-body tr', { timeout: 5000 });
+  const matrixRows = await page.locator('#cmp-matrix-body tr').count();
+  if (matrixRows < 4) note(`compare: matrix has ${matrixRows} rows`);
+  const matrixCols = await page.locator('#cmp-matrix-head th').count();
+  if (matrixCols < 5) note(`compare: matrix has ${matrixCols} columns`);
+
+  await page.screenshot({ path: `${SHOTS}/compare.png`, fullPage: true });
+
+  // ---------------------------------------------------------- 抽象知识
+  await page.click('a[data-view="knowledge"]');
+  await page.waitForSelector('#knowledge-body h1', { timeout: 10000 });
+  const proseH1 = await page.textContent('#knowledge-body h1');
+  if (!proseH1.includes('抽象知识')) note(`knowledge: unexpected title ${proseH1}`);
+  const proseTables = await page.locator('#knowledge-body table').count();
+  if (proseTables < 8) note(`knowledge: only ${proseTables} tables rendered`);
+  const proseLists = await page.locator('#knowledge-body li').count();
+  if (proseLists < 50) note(`knowledge: only ${proseLists} list items rendered`);
+
+  // 渲染结果里不应出现被当成标签执行的第三方标记
+  const rawParquet = await page.locator('#knowledge-body script').count();
+  if (rawParquet > 0) note('knowledge: script element present in rendered markdown');
+
+  await page.screenshot({ path: `${SHOTS}/knowledge.png`, fullPage: true });
+
+  // ---------------------------------------------------------- 全局搜索
+  await page.fill('#global-search', 'tilelang');
+  await page.press('#global-search', 'Enter');
+  await sleep(400);
+  if (await page.locator('#page-index').isHidden()) note('global search: did not navigate to index');
+  const globalRows = await page.locator('#idx-body tr').count();
+  if (globalRows === 0 || globalRows >= 61) note(`global search: gave ${globalRows} rows`);
+
+  await browser.close();
+  server.kill();
+
+  if (consoleErrors.length) note(`console errors: ${consoleErrors.slice(0, 5).join(' | ')}`);
+  if (failedRequests.length) note(`failed requests: ${failedRequests.slice(0, 5).join(' | ')}`);
+
+  if (problems.length) {
+    console.error(`\n${problems.length} problem(s):`);
+    for (const p of problems) console.error(`  - ${p}`);
+    process.exit(1);
+  }
+  console.log('browser checks passed');
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
