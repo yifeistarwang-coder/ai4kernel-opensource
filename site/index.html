@@ -10,6 +10,19 @@
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="./assets/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c1522'/%3E%3Crect x='7' y='7' width='18' height='18' rx='5' fill='%235eead4'/%3E%3C/svg%3E">
+<script>
+  // 在首帧前定好主题，避免深浅切换时闪一下
+  (function () {
+    var theme = 'dark';
+    try {
+      var saved = localStorage.getItem('ai4kernel-theme');
+      theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    } catch (e) {
+      theme = 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 </head>
 <body>
 
@@ -30,6 +43,16 @@
   <div class="header-search">
     <input id="global-search" type="search" placeholder="搜索仓库 / 组织 / 任务" autocomplete="off" aria-label="搜索仓库">
   </div>
+
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="切换深浅主题" title="切换深浅主题">
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+    </svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4"></circle>
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+    </svg>
+  </button>
 </header>
 
 <main>

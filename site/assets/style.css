@@ -66,6 +66,7 @@
   --green-ink: #5eead4;
   --copper: #fbbf24;
   --copper-soft: #fbbf2414;
+  --copper-block: #fbbf2410;
   --copper-line: #fbbf2440;
   --copper-ink: #fcd34d;
   --blue: #22d3ee;
@@ -80,6 +81,12 @@
   --grid-line: #94a3b80a;
   --grid-line-strong: #94a3b81c;
   --overlay: #04080eb8;
+
+  --row-alt: #0a121d;
+  --hero-bg: linear-gradient(140deg, #0e1c2c 0%, #0a1220 55%, #0c1522 100%);
+  --glow-a: #0d2233;
+  --glow-b: #16182f;
+  --scroll-thumb: #2d4157;
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
   --shadow-md: 0 12px 32px -18px rgba(0, 0, 0, .8);
@@ -107,6 +114,61 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* 浅色主题。data-theme 由内联脚本在首帧前写入，
+   默认跟随系统，用户手动切换后写入 localStorage。 */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --paper: #f6f8fc;
+  --chrome: #ffffff;
+  --surface: #ffffff;
+  --surface-sunken: #f1f5f9;
+  --surface-hover: #eef3f8;
+
+  --ink: #0f172a;
+  --ink-secondary: #1e293b;
+  --muted: #475569;
+  --quiet: #64748b;
+
+  --line: #dbe3ec;
+  --line-soft: #e9eef4;
+  --line-strong: #bccadb;
+
+  --green: #0d9488;
+  --green-strong: #0f766e;
+  --green-soft: #0d948814;
+  --green-chip: #0d94881a;
+  --green-line: #0d94884d;
+  --green-ink: #0f766e;
+  --copper: #b45309;
+  --copper-soft: #b4530914;
+  --copper-block: #b453090d;
+  --copper-line: #b4530938;
+  --copper-ink: #92400e;
+  --blue: #0369a1;
+  --blue-soft: #0369a114;
+  --blue-line: #0369a13d;
+  --blue-ink: #075985;
+  --gold: #b45309;
+  --gold-soft: #b4530914;
+  --gold-line: #b4530938;
+  --gold-ink: #92400e;
+
+  --grid-line: #0f172a0a;
+  --grid-line-strong: #0f172a1a;
+  --overlay: #33415580;
+
+  --row-alt: #f8fafc;
+  --hero-bg: linear-gradient(140deg, #ffffff 0%, #f3f7fc 55%, #eef3f9 100%);
+  --glow-a: #dbeafe;
+  --glow-b: #e0e7ff;
+  --scroll-thumb: #bccadb;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+  --shadow-md: 0 12px 32px -20px rgba(15, 23, 42, .25);
+  --shadow-lg: 0 24px 60px -40px rgba(15, 23, 42, .3);
+}
+
 *,
 *::before,
 *::after {
@@ -121,10 +183,29 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(1100px 620px at 12% -8%, #0d2233 0%, transparent 62%),
-    radial-gradient(900px 520px at 92% 4%, #16182f 0%, transparent 58%),
+    radial-gradient(1100px 620px at 12% -8%, var(--glow-a) 0%, transparent 62%),
+    radial-gradient(900px 520px at 92% 4%, var(--glow-b) 0%, transparent 58%),
     var(--paper);
   background-attachment: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 999px;
+  border: 3px solid var(--paper);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--line-strong);
 }
 
 a {
@@ -258,6 +339,53 @@ pre {
   pointer-events: none;
 }
 
+/* ---------------------------------------------------------------- 主题切换 */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-sunken);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.theme-toggle:hover {
+  border-color: var(--green-line);
+  color: var(--green-strong);
+  background: var(--surface-hover);
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 深色下显示月亮（点击切到浅色），浅色下显示太阳 */
+.theme-toggle .icon-sun {
+  display: none;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-sun {
+  display: block;
+}
+
+:root[data-theme="light"] .theme-toggle .icon-moon {
+  display: none;
+}
+
 /* ---------------------------------------------------------------- layout */
 
 .page {
@@ -317,8 +445,7 @@ pre {
   padding: 44px 40px 40px;
   border-radius: var(--radius-xl);
   border: 1px solid var(--line);
-  background:
-    linear-gradient(140deg, #0e1c2c 0%, #0a1220 55%, #0c1522 100%);
+  background: var(--hero-bg);
   overflow: hidden;
 }
 
@@ -1048,7 +1175,7 @@ table.data tbody tr:last-child td {
 }
 
 .prose tbody tr:nth-child(even) {
-  background: #0a121d;
+  background: var(--row-alt);
 }
 
 .prose sub {

@@ -520,6 +520,42 @@
     return showView('overview');
   }
 
+  // ------------------------------------------------------------------ 主题
+
+  const THEME_KEY = 'ai4kernel-theme';
+
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  }
+
+  function applyTheme(theme, persist) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (persist) {
+      try {
+        localStorage.setItem(THEME_KEY, theme);
+      } catch {
+        /* 隐私模式下写不进去，忽略 */
+      }
+    }
+    const toggle = $('#theme-toggle');
+    if (toggle) {
+      toggle.setAttribute(
+        'aria-label',
+        theme === 'light' ? '切换到深色主题' : '切换到浅色主题'
+      );
+    }
+  }
+
+  function initTheme() {
+    applyTheme(currentTheme(), false);
+    const toggle = $('#theme-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        applyTheme(currentTheme() === 'light' ? 'dark' : 'light', true);
+      });
+    }
+  }
+
   // ------------------------------------------------------------------ 启动
 
   function bindEvents() {
@@ -599,6 +635,7 @@
   }
 
   async function boot() {
+    initTheme();
     try {
       const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

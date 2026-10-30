@@ -221,6 +221,48 @@ async function main() {
 
   await page.screenshot({ path: `${SHOTS}/knowledge.png`, fullPage: true });
 
+  // ---------------------------------------------------------- 主题切换
+  const initialTheme = await page.getAttribute('html', 'data-theme');
+  if (!['light', 'dark'].includes(initialTheme)) {
+    note(`theme: unexpected data-theme "${initialTheme}"`);
+  }
+  const paperBefore = await page.evaluate(
+    () => getComputedStyle(document.body).backgroundColor
+  );
+
+  await page.click('#theme-toggle');
+  await sleep(250);
+  const toggled = await page.getAttribute('html', 'data-theme');
+  if (toggled === initialTheme) note('theme: toggle did not change data-theme');
+  const paperAfter = await page.evaluate(
+    () => getComputedStyle(document.body).backgroundColor
+  );
+  if (paperAfter === paperBefore) note('theme: body background did not change');
+
+  const stored = await page.evaluate(() => localStorage.getItem('ai4kernel-theme'));
+  if (stored !== toggled) note(`theme: localStorage holds "${stored}", expected "${toggled}"`);
+
+  await page.screenshot({ path: `${SHOTS}/theme-${toggled}.png`, fullPage: true });
+
+  // 浅色下的关键色值必须真的变了
+  const inkAfter = await page.evaluate(
+    () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()
+  );
+  if (toggled === 'light' && inkAfter === '#f1f6fb') {
+    note('theme: light palette not applied (--ink still the dark value)');
+  }
+
+  await page.click('#theme-toggle');
+  await sleep(250);
+  const back = await page.getAttribute('html', 'data-theme');
+  if (back !== initialTheme) note(`theme: toggle back gave "${back}", expected "${initialTheme}"`);
+
+  // 重新加载后应记住选择
+  await page.reload({ waitUntil: 'networkidle' });
+  await sleep(300);
+  const persisted = await page.getAttribute('html', 'data-theme');
+  if (persisted !== back) note(`theme: after reload got "${persisted}", expected "${back}"`);
+
   // ---------------------------------------------------------- 全局搜索
   await page.fill('#global-search', 'tilelang');
   await page.press('#global-search', 'Enter');
