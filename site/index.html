@@ -104,7 +104,7 @@
     <div class="section">
       <div class="section-head">
         <h2>架构形态</h2>
-        <p>按「有没有评测闭环、有没有 Agent 闭环、是不是底座」划分</p>
+        <p>按「有没有评测闭环、有没有 Agent 闭环、是不是底座」划分 · 点击查看该形态的项目</p>
       </div>
       <div class="bars" id="shape-bars"></div>
     </div>
@@ -112,7 +112,7 @@
     <div class="section">
       <div class="section-head">
         <h2>硬件厂商分布</h2>
-        <p>这条路在哪个生态里被验证过</p>
+        <p>这条路在哪个生态里被验证过 · 点击查看该厂商的项目</p>
       </div>
       <div class="bars" id="vendor-bars"></div>
     </div>
@@ -120,7 +120,7 @@
     <div class="section">
       <div class="section-head">
         <h2>反馈信号漏斗</h2>
-        <p>59 个有工作关联的开源项目声明的反馈信号</p>
+        <p>59 个有工作关联的开源项目声明的反馈信号 · 点击查看用到该信号的项目</p>
       </div>
       <div class="bars" id="feedback-bars"></div>
       <p class="note" style="margin-top:14px">
@@ -132,7 +132,7 @@
     <div class="section">
       <div class="section-head">
         <h2>许可分布</h2>
-        <p>GitHub API 对仓库默认许可证的识别结果</p>
+        <p>GitHub API 对仓库默认许可证的识别结果 · 点击查看该许可的项目</p>
       </div>
       <div class="bars" id="license-bars"></div>
       <p class="note" style="margin-top:14px">
@@ -158,8 +158,16 @@
         <select class="filter" id="idx-group"></select>
       </div>
       <div class="filter-group">
+        <span class="filter-label">形态</span>
+        <select class="filter" id="idx-shape"></select>
+      </div>
+      <div class="filter-group">
         <span class="filter-label">厂商</span>
         <select class="filter" id="idx-vendor"></select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">反馈</span>
+        <select class="filter" id="idx-feedback"></select>
       </div>
       <div class="filter-group">
         <span class="filter-label">许可</span>
@@ -169,6 +177,7 @@
         <span class="filter-label">主语言</span>
         <select class="filter" id="idx-lang"></select>
       </div>
+      <button class="filter-clear" id="idx-clear" type="button" hidden>清除筛选</button>
       <span class="result-count" id="idx-count"></span>
     </div>
 
@@ -178,9 +187,11 @@
           <tr>
             <th class="sortable" data-sort="canonical">仓库</th>
             <th class="sortable" data-sort="group">分类</th>
+            <th>形态</th>
             <th class="sortable" data-sort="license">许可</th>
             <th class="sortable" data-sort="primary_language">主语言</th>
             <th>硬件</th>
+            <th>反馈</th>
             <th>说明</th>
             <th class="sortable" data-sort="stars" style="text-align:right">星标</th>
           </tr>

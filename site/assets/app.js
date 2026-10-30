@@ -64,11 +64,30 @@
     G: '其他 / 单一功能工具',
   };
 
+  const SHAPE_SHORT = {
+    A: '纯评测',
+    B: '评测+Agent',
+    C: 'Agent',
+    D: '训练',
+    E: '底座',
+    F: '清单',
+    G: '其他',
+  };
+
+  const FILTER_KEYS = ['q', 'group', 'shape', 'vendor', 'feedback', 'license', 'lang'];
+
   const state = {
     data: null,
     view: 'overview',
-    query: '',
-    filters: { group: '', vendor: '', license: '', lang: '' },
+    filters: {
+      q: '',
+      group: '',
+      shape: '',
+      vendor: '',
+      feedback: '',
+      license: '',
+      lang: '',
+    },
     sort: { key: 'canonical', dir: 'asc' },
     selected: null,
     knowledgeLoaded: false,
@@ -119,17 +138,18 @@
     }
     const peak = max || Math.max(...items.map((i) => i.count));
     el.innerHTML = items
-      .map(
-        (item) => `
-        <div class="bar-row">
-          <span class="bar-label" title="${esc(item.label)}">${esc(item.label)}</span>
-          <span class="bar-track"><span class="bar-fill ${tone || ''}" style="width:${Math.max(
-            2,
-            (item.count / peak) * 100,
-          )}%"></span></span>
-          <span class="bar-value">${item.count}${unit}</span>
-        </div>`
-      )
+      .map((item) => {
+        const width = Math.max(2, (item.count / peak) * 100);
+        const inner = `
+          <span class="bar-label" title="${esc(item.label)}">${esc(item.label)}${
+            item.href ? '<span class="bar-hint">→</span>' : ''
+          }</span>
+          <span class="bar-track"><span class="bar-fill ${tone || ''}" style="width:${width}%"></span></span>
+          <span class="bar-value">${item.count}${unit}</span>`;
+        return item.href
+          ? `<a class="bar-row" href="${esc(item.href)}" title="${esc(item.title || item.label)}">${inner}</a>`
+          : `<div class="bar-row">${inner}</div>`;
+      })
       .join('');
   }
 
@@ -153,16 +173,42 @@
 
     renderBars(
       '#shape-bars',
-      d.stats.shapes.map((s) => ({ label: `${s.key} · ${SHAPE_LABELS[s.key] || s.name}`, count: s.count })),
+      d.stats.shapes.map((s) => ({
+        label: `${s.key} · ${SHAPE_LABELS[s.key] || s.name}`,
+        count: s.count,
+        href: `#/index?shape=${encodeURIComponent(s.key)}`,
+        title: `查看 ${s.count} 个${SHAPE_LABELS[s.key] || s.name}形态的项目`,
+      })),
       { tone: 'blue' }
     );
     renderBars(
       '#vendor-bars',
-      d.stats.vendors.map((v) => ({ label: VENDOR_LABELS[v.name] || v.name, count: v.count })),
+      d.stats.vendors.map((v) => ({
+        label: VENDOR_LABELS[v.name] || v.name,
+        count: v.count,
+        href: `#/index?vendor=${encodeURIComponent(v.name)}`,
+        title: `查看 ${v.count} 个支持${VENDOR_LABELS[v.name] || v.name}的项目`,
+      })),
       { tone: 'copper' }
     );
-    renderBars('#feedback-bars', d.stats.feedback.map((f) => ({ label: f.name, count: f.count })));
-    renderBars('#license-bars', d.stats.licenses.map((l) => ({ label: l.name, count: l.count })));
+    renderBars(
+      '#feedback-bars',
+      d.stats.feedback.map((f) => ({
+        label: f.name,
+        count: f.count,
+        href: `#/index?feedback=${encodeURIComponent(f.name)}`,
+        title: `查看 ${f.count} 个使用${f.name}反馈信号的项目`,
+      }))
+    );
+    renderBars(
+      '#license-bars',
+      d.stats.licenses.map((l) => ({
+        label: l.name,
+        count: l.count,
+        href: `#/index?license=${encodeURIComponent(l.name)}`,
+        title: `查看 ${l.count} 个${l.name}许可的项目`,
+      }))
+    );
   }
 
   function fillSelect(id, options, allLabel) {
@@ -192,7 +238,17 @@
       d.stats.groups.map((g) => ({ value: g.name, label: `${g.name} · ${g.label}` })),
       '全部分类'
     );
+    fillSelect(
+      '#idx-shape',
+      d.stats.shapes.map((s) => ({ value: s.key, label: `${s.key} · ${SHAPE_LABELS[s.key] || s.name}` })),
+      '全部形态'
+    );
     fillSelect('#idx-vendor', uniq('hardware'), '全部厂商');
+    fillSelect(
+      '#idx-feedback',
+      d.stats.feedback.map((f) => ({ value: f.name, label: `${f.name}（${f.count}）` })),
+      '全部反馈信号'
+    );
     fillSelect('#idx-license', d.stats.licenses.map((l) => ({ value: l.name, label: l.name })), '全部许可');
     fillSelect(
       '#idx-lang',
@@ -202,12 +258,14 @@
   }
 
   function matchesFilters(repo) {
-    const { query, filters } = state;
-    if (filters.group && repo.group !== filters.group) return false;
-    if (filters.license && (repo.license || '未声明') !== filters.license) return false;
-    if (filters.vendor && !(repo.hardware || []).includes(filters.vendor)) return false;
-    if (filters.lang && repo.primary_language !== filters.lang) return false;
-    if (query) {
+    const f = state.filters;
+    if (f.group && repo.group !== f.group) return false;
+    if (f.shape && repo.shape !== f.shape) return false;
+    if (f.license && (repo.license || '未声明') !== f.license) return false;
+    if (f.vendor && !(repo.hardware || []).includes(f.vendor)) return false;
+    if (f.lang && repo.primary_language !== f.lang) return false;
+    if (f.feedback && !(repo.feedback || []).includes(f.feedback)) return false;
+    if (f.q) {
       const haystack = [
         repo.canonical,
         repo.org,
@@ -221,13 +279,14 @@
         (repo.languages || []).join(' '),
         (repo.methods || []).join(' '),
         (repo.benchmarks || []).join(' '),
+        (repo.feedback || []).join(' '),
         repo.architecture ? repo.architecture.arch_pattern : '',
         repo.architecture ? repo.architecture.role_summary_zh : '',
       ]
         .filter(Boolean)
         .join(' ')
         .toLowerCase();
-      if (!haystack.includes(query.toLowerCase())) return false;
+      if (!haystack.includes(f.q.toLowerCase())) return false;
     }
     return true;
   }
@@ -250,6 +309,29 @@
     });
   }
 
+  const FILTER_LABELS = {
+    q: '关键词',
+    group: '分类',
+    shape: '形态',
+    vendor: '厂商',
+    feedback: '反馈信号',
+    license: '许可',
+    lang: '主语言',
+  };
+
+  function describeFilters() {
+    const parts = [];
+    for (const key of FILTER_KEYS) {
+      const value = state.filters[key];
+      if (!value) continue;
+      if (key === 'q') parts.push(`关键词「${value}」`);
+      else if (key === 'shape') {
+        parts.push(`形态 ${value} · ${SHAPE_LABELS[value] || value}`);
+      } else parts.push(`${FILTER_LABELS[key]} ${value}`);
+    }
+    return parts;
+  }
+
   function renderIndex() {
     const d = state.data;
     const rows = sortRepos(d.repos.filter(matchesFilters));
@@ -260,31 +342,62 @@
         <tr data-canonical="${esc(r.canonical)}" class="${state.selected === r.canonical ? 'selected' : ''}">
           <td class="cell-repo">${esc(r.canonical)}</td>
           <td class="cell-group">${esc(r.group_label || r.group || '—')}</td>
+          <td class="cell-group">${
+            r.shape
+              ? `<span class="tag" title="${esc(SHAPE_LABELS[r.shape] || r.shape)}">${esc(
+                  SHAPE_SHORT[r.shape] || r.shape
+                )}</span>`
+              : '—'
+          }</td>
           <td>${r.license ? `<span class="tag">${esc(r.license)}</span>` : '<span class="tag copper">未声明</span>'}</td>
           <td>${esc(r.primary_language || '—')}</td>
           <td>${tagList(r.hardware || [])}</td>
+          <td>${tagList(r.feedback || [], 'blue')}</td>
           <td class="cell-desc">${esc(r.description || r.summary || '—')}</td>
           <td class="cell-num">${formatNumber(r.stars)}</td>
         </tr>`
       )
       .join('');
     $('#idx-empty').hidden = rows.length > 0;
+    const active = describeFilters();
+    $('#idx-clear').hidden = active.length === 0;
     $('#idx-count').textContent = `${rows.length} / ${d.repos.length} 个仓库`;
+    $('#index-caption').textContent = active.length
+      ? `当前筛选：${active.join(' · ')}`
+      : '全部 61 个已开源项目';
+  }
+
+  const COMPARE_TABS = [
+    { id: 'cmp-arch', slug: 'arch', label: '架构' },
+    { id: 'cmp-base', slug: 'base', label: '基础层' },
+    { id: 'cmp-vendor', slug: 'vendor', label: '硬件厂商' },
+    { id: 'cmp-archchip', slug: 'archchip', label: '硬件架构' },
+    { id: 'cmp-matrix', slug: 'matrix', label: '厂商 × 角色' },
+  ];
+
+  function activateCompareTab(slug) {
+    const tab =
+      COMPARE_TABS.find((t) => t.slug === slug) || COMPARE_TABS[0];
+    for (const t of $$('#compare-tabs .tab')) {
+      t.classList.toggle('active', t.dataset.panel === tab.id);
+    }
+    for (const p of $$('.tab-panel')) p.hidden = p.id !== tab.id;
+    return tab;
   }
 
   function renderCompare() {
     const d = state.data;
 
-    // 架构形态卡片
+    // 架构形态卡片（可点，跳到按形态筛选的索引）
     $('#cmp-arch-cards').innerHTML = d.stats.shapes
       .map(
         (s) => `
-        <div class="card">
+        <a class="card" href="#/index?shape=${encodeURIComponent(s.key)}">
           <span class="card-index">形态 ${esc(s.key)}</span>
           <h3>${esc(SHAPE_LABELS[s.key] || s.name)}</h3>
           <p>${esc(s.blurb)}</p>
-          <span class="card-meta">${s.count} 个项目</span>
-        </div>`
+          <span class="card-meta">${s.count} 个项目 →</span>
+        </a>`
       )
       .join('');
 
@@ -502,17 +615,62 @@
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
+  function parseRoute() {
+    const raw = window.location.hash.replace(/^#\/?/, '');
+    const [path, query] = raw.split('?');
+    return { path: path || '', params: new URLSearchParams(query || '') };
+  }
+
+  function readFiltersFromUrl(params) {
+    for (const key of FILTER_KEYS) {
+      state.filters[key] = params.get(key) || '';
+    }
+  }
+
+  function syncFilterControls() {
+    $('#idx-search').value = state.filters.q;
+    $('#idx-group').value = state.filters.group;
+    $('#idx-shape').value = state.filters.shape;
+    $('#idx-vendor').value = state.filters.vendor;
+    $('#idx-feedback').value = state.filters.feedback;
+    $('#idx-license').value = state.filters.license;
+    $('#idx-lang').value = state.filters.lang;
+  }
+
+  function writeFiltersToUrl() {
+    const params = new URLSearchParams();
+    for (const key of FILTER_KEYS) {
+      if (state.filters[key]) params.set(key, state.filters[key]);
+    }
+    const query = params.toString();
+    const next = `#/index${query ? `?${query}` : ''}`;
+    if (window.location.hash !== next) window.location.hash = next;
+  }
+
   function route() {
-    const hash = window.location.hash.replace(/^#\/?/, '');
-    const [name, param] = hash.split('/');
-    if (name === 'index' || name === 'repo') {
+    const { path, params } = parseRoute();
+    const [name, param] = path.split('/');
+
+    if (name === 'repo' && param) {
       showView('index');
-      if (name === 'repo' && param) {
-        openDrawer(decodeURIComponent(param));
-      }
+      readFiltersFromUrl(params);
+      syncFilterControls();
+      renderIndex();
+      openDrawer(decodeURIComponent(param));
       return;
     }
-    if (name === 'compare') return showView('compare');
+    if (name === 'index') {
+      showView('index');
+      readFiltersFromUrl(params);
+      syncFilterControls();
+      renderIndex();
+      return;
+    }
+    if (name === 'compare') {
+      showView('compare');
+      activateCompareTab(params.get('tab') || 'arch');
+      return;
+    }
     if (name === 'knowledge') {
       showView('knowledge');
       return renderKnowledge();
@@ -578,28 +736,50 @@
       }
       const tab = e.target.closest('.tab');
       if (tab) {
-        for (const t of $$('#compare-tabs .tab')) t.classList.toggle('active', t === tab);
-        for (const p of $$('.tab-panel')) p.hidden = p.id !== tab.dataset.panel;
+        activateCompareTab(tab.dataset.panel.replace('cmp-', ''));
+        // 标签页写进 URL，深链接与前进后退都能还原
+        const params = new URLSearchParams();
+        params.set('tab', tab.dataset.panel.replace('cmp-', ''));
+        const next = `#/compare?${params.toString()}`;
+        if (window.location.hash !== next) window.location.hash = next;
       }
     });
 
     // 索引筛选
     const applyFilters = () => {
       state.filters.group = $('#idx-group').value;
+      state.filters.shape = $('#idx-shape').value;
       state.filters.vendor = $('#idx-vendor').value;
+      state.filters.feedback = $('#idx-feedback').value;
       state.filters.license = $('#idx-license').value;
       state.filters.lang = $('#idx-lang').value;
+      writeFiltersToUrl();
       renderIndex();
     };
-    for (const id of ['#idx-group', '#idx-vendor', '#idx-license', '#idx-lang']) {
+    for (const id of [
+      '#idx-group',
+      '#idx-shape',
+      '#idx-vendor',
+      '#idx-feedback',
+      '#idx-license',
+      '#idx-lang',
+    ]) {
       $(id).addEventListener('change', applyFilters);
     }
 
     const onSearch = debounce(() => {
-      state.query = $('#idx-search').value.trim();
+      state.filters.q = $('#idx-search').value.trim();
+      writeFiltersToUrl();
       renderIndex();
     }, 160);
     $('#idx-search').addEventListener('input', onSearch);
+
+    $('#idx-clear').addEventListener('click', () => {
+      for (const key of FILTER_KEYS) state.filters[key] = '';
+      syncFilterControls();
+      writeFiltersToUrl();
+      renderIndex();
+    });
 
     // 表头排序
     for (const th of $$('#idx-table th.sortable')) {
@@ -627,9 +807,10 @@
       if (e.key !== 'Enter') return;
       const value = e.target.value.trim();
       if (!value) return;
-      state.query = value;
+      state.filters.q = value;
       $('#idx-search').value = value;
       showView('index');
+      writeFiltersToUrl();
       renderIndex();
     });
   }

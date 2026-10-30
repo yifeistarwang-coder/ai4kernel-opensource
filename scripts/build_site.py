@@ -123,6 +123,10 @@ def build_payload(index, architecture):
         if shapes.get(key)
     ]
 
+    # 形态写进每个仓库，客户端筛选与统计用的是同一份判定
+    for r in repos:
+        r["shape"] = classify_shape(r)
+
     vendors = defaultdict(list)
     for r in repos:
         for h in r["hardware"]:

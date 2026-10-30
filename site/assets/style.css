@@ -626,6 +626,37 @@ a.card:hover {
   grid-template-columns: minmax(120px, 210px) 1fr auto;
   align-items: center;
   gap: 14px;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  transition: background var(--dur) var(--ease);
+}
+
+a.bar-row:hover {
+  background: var(--surface-hover);
+  text-decoration: none;
+}
+
+a.bar-row:hover .bar-label {
+  color: var(--green-strong);
+}
+
+a.bar-row:hover .bar-value {
+  color: var(--ink-secondary);
+}
+
+a.bar-row .bar-hint {
+  opacity: 0;
+  margin-left: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  transition: opacity var(--dur) var(--ease);
+}
+
+a.bar-row:hover .bar-hint {
+  opacity: 1;
 }
 
 .bar-label {
@@ -634,6 +665,7 @@ a.card:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: color var(--dur) var(--ease);
 }
 
 .bar-track {
@@ -747,6 +779,26 @@ select.filter:focus {
   font-size: 12px;
   margin-left: auto;
   white-space: nowrap;
+}
+
+.filter-clear {
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--copper-line);
+  background: var(--copper-soft);
+  color: var(--copper-ink);
+  font-family: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.filter-clear:hover {
+  background: var(--copper-block);
+}
+
+.filter-clear[hidden] {
+  display: none;
 }
 
 /* ---------------------------------------------------------------- table */

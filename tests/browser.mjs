@@ -203,6 +203,16 @@ async function main() {
   const matrixCols = await page.locator('#cmp-matrix-head th').count();
   if (matrixCols < 5) note(`compare: matrix has ${matrixCols} columns`);
 
+  // 标签页写进 URL，深链接能直接落到那个标签页
+  if (!page.url().includes('tab=matrix')) {
+    note(`compare: tab not in url: ${page.url()}`);
+  }
+  await page.goto(`${BASE}/index.html#/compare?tab=base`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#cmp-base-body tr', { timeout: 5000 });
+  if (await page.locator('#cmp-arch-body').isVisible()) {
+    note('compare: deep link to tab=base did not switch panels');
+  }
+
   await page.screenshot({ path: `${SHOTS}/compare.png`, fullPage: true });
 
   // ---------------------------------------------------------- 抽象知识
@@ -221,7 +231,82 @@ async function main() {
 
   await page.screenshot({ path: `${SHOTS}/knowledge.png`, fullPage: true });
 
+  // ---------------------------------------------------------- 概览 → 索引联动
+  await page.goto(`${BASE}/index.html#/overview`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#feedback-bars .bar-row');
+  await sleep(300);
+
+  const bars = await page.locator('#feedback-bars a.bar-row').count();
+  if (bars < 3) note(`overview: feedback bars are not links (${bars})`);
+
+  // 点击「Profile」应跳到索引并按反馈信号筛选
+  await page.locator('#feedback-bars a.bar-row', { hasText: 'Profile' }).click();
+  await page.waitForSelector('#idx-body tr', { timeout: 8000 });
+  await sleep(300);
+  if (await page.locator('#page-index').isHidden()) note('bar click: did not open the index view');
+  if (!page.url().includes('feedback=Profile')) {
+    note(`bar click: url missing feedback filter: ${page.url()}`);
+  }
+  const profileRows = await page.locator('#idx-body tr').count();
+  if (profileRows !== 13) note(`bar click: Profile filter gave ${profileRows} rows, expected 13`);
+  const barCaption = await page.textContent('#index-caption');
+  if (!barCaption.includes('Profile')) {
+    note(`bar click: caption does not mention the filter: ${barCaption}`);
+  }
+  const clearVisible = await page.locator('#idx-clear').isVisible();
+  if (!clearVisible) note('bar click: clear-filter button not shown');
+  // 每一行都必须真的带 Profile 反馈信号
+  const allProfile = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('#idx-body tr')).every((tr) =>
+      tr.children[6].textContent.includes('Profile')
+    )
+  );
+  if (!allProfile) note('bar click: filtered rows do not all carry the Profile signal');
+
+  // 分享链接：直接打开带筛选的 URL 应还原同样的结果
+  await page.goto(`${BASE}/index.html#/index?feedback=Profile`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#idx-body tr');
+  await sleep(300);
+  const sharedRows = await page.locator('#idx-body tr').count();
+  if (sharedRows !== 13) note(`shared url: gave ${sharedRows} rows, expected 13`);
+
+  // 清除筛选
+  await page.click('#idx-clear');
+  await sleep(300);
+  const clearedRows = await page.locator('#idx-body tr').count();
+  if (clearedRows !== 61) note(`clear filter: gave ${clearedRows} rows, expected 61`);
+
+  // 厂商条形图同样可点
+  await page.goto(`${BASE}/index.html#/overview`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#vendor-bars a.bar-row');
+  await page.locator('#vendor-bars a.bar-row', { hasText: 'AMD' }).click();
+  await page.waitForSelector('#idx-body tr', { timeout: 8000 });
+  await sleep(300);
+  const amdViaBar = await page.locator('#idx-body tr').count();
+  if (amdViaBar !== 12) note(`bar click: AMD filter gave ${amdViaBar} rows, expected 12`);
+
+  // 形态条形图同样可点
+  await page.goto(`${BASE}/index.html#/overview`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#shape-bars a.bar-row');
+  await page.locator('#shape-bars a.bar-row', { hasText: 'Agent 生成闭环' }).click();
+  await page.waitForSelector('#idx-body tr', { timeout: 8000 });
+  await sleep(300);
+  const shapeRows = await page.locator('#idx-body tr').count();
+  if (shapeRows !== 15) note(`bar click: shape C gave ${shapeRows} rows, expected 15`);
+
+  // 形态卡片同样可点
+  await page.goto(`${BASE}/index.html#/compare`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#cmp-arch-cards a.card');
+  await page.locator('#cmp-arch-cards a.card', { hasText: 'Agent 生成闭环' }).click();
+  await page.waitForSelector('#idx-body tr', { timeout: 8000 });
+  await sleep(300);
+  const cardRows = await page.locator('#idx-body tr').count();
+  if (cardRows !== 15) note(`shape card: gave ${cardRows} rows, expected 15`);
+
   // ---------------------------------------------------------- 主题切换
+  await page.goto(`${BASE}/index.html#/overview`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#hero-stats .stat', { timeout: 10000 });
+  await sleep(300);
   const initialTheme = await page.getAttribute('html', 'data-theme');
   if (!['light', 'dark'].includes(initialTheme)) {
     note(`theme: unexpected data-theme "${initialTheme}"`);
