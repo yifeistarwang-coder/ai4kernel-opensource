@@ -1,0 +1,26 @@
+# Editorial content license
+
+Unless otherwise noted, the original editorial content in this repository is
+licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0):
+
+https://creativecommons.org/licenses/by/4.0/
+
+This includes the repository index prose, the abstracted engineering knowledge,
+the project comparison tables, and documentation written for this project.
+
+Attribution should identify the project as "AI4Kernel Open-Source Index" and
+link to the repository:
+
+https://github.com/yifeistarwang-coder/ai4kernel-opensource
+
+## Exclusions
+
+This license does not apply to:
+
+- The code under `scripts/`, which is MIT licensed (see `LICENSE`).
+- Repository names, URLs, and metadata about third-party projects. Those remain
+  the property of their respective authors and are referenced here for
+  identification and comparison purposes only.
+- The `data/github-metadata.json` snapshot, which is a factual API record
+  about third-party repositories.

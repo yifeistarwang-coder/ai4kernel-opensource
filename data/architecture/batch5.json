@@ -1,0 +1,790 @@
+[
+  {
+    "canonical": "tile-ai/BitBLAS",
+    "role": "foundation-runtime",
+    "role_summary_zh": "GPU 混合精度 BLAS 算子库，提供 W×A 低精度 GEMM/GEMV 内核",
+    "entrypoints": [
+      "pip install bitblas",
+      "python -c \"import bitblas; print(bitblas.__version__)\"",
+      "bitblas.Matmul(config=bitblas.MatmulConfig(...))",
+      "bitblas.Linear (PyTorch nn.Linear 类模块)",
+      "python -c \"import bitblas; print(bitblas.__version__)\" 校验安装"
+    ],
+    "key_modules": [
+      {
+        "name": "bitblas Python 包 (Matmul/Linear)",
+        "purpose_zh": "混合精度矩阵乘与 Linear 模块"
+      },
+      {
+        "name": "integration/",
+        "purpose_zh": "接入 PyTorch、vLLM 等框架的示例"
+      },
+      {
+        "name": "benchmark/",
+        "purpose_zh": "各 dtype 与设备的算子基准集"
+      },
+      {
+        "name": "TIR Script DSL",
+        "purpose_zh": "自定义混合精度算子的 DSL"
+      },
+      {
+        "name": "docs/",
+        "purpose_zh": "安装、Python API 与扩展文档"
+      }
+    ],
+    "arch_pattern": "算子库 + MatmulConfig 描述层 + DSL 定制 + 多框架集成 + benchmark 目录",
+    "arch_notes_zh": "主体是一个 bitblas Python 包，只暴露 Matmul 与 Linear 两个 API，算子形态由 MatmulConfig（M/N/K、dtype 组合、layout、group_size、scaling/zeros）描述后自动生成内核。功能边界按目录切分：integration/ 接入 PyTorch、GPTQModel、AutoGPTQ、vLLM 与 BitNet，benchmark/ 单独收集各格式与设备基准。扩展方式有两条：一是基于 TIR Script 的 DSL 自定义混合精度算子，FlashAttention 算子新增时直接用 TileLang 实现。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "benchmark/ 收录各 dtype 组合与设备的算子性能，端到端对比 vLLM"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness"
+      ],
+      "notes_zh": "示例用 assert_close 比对 PyTorch 参考输出"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Ampere",
+      "NVIDIA-GPU-Volta",
+      "NVIDIA-GPU-Ada"
+    ],
+    "base_layer": [
+      "torch",
+      "TileLang"
+    ],
+    "engineering_practices": [
+      "用 MatmulConfig 结构化描述 dtype/layout/量化参数，避免配置散落",
+      "integration/ 按上游框架分别封装适配器（PyTorch/vLLM/AutoGPTQ/GPTQModel/BitNet）",
+      "支持矩阵以表格列出 dtype 组合与实测平台（SM 号），便于对齐验证",
+      "提供 pip wheel 与源码两条安装路径并显式声明环境约束",
+      "示例代码内置 torch.testing.assert_close 精度自检",
+      "benchmark/ 与 integration/ 分离，性能数据与框架接入互不干扰"
+    ],
+    "stated_limits": [
+      "wheel 仅支持 Ubuntu 20.04+、CUDA>=11.0、Python>=3.8，其他环境需源码编译",
+      "FP8 与 INT4×INT4 等组合目前只在 RTX 4090 上测试过",
+      "FP16×FP8 等组合要求 SM80 以上平台（V100 不支持）"
+    ]
+  },
+  {
+    "canonical": "tile-ai/tilelang",
+    "role": "foundation-dsl",
+    "role_summary_zh": "基于 TVM 的 tile 级 DSL，用 Python 语法写高性能 GPU/CPU/NPU kernel",
+    "entrypoints": [
+      "pip install tilelang",
+      "python -c \"import tilelang; print(tilelang.__version__)\"",
+      "@tilelang.jit 装饰的 kernel 函数",
+      "examples/quickstart.py",
+      ".agents/skills/tilelang-backend/SKILL.md (后端移植编码助手技能)"
+    ],
+    "key_modules": [
+      {
+        "name": "tilelang/language (T.Kernel/T.gemm/T.copy)",
+        "purpose_zh": "tile 级 Python DSL 前端"
+      },
+      {
+        "name": "tilelang/backend",
+        "purpose_zh": "多后端 CodeGen 注册与分发"
+      },
+      {
+        "name": "tilelang/ascend",
+        "purpose_zh": "Ascend 950 原生代码生成后端"
+      },
+      {
+        "name": "examples/",
+        "purpose_zh": "算子与架构特化示例库"
+      },
+      {
+        "name": "examples/analyze|plot_layout|autodd|iket",
+        "purpose_zh": "IR 分析、布局可视化与调试工具"
+      },
+      {
+        "name": "TVM TIRX 编译管线",
+        "purpose_zh": "IR 变换与后端 lowering"
+      }
+    ],
+    "arch_pattern": "DSL 前端 + TVM 多级 IR 编译管线 + 可插拔后端注册表 + 示例/调试工具库",
+    "arch_notes_zh": "tilelang 是建在 TVM 之上的 DSL，@tilelang.jit 会按输入 shape 与编译期参数特化 kernel，用户用 T.Kernel/T.gemm/T.copy 描述 tile 级计算。它正从单后端演进为 TileLang-X 多后端架构：device 与 host CodeGen 都收拢到 backend registry，CUDA/ROCm/Metal 有静态方言，Ascend A2/A3、MUSA、MetaX、HYGON、TANG 等生态适配器则拆到独立仓库。README 把大量篇幅给了编译期可观测性：IR dump、pass 可视化、pass diff、编译器 pass 计时，说明其架构把「可调试」当作一等公民。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "示例内置 assert_close 校验；性能脚本在独立 tilelang-benchmark 仓库"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness"
+      ],
+      "notes_zh": "编译后用 torch.testing.assert_close 与 torch 参考比对"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD",
+      "Ascend",
+      "CPU",
+      "Other"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Volta",
+      "NVIDIA-GPU-Ampere",
+      "NVIDIA-GPU-Ada",
+      "NVIDIA-GPU-Hopper",
+      "NVIDIA-GPU-Blackwell",
+      "AMD-GPU-MI300",
+      "AMD-GPU-RDNA",
+      "Ascend-Ascend950",
+      "CPU-x86",
+      "CPU-arm"
+    ],
+    "base_layer": [
+      "TVM"
+    ],
+    "engineering_practices": [
+      "用 Target 对象统一描述编译目标，auto 目标自动探测 CUDA/HIP/Metal/Ascend",
+      "backend registry 统一分发 device/host CodeGen，新增后端不改核心",
+      "@tilelang.jit 按输入 shape 与编译期参数特化 kernel 并缓存",
+      "提供 IR dump、pass 可视化、pass diff、pass 计时等编译期调试工具",
+      "编译产物支持跨主机复用已编译 CUDA 二进制缓存",
+      "把生态适配器拆到独立仓库发布，主仓只维护核心与主后端",
+      "SM120/SM100 等新架构特性各有独立示例与 PR 跟踪"
+    ],
+    "stated_limits": [
+      "ROCm 路径需宿主安装 ROCm 运行时，CI 仅覆盖 gfx942，gfx950 尚未覆盖",
+      "LLVM CPU 后端为实验性，需 LLVM>=15 并用 USE_LLVM=ON 源码编译",
+      "Ascend 950 后端需 USE_ASCEND=ON 源码编译，依赖 CANN 与 torch_npu",
+      "TMA/WGMMA/TMEM 等特性依赖对应 GPU 架构，不支持的形状需回退路径"
+    ]
+  },
+  {
+    "canonical": "triton-lang/triton",
+    "role": "foundation-dsl",
+    "role_summary_zh": "编写深度学习算子的 tile 级 DSL 与编译器，前端 Python 后端 MLIR/LLVM",
+    "entrypoints": [
+      "pip install triton",
+      "@triton.jit 装饰的 kernel 函数",
+      "make dev-install / make dev-install-llvm",
+      "make test",
+      "make test-nogpu",
+      "TRITON_INTERPRET=1 解释器模式"
+    ],
+    "key_modules": [
+      {
+        "name": "python/triton",
+        "purpose_zh": "Python 前端与运行时"
+      },
+      {
+        "name": "python/triton/knobs.py",
+        "purpose_zh": "编译与调试开关集中配置"
+      },
+      {
+        "name": "MLIR/LLVM 后端",
+        "purpose_zh": "2.0 重写为 MLIR 的代码生成"
+      },
+      {
+        "name": "cmake/llvm-info.json",
+        "purpose_zh": "锁定构建所用 LLVM 版本"
+      },
+      {
+        "name": "examples/plugins",
+        "purpose_zh": "out-of-tree 编译 pass 插件示例"
+      },
+      {
+        "name": "third_party/",
+        "purpose_zh": "后端依赖与第三方测试"
+      }
+    ],
+    "arch_pattern": "Python 前端 + MLIR/LLVM 后端 + 解释器旁路 + 环境变量驱动调试",
+    "arch_notes_zh": "Triton 分成 Python DSL 前端与 C++/MLIR/LLVM 编译后端，2.0 把后端重写为 MLIR，并支持背靠背 matmul（flash attention 类）。构建上不绑定系统 LLVM：用 cmake/llvm-info.json 里的 llvm_hash 锁定版本，README 明确说 LLVM 无稳定 API、不能用任意版本。可观测性是核心设计：所有编译与调试开关集中在 python/triton/knobs.py，可用环境变量覆盖，并提供 IR dump、MLIR reproducer、kernel override、interpreter 等机制。测试分 make test（需 GPU）与 make test-nogpu（解释器）两条路径。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "make test 跑全量测试（需 GPU），make test-nogpu 用解释器免 GPU"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness"
+      ],
+      "notes_zh": "IR dump 与 reproducer 定位失败 pass，解释器可跑结果核对"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD",
+      "CPU"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "MLIR",
+      "LLVM"
+    ],
+    "engineering_practices": [
+      "用 cmake/llvm-info.json 的 llvm_hash 锁定 LLVM 提交，避免 API 漂移",
+      "make dev-install-llvm 提供 core/amd/all 三种 LLVM 构建目标",
+      "knobs.py 集中所有配置开关并允许环境变量覆盖",
+      "MLIR_ENABLE_DUMP / TRITON_KERNEL_DUMP 支持逐 pass 转储 IR",
+      "TRITON_REPRODUCER_PATH 在失败 pass 前生成可复现的 MLIR reproducer",
+      "TRITON_INTERPRET=1 解释器模式支持在 kernel 中下断点，免 GPU 调试",
+      "提供 kernel override 机制逐阶段替换 IR/ptx/amdgcn 做对比实验"
+    ],
+    "stated_limits": [
+      "仅支持 Linux",
+      "NVIDIA GPU 需 Compute Capability 8.0+，AMD 需 ROCm 6.2+，CPU 后端仍在开发",
+      "LLVM 无稳定 API，不能用任意 LLVM 版本构建",
+      "没有一键跑完所有测试的 turnkey 方式，需按 make 配方手动执行"
+    ]
+  },
+  {
+    "canonical": "ucb-bar/autocomp",
+    "role": "agent-loop",
+    "role_summary_zh": "可移植的 LLM 驱动 kernel 优化框架：硬件专属 agent + 评测后端 + 束搜索",
+    "entrypoints": [
+      "python -m autocomp.search.run_search",
+      "python -m autocomp.agent_builder.run_agent_builder --agent-name <name> --source-dir <dir> --agent-scope \"...\"",
+      "pip install \"autocomp[agent-builder]\"",
+      "WANDB_MODE=disabled pytest"
+    ],
+    "key_modules": [
+      {
+        "name": "autocomp/search",
+        "purpose_zh": "束搜索算法与 run_search 入口"
+      },
+      {
+        "name": "autocomp/agents",
+        "purpose_zh": "各硬件的规划/生成 agent 与提示词"
+      },
+      {
+        "name": "autocomp/agent_builder",
+        "purpose_zh": "从文档自动生成硬件 agent"
+      },
+      {
+        "name": "autocomp/backend",
+        "purpose_zh": "各硬件的评测后端与编译跑分"
+      },
+      {
+        "name": "autocomp/hw_config",
+        "purpose_zh": "各硬件的配置类"
+      },
+      {
+        "name": "autocomp/common/llm_utils.py",
+        "purpose_zh": "统一 LLM provider 接入层"
+      },
+      {
+        "name": "sols/ 与 harnesses/",
+        "purpose_zh": "基线代码与对应测试 harness"
+      },
+      {
+        "name": "visualizer/",
+        "purpose_zh": "VS Code 轨迹可视化扩展"
+      }
+    ],
+    "arch_pattern": "Agent 工具循环 + 束搜索 + 可插拔硬件目标（agent/backend/hw_config 三件套）",
+    "arch_notes_zh": "主循环是 search/ 里的 beam 束搜索：每轮先生成若干策略方案（planning），再据此产出代码实现（code_models 可与规划模型不同），由评测后端打分后保留 beam_size 个候选进入下一轮。硬件被抽象成三元组：每个目标同时需要一个懂该硬件的优化 agent、一个负责编译与跑分的 evaluation backend、一个描述实例的 hw_config 类，三者按固定子目录命名（trn/tpu/gemmini/kernelbench/gpumode/metal/saturn/xnnpack），新增硬件按 ADDING_HARDWARE_SUPPORT.md 接入。Agent Builder 则从本地目录、PDF、网页文档自动生成硬件专属 agent 并落到 agent_builder/.built/。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "backend 编译并跑分，prob_type/prob_id 选题，支持 spike/firesim 仿真器"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "runtime"
+      ],
+      "notes_zh": "评测后端在真实硬件或仿真器上编译运行并按性能打分"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 出方案与代码，束搜索挑选下一代",
+      "memory_zh": "文档构建的 agent 与策略菜单，可 continue_from 续跑",
+      "feedback_zh": "评测后端返回的性能分数"
+    },
+    "hardware": [
+      "NVIDIA",
+      "TPU",
+      "Other"
+    ],
+    "hardware_arch": [
+      "TPU-v6e",
+      "TPU-v5",
+      "NVIDIA-GPU-Ada"
+    ],
+    "base_layer": [
+      "vLLM"
+    ],
+    "engineering_practices": [
+      "每个硬件目标固定为 agent/backend/hw_config 三个子目录，新增目标沿用同一约定",
+      "backend 抽象 simulator 选项（spike/firesim/gpumode-local），可在无真机时评测",
+      "搜索旋钮集中在 run_search.py（beam_size、num_plan_candidates、num_code_candidates 等）",
+      "Agent Builder 从文档目录/PDF/网页生成 agent，产物落到 .built/ 便于版本化",
+      "用 provider::model 字符串统一描述 LLM 来源，环境变量优先于 keys.py 配置文件",
+      "大文件用结构化 JSON 编辑（old_str/new_str）而非整文件重写",
+      "提供 Trace Visualizer 复盘每轮策略与分数变化"
+    ],
+    "stated_limits": [
+      "K230 上的 RISC-V RVV 目标实现 hacky，官方不推荐使用",
+      "search_strategy 目前只支持 beam 一种",
+      "Agent Builder 生成的 agent 质量取决于文档质量，需人工筛选",
+      "Apple Metal 与 TPU 支持为较新加入，成熟度与覆盖度不及 Trainium/CUDA"
+    ]
+  },
+  {
+    "canonical": "weich97/NPUKernelBench",
+    "role": "benchmark",
+    "role_summary_zh": "评测 LLM 生成 AscendC 算子的基准：任务集 + 编译 + 数值正确性 + 性能",
+    "entrypoints": [
+      "python run_multi_test.py -chat -task_name Sqrt SwiGlu",
+      "python run_multi_test.py -chat -task_name Sqrt -stages code_gen",
+      "python run_multi_test.py -chat -task_name Sqrt -stages compile precision",
+      "python run_multi_test.py -task_name Sqrt -stages compile precision",
+      "source set_framework_env.sh",
+      "nohup bash start_vllm_server.sh"
+    ],
+    "key_modules": [
+      {
+        "name": "tasks/level/Category/OperatorName/",
+        "purpose_zh": "分层算子任务集"
+      },
+      {
+        "name": "framework/",
+        "purpose_zh": "核心自动化与评测框架"
+      },
+      {
+        "name": "kernel_generator/",
+        "purpose_zh": "提示词构造与 LLM 代码生成"
+      },
+      {
+        "name": "libs/",
+        "purpose_zh": "共享 Ascend/CANN 支持库"
+      },
+      {
+        "name": "run_multi_test.py",
+        "purpose_zh": "主执行入口，分阶段跑评测"
+      },
+      {
+        "name": "base_config.yaml 与 start_vllm_server.sh",
+        "purpose_zh": "全局配置与模型服务启动"
+      },
+      {
+        "name": "docs/",
+        "purpose_zh": "任务设计、评测与生成文档"
+      }
+    ],
+    "arch_pattern": "评测三段式: prompt 生成 → CANN 编译 → 数值比对（可选性能）",
+    "arch_notes_zh": "任务以 level/Category/OperatorName 三级目录组织，每个任务自带四件套：question/（生成模板与输入）、answer/（官方参考实现）、validation/（PyTorch 参考、输入生成、测试用例）、api_desc.md（算子语义与约束）。执行侧由 run_multi_test.py 用 -stages 把 code_gen、compile、precision 拆成可单独重跑的阶段，生成样本按 runs/msopgen/lvl1/Math/Sqrt/fixed_case_0/sampleN/ 落盘便于溯源。同一脚本既可走 -chat 的 LLM 生成路径，也可评测人工实现的代码。V2.0 还附带用 CoT 领域知识注入训练的模型，可生成 50+ 可用 AscendC kernel。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "task 自带 PyTorch 参考与用例，分阶段跑生成/编译/精度，默认容差 1e-3"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime"
+      ],
+      "notes_zh": "CANN/MSOPGEN 编译后与 PyTorch 参考比对，必要时测延迟"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "Ascend"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "AscendC",
+      "torch"
+    ],
+    "engineering_practices": [
+      "任务目录模板化：question/answer/validation/api_desc.md 四件套，参考答案即基线",
+      "每个任务内嵌 PyTorch 参考实现与输入生成逻辑，保证可复现",
+      "run_multi_test.py 用 -stages 拆分生成/编译/精度，可只重跑某阶段",
+      "同一入口同时支持 LLM 生成与人工实现两条评测路径（-chat 开关）",
+      "base_config.yaml 集中配置模型路径，set_framework_env.sh 固定 CANN 环境",
+      "任务按 level1/2/3 难度分层，便于分层统计与难度分析"
+    ],
+    "stated_limits": [
+      "需 vLLM-Ascend 0.7.3-dev 及以上与 CANN 工具链，性能测量还需 Ascend 硬件",
+      "数值容差默认绝对与相对误差均为 1e-3，除非任务自定义 checker",
+      "任务集只覆盖 level1-level3 的 AscendC 算子，未覆盖更复杂并行形态"
+    ]
+  },
+  {
+    "canonical": "wzzll123/MultiKernelBench",
+    "role": "benchmark",
+    "role_summary_zh": "多平台 kernel 生成基准：CUDA/Triton/AscendC/TileLang/Pallas/SYCL/MUSA",
+    "entrypoints": [
+      "python generate_and_write.py --model deepseek-chat --language ascendc --strategy add_shot --categories activation",
+      "python evaluation.py --model deepseek-chat --language ascendc --strategy add_shot --categories activation",
+      "python eval_single_runner.py --input prompts/ascendc_direct_launch_model_relu.json --op relu --language ascendc_direct_launch --result relu_result.json",
+      "python generate_baseline_statistics.py",
+      "config.py 中设置 temperature/top_p 与 arch_list"
+    ],
+    "key_modules": [
+      {
+        "name": "backends/",
+        "purpose_zh": "各语言后端（编译/执行/计时）"
+      },
+      {
+        "name": "prompt_generators/",
+        "purpose_zh": "各语言的提示词策略类"
+      },
+      {
+        "name": "prompts/",
+        "purpose_zh": "提示词模板与样例"
+      },
+      {
+        "name": "reference/",
+        "purpose_zh": "按 category 组织的 PyTorch 参考实现"
+      },
+      {
+        "name": "ascend_op_projects/",
+        "purpose_zh": "Ascend 算子工程与扩展"
+      },
+      {
+        "name": "dataset.py",
+        "purpose_zh": "数据集加载与任务组织"
+      },
+      {
+        "name": "evaluation.py / eval_single_runner.py",
+        "purpose_zh": "批量与单任务评测入口"
+      },
+      {
+        "name": "utils/ 与 config.py",
+        "purpose_zh": "工具模块与全局模型配置"
+      }
+    ],
+    "arch_pattern": "基准四件套: 任务数据集 + prompt 策略插件 + 参考实现 + 后端评测插件",
+    "arch_notes_zh": "生成与评测被拆成两条独立脚本：generate_and_write.py 只负责按 language/strategy/model 生成代码并写入 output 目录，evaluation.py 再对同一产物路径做评测，便于反复跑不同策略而不重生成。语言差异通过 backends/ 下的后端类插件化解，接口固定为 get_device/get_hardware_name/compile/correctness_execution/time_execution/cleanup；prompt 差异通过 prompt_generators/ 下的策略类插件化解，两侧都用装饰器注册。reference/ 按 activation/attention/convolution/matmul 等 category 组织 PyTorch 参考实现，作为所有语言后端共享的正确性基准。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "按 language×strategy 生成后评测，输出含编译/正确性/性能的 result_{category}.json"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime",
+        "static-check"
+      ],
+      "notes_zh": "编译+与 PyTorch 参考比对+计时，并有反作弊检测拦替换实现"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "Ascend",
+      "TPU",
+      "Intel",
+      "Other"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "torch"
+    ],
+    "engineering_practices": [
+      "生成与评测解耦，产物按 output/{language}/{strategy}/{temp}-{top_p}/{model}/run{n} 组织便于复用",
+      "后端与提示词策略都用装饰器注册（@register_backend / @register_prompt），扩展只需加文件",
+      "reference/ 按 category 提供一份 PyTorch 参考实现服务所有语言后端",
+      "评测结果统一写成 result_{category}.json，含编译状态、正确性、性能、硬件与反作弊字段",
+      "eval_single_runner.py 支持对单个已生成响应快速复评，缩短调试回路",
+      "为每种语言提供 add_shot/selected_shot 等不同提示词策略做横向对比",
+      "反作弊检测识别用 PyTorch/Python 计算替换自定义 kernel 的生成代码"
+    ],
+    "stated_limits": [
+      "代码复用 KernelBench（MIT 许可），需遵循其许可",
+      "MUSA 后端为初步支持（initial），AscendC 直启与 TileLang 后端为近期新增",
+      "需按平台分别安装 torch-npu / torch xpu / torch_musa 运行环境"
+    ]
+  },
+  {
+    "canonical": "zhang677/AccelOpt",
+    "role": "agent-loop",
+    "role_summary_zh": "自改进 LLM agent 系统：用优化记忆库迭代优化加速器 kernel",
+    "entrypoints": [
+      "python setup.py install",
+      "experiments/full_complete_local (Trainium 上跑 NKIBench)",
+      "experiments/flb_full_complete_local (NVIDIA 上跑 FlashInfer-Bench)",
+      "from accelopt.kernel_wrapper import NKIKernel; nki_kernel.profile(save_fields)",
+      "experiments/full_complete_local/calculate_percentage_of_peak.py"
+    ],
+    "key_modules": [
+      {
+        "name": "accelopt/kernel_wrapper.py",
+        "purpose_zh": "NKIKernel 性能剖析封装"
+      },
+      {
+        "name": "accelopt/db_utils.py",
+        "purpose_zh": "supabase kernel 数据库访问"
+      },
+      {
+        "name": "templates/schema_v2.txt",
+        "purpose_zh": "kernel 库 SQL schema"
+      },
+      {
+        "name": "NKIBench/",
+        "purpose_zh": "Trainium kernel 数据集与 summary.json"
+      },
+      {
+        "name": "experiments/",
+        "purpose_zh": "各实验与运行脚本"
+      },
+      {
+        "name": "prompts/fib",
+        "purpose_zh": "FlashInfer-Bench 提示词集"
+      },
+      {
+        "name": "tests/",
+        "purpose_zh": "profiling API 用法示例"
+      }
+    ],
+    "arch_pattern": "自改进 Agent 循环 + 优化记忆库 + 结构化 kernel 数据库 + profiling 服务",
+    "arch_notes_zh": "核心机制是迭代生成 kernel，并把遇到的「慢 kernel→快 kernel」对比 curate 成优化记忆再注入下一轮提示，从而免去专家提供的硬件特定优化知识。角色分工上，executor 负责生成新 kernel，Fixer 专门修复失败的 kernel，README 明确两组 agent 可使用不同模型。产物流转靠结构化存储：生成结果用 templates/schema_v2.txt 的 SQL schema 存入 supabase kernel 数据库，NKIBench 与 FlashInfer-Bench 共用类似 schema。评测侧提供可插拔的 profiling 服务（NKIKernel.profile），并用「相对硬件可达峰值的百分比」衡量 agent 是否真正穷尽优化空间。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "以 NKIBench/FlashInfer-Bench 任务集驱动，profile 测延迟并算峰值占比"
+    },
+    "verification": {
+      "mechanisms": [
+        "runtime",
+        "profile"
+      ],
+      "notes_zh": "用 profiling 服务实测延迟并与硬件可达峰值对比"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM agent 自主迭代，executor 与 Fixer 分工",
+      "memory_zh": "优化记忆库沉淀慢-快 kernel 对的经验",
+      "feedback_zh": "profile 实测延迟与峰值占比"
+    },
+    "hardware": [
+      "NVIDIA",
+      "Other"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Hopper"
+    ],
+    "base_layer": [
+      "Triton",
+      "FlashInfer"
+    ],
+    "engineering_practices": [
+      "把生成的 kernel 用 SQL schema 结构化存储，便于检索、复用与跨 bench 迁移",
+      "profiling API 以 NKIKernel 类封装，可插接到任意 AI 优化器",
+      "executor 与 Fixer 角色分离，失败 kernel 走专门修复路径",
+      "用 scripts/reproduce_*.sh 分阶段复现 SFT 流程并支持 --check 静态检查",
+      "实验以 shell 脚本目录化组织（full_complete_local、flb_full_complete_local），模型与硬件参数化",
+      "计算相对硬件可达峰值的百分比以判断优化空间是否被探索完",
+      "显式克隆 zhang677/flashinfer-bench 并以可编辑安装固定依赖版本"
+    ],
+    "stated_limits": [
+      "仓库仍在建设中（under construction），未包含完整实验矩阵",
+      "NVIDIA 路径需额外克隆 zhang677/flashinfer-bench，因 flashinfer-trace 的 DPS 不一致",
+      "Trainium 路径依赖 AWS Neuron Deep Learning AMI 与 trn1.32xlarge 实例",
+      "需要 logfire 与 openai-agents 依赖，模型多以本地服务方式接入"
+    ]
+  },
+  {
+    "canonical": "zhang677/PCL-lite",
+    "role": "agent-loop",
+    "role_summary_zh": "面向 ML 库开发的自适应自改进 LLM agent 系统（以 STeP 为目标库）",
+    "entrypoints": [
+      "./scripts/validate.sh",
+      "./scripts/prepare.sh",
+      "./experiments/single/run.sh",
+      "./experiments/agent/run.sh",
+      "./experiments/iterative/run.sh",
+      "./experiments/single-ws/run.sh"
+    ],
+    "key_modules": [
+      {
+        "name": "benchmark/",
+        "purpose_zh": "test 与 reference yaml 校验对象"
+      },
+      {
+        "name": "prompts/",
+        "purpose_zh": "提示词配置"
+      },
+      {
+        "name": "scripts/validate.sh",
+        "purpose_zh": "校验 benchmark 与 prompts 的 yaml"
+      },
+      {
+        "name": "scripts/prepare.sh",
+        "purpose_zh": "准备 benchcard 评测卡"
+      },
+      {
+        "name": "experiments/single",
+        "purpose_zh": "单次实验基线"
+      },
+      {
+        "name": "experiments/agent",
+        "purpose_zh": "带 agent 的实验"
+      },
+      {
+        "name": "experiments/iterative",
+        "purpose_zh": "自改进迭代实验"
+      },
+      {
+        "name": "experiments/single-ws",
+        "purpose_zh": "去掉结构化 IR 的对照实验"
+      }
+    ],
+    "arch_pattern": "自适应自改进 Agent + 结构化 IR（benchcard）+ 脚本化实验矩阵",
+    "arch_notes_zh": "README 极短，只给出脚本级流程：先跑 validate.sh 校验 /benchmark 与 /prompts 下的 test 与 reference yaml，再跑 prepare.sh 生成 benchcard，然后按 single、agent、iterative、single-ws 四种模式执行实验。实验矩阵用「有无 agent / 有无迭代 / 有无结构化 IR」三个正交开关组合，single-ws 即「single without structural IR」的消融对照，说明结构化 IR 是该系统的关键载体。模型接入靠 MODEL_NAME 加环境变量（ANTHROPIC/OPENAI/TOGETHER/DEEPSEEK 的 base 与 key），采样数与温度可调。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "benchmark/ 下 test+reference yaml，先校验再 prepare 出 benchcard"
+    },
+    "verification": {
+      "mechanisms": [
+        "static-check",
+        "correctness"
+      ],
+      "notes_zh": "validate.sh 校验 yaml，reference yaml 作为正确性对照"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 自改进，agent 与 iterative 两种实验模式",
+      "memory_zh": "结构化 IR/benchcard 承载历史经验",
+      "feedback_zh": "benchmark 得分作为反馈信号"
+    },
+    "hardware": [],
+    "hardware_arch": [],
+    "base_layer": [
+      "None"
+    ],
+    "engineering_practices": [
+      "实验全部脚本化（experiments/*/run.sh），模式之间只换入口脚本便于横向对比",
+      "validate + prepare 两步前置校验，先确保 test/reference yaml 合法再产出 benchcard",
+      "提供 single-ws 消融版本对照结构化 IR 的贡献",
+      "模型接入统一为 MODEL_NAME + API base/key 环境变量，可换多种 LLM",
+      "提示把 BASE_PATH 指向非 git 目录，避免 git logging 使并行采样慢 10 倍以上",
+      "NUM_SAMPLES 与 TEMPERATURE 可调，便于做采样统计"
+    ],
+    "stated_limits": [
+      "STeP 仍是研究原型，benchmark 只发布 bmm 任务",
+      "PCL-lite 针对的是 STeP 的早期版本，最新版需参考新论文",
+      "README 只给脚本流程，未展开架构、评分口径与反馈细节"
+    ]
+  },
+  {
+    "canonical": "zhang677/PTXBench",
+    "role": "agent-loop",
+    "role_summary_zh": "GPU profiling 服务 + 多轮模型循环/编码代理网关两条 kernel 生成评测通路",
+    "entrypoints": [
+      "python multiturn/scripts/render.py --check",
+      "python multiturn/run_parallel_v2.py --config <cfg> --definition <name> --test-path <path> --model <model> --service-url http://localhost:10000",
+      "bash ptxbench-eval/examples/gemini_gemm/run_experiment.sh",
+      "bash ptxbench-eval/examples/gpt56_gemm/run_experiment.sh",
+      "bash scripts/reproduce_fixit.sh --check / 00",
+      "bash scripts/reproduce_kernelgen.sh --check / 00",
+      "curl -fsS http://localhost:10000/health"
+    ],
+    "key_modules": [
+      {
+        "name": "fib-profile/",
+        "purpose_zh": "GPU profiling 服务与数据集"
+      },
+      {
+        "name": "multiturn/",
+        "purpose_zh": "多轮模型循环与评测测试"
+      },
+      {
+        "name": "multiturn/prompts/hub.json",
+        "purpose_zh": "两条通路共享的提示词注册表"
+      },
+      {
+        "name": "ptxbench-eval/",
+        "purpose_zh": "编码代理网关、启动器与镜像"
+      },
+      {
+        "name": "experiments/fixit/",
+        "purpose_zh": "失败 kernel 修复与 SFT 流程"
+      },
+      {
+        "name": "experiments/kernelgen/",
+        "purpose_zh": "正确 kernel 推理合成与 SFT 流程"
+      },
+      {
+        "name": "experiments/shared/",
+        "purpose_zh": "run manifest、turn 导出与共享训练服务"
+      },
+      {
+        "name": "experiments/prepared/configs/",
+        "purpose_zh": "多轮循环的配置样例"
+      }
+    ],
+    "arch_pattern": "Profiling 服务 + 双通道 agent（多轮模型循环 / 编码代理网关）+ Fixit 与 KernelGen 两条 SFT 数据线",
+    "arch_notes_zh": "整套系统围绕一个 GPU profiling 服务（fib-profile，HTTP 暴露 /health）展开：多轮模型循环与编码代理网关两条通路共用同一 profiling 服务和同一 prompt hub（multiturn/prompts/hub.json），因此结果可比。runner 把一份 JSON config 展开成轨迹，产出 plan.json、trajectories、日志与成功产物，并支持 --resume 断点续跑。训练侧分两条数据线：Fixit 挑失败的基础模型 kernel 让 Gemini 修复并合成推理、训 LoRA 适配器；KernelGen 挑正确的 Gemini kernel 合成推理后走同一训练与评测路径；两者都用有序 stage 的脚本驱动并配机器可读的源/评测 manifest。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "CUDA/Triton evaluator 按 definition 跑，profiling 服务返回耗时并落产物"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime",
+        "profile"
+      ],
+      "notes_zh": "用校验和固定的输入 blob，profiling 服务实测 kernel 性能"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "多轮模型循环与编码代理网关（Codex/Gemini）两路",
+      "memory_zh": "轨迹落盘可 --resume，SFT 用合成推理数据作记忆",
+      "feedback_zh": "profiling 服务返回的 kernel 性能反馈"
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Hopper"
+    ],
+    "base_layer": [
+      "Triton",
+      "CUDA-C++"
+    ],
+    "engineering_practices": [
+      "提示词集中到 hub.json 共享注册表，render.py --check 做渲染静态校验",
+      "runner 把 JSON config 展开成轨迹并写 plan.json/日志/成功产物，--resume 支持续跑",
+      "评测环境用 docker 镜像固定（Dockerfile.eval 构建 ptxbench-multiturn-eval）",
+      "SFT 用分阶段脚本 reproduce_fixit.sh / reproduce_kernelgen.sh 驱动并支持 --check 预检",
+      "实验用 experiment.json 声明 prompt tag、模型、负载与限额，便于复制变体",
+      "profiling 服务独立成 HTTP 服务，模型可用 --service-url 或 Modal 远程接入",
+      "两条 agent 通路共用同一评测测试脚本与 prompt，保证可比性"
+    ],
+    "stated_limits": [
+      "仓库仍在建设中，不含论文结果、绘图或完整实验矩阵",
+      "需 Python 3.12、Docker、tmux 与 H100 主机；SFT 导出还需 host nvcc、cuobjdump 与 TVM-FFI",
+      "SFT 依赖 Tinker 账号与 Tinker Cookbook",
+      "本地模型服务须暴露 OpenAI 兼容接口且模型 ID 为 Qwen/Qwen3.6-27B"
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+# README 原文缓存：不提交，避免第三方 README 的版权与再分发问题
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store

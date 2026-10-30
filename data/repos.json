@@ -1,0 +1,7147 @@
+{
+  "schema": 1,
+  "landscape_snapshot": "2026-10-30",
+  "counts": {
+    "github_repos": 61,
+    "huggingface_artifacts": 10,
+    "other_host_artifacts": 1
+  },
+  "repos": [
+    {
+      "canonical": "0satan0/KernelMem",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/0satan0/KernelMem",
+      "org": "0satan0",
+      "org_type": "User",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 855773,
+          "percent": 100.0
+        }
+      ],
+      "stars": 31,
+      "forks": 5,
+      "open_issues": 2,
+      "created_at": "2026-01-29T06:05:40Z",
+      "pushed_at": "2026-02-14T03:32:52Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "agents",
+        "KernelBench",
+        "memorybank",
+        "prompts",
+        "scripts",
+        "utils"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "PyTorch → 记忆辅助 CUDA 优化",
+      "summary": "以长期专家知识和短期任务轨迹两层记忆协调多 Agent 生成、修复及优化 CUDA kernel。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "kernelskill"
+      ],
+      "works": [
+        {
+          "work_id": "kernelskill",
+          "name": "KernelClaw / KernelSkill / KernelMem",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → 记忆辅助 CUDA 优化",
+          "summary": "以长期专家知识和短期任务轨迹两层记忆协调多 Agent 生成、修复及优化 CUDA kernel。",
+          "contribution": "将可复用优化知识与避免反复回溯的局部记忆分开，结合 NCU/NSYS 反馈形成可追踪的优化历史。",
+          "limitations": "论文v1称 KernelSkill、v2称 KernelClaw，仓库仍称 KernelMem；不同版本性能数字不混用。长期记忆内容和测试集可见范围仍需审计。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "双层记忆与多 Agent 推理，摘要未涉及模型参数训练。",
+          "budget": "README 示例 --round 10，usage.csv记录token；长期知识构建、NCU与NSYS成本需另计。",
+          "paper_id": "https://arxiv.org/abs/2603.10085",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "paper",
+              "note": "KernelSkill/KernelClaw 摘要明确报告 KernelBench Levels 1-3。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "AMD-AGI/AgentKernelArena",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/AMD-AGI/AgentKernelArena",
+      "org": "AMD-AGI",
+      "org_type": "Organization",
+      "description": "AgentKernelArena is a platform for evaluating and training AI agents for GPU kernel optimization, combining realistic tasks, correctness validation, and performance-based rewards for reinforcement learning.",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 31589329,
+          "percent": 95.8
+        },
+        {
+          "language": "HIP",
+          "bytes": 560985,
+          "percent": 1.7
+        },
+        {
+          "language": "Cuda",
+          "bytes": 420138,
+          "percent": 1.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 192615,
+          "percent": 0.6
+        },
+        {
+          "language": "C++",
+          "bytes": 132713,
+          "percent": 0.4
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 24313,
+          "percent": 0.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 15729,
+          "percent": 0.0
+        },
+        {
+          "language": "Makefile",
+          "bytes": 13410,
+          "percent": 0.0
+        }
+      ],
+      "stars": 123,
+      "forks": 18,
+      "open_issues": 13,
+      "created_at": "2026-01-16T06:18:48Z",
+      "pushed_at": "2026-10-28T23:38:16Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "agent-evaluation",
+        "gpu-kernels",
+        "llamas"
+      ],
+      "root_dirs": [
+        ".github",
+        "agents",
+        "docker",
+        "docs",
+        "example_configs",
+        "src",
+        "tasks",
+        "tests"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "Agent → GPU kernel 任务",
+      "summary": "在固定任务上评价 kernel 优化 Agent 及其泛化。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "HIP",
+        "Triton"
+      ],
+      "methods": [
+        "Agent"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "AgentKernelArena"
+      ],
+      "work_ids": [
+        "arena"
+      ],
+      "works": [
+        {
+          "work_id": "arena",
+          "name": "AgentKernelArena",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "benchmark",
+            "environment"
+          ],
+          "task": "Agent → GPU kernel 任务",
+          "summary": "在固定任务上评价 kernel 优化 Agent 及其泛化。",
+          "contribution": "提供编译、正确性、运行时间和 reward 信号，便于受控 Agent 比较。",
+          "limitations": "环境和奖励不等于完整 RL trainer；工作区隔离不能视为安全沙箱。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "HIP",
+            "Triton"
+          ],
+          "methods": [
+            "Agent"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "AgentKernelArena"
+          ],
+          "training": "RL-ready 任务环境；不将 reward 接口当作 policy-update 实现。",
+          "budget": "需固定 Agent 工具、运行权限、任务划分和总成本。",
+          "paper_id": "https://arxiv.org/abs/2605.16819",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "AMD-AGI/Apex",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/AMD-AGI/Apex",
+      "org": "AMD-AGI",
+      "org_type": "Organization",
+      "description": "Agents, and RL environment, for optimizing GPU kernels on AMD ROCm using LLM agents. Benchmarks LLM serving workloads end-to-end, profiles bottleneck kernels, optimizes them via Claude Code or Codex, and scores on compilation, correctness, and speedup.",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1491013,
+          "percent": 93.1
+        },
+        {
+          "language": "Shell",
+          "bytes": 110512,
+          "percent": 6.9
+        }
+      ],
+      "stars": 78,
+      "forks": 12,
+      "open_issues": 2,
+      "created_at": "2026-02-26T18:16:01Z",
+      "pushed_at": "2026-09-25T07:27:12Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "gpu-kernels",
+        "llamas",
+        "optimization-pipeline"
+      ],
+      "root_dirs": [
+        ".github",
+        "agents",
+        "docker",
+        "files",
+        "graders",
+        "pipeline",
+        "prompts",
+        "tests",
+        "tools"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "Serving bottleneck → ROCm kernel",
+      "summary": "面向 AMD ROCm 与 serving 瓶颈的 Agent 优化流程。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "HIP",
+        "Triton"
+      ],
+      "methods": [
+        "Agent"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "apex"
+      ],
+      "works": [
+        {
+          "work_id": "apex",
+          "name": "Apex",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "Serving bottleneck → ROCm kernel",
+          "summary": "面向 AMD ROCm 与 serving 瓶颈的 Agent 优化流程。",
+          "contribution": "将源码、文档、编译、正确性和性能反馈接入 kernel 改写。",
+          "limitations": "硬件与部署场景特定；不与 NVIDIA 上的单算子结果直接比较。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "HIP",
+            "Triton"
+          ],
+          "methods": [
+            "Agent"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [],
+          "training": "Agent / 环境接口，具体 trainer 范围以上游为准。",
+          "budget": "同时记录端到端收益与优化开销。",
+          "paper_id": "https://github.com/AMD-AGI/Apex",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "AMD-AGI/GEAK",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/AMD-AGI/GEAK",
+      "org": "AMD-AGI",
+      "org_type": "Organization",
+      "description": "Generating Efficient AI-Centric Kernels",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 4828965,
+          "percent": 75.0
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 1164922,
+          "percent": 18.1
+        },
+        {
+          "language": "Shell",
+          "bytes": 439578,
+          "percent": 6.8
+        },
+        {
+          "language": "C++",
+          "bytes": 4356,
+          "percent": 0.1
+        },
+        {
+          "language": "HIP",
+          "bytes": 2031,
+          "percent": 0.0
+        },
+        {
+          "language": "C",
+          "bytes": 657,
+          "percent": 0.0
+        }
+      ],
+      "stars": 197,
+      "forks": 69,
+      "open_issues": 65,
+      "created_at": "2025-07-30T05:34:06Z",
+      "pushed_at": "2026-10-30T01:32:49Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "brain",
+        "gpu",
+        "hip",
+        "kernel-optimization",
+        "llm",
+        "python",
+        "triton"
+      ],
+      "root_dirs": [
+        ".github",
+        "ci",
+        "docs",
+        "e2e_workflow",
+        "examples",
+        "geak",
+        "interface",
+        "kb",
+        "kernel_workflow",
+        "perf_knowledge",
+        "scripts",
+        "tools"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "算子任务 → Triton",
+      "summary": "围绕 Triton kernel 生成与执行反馈组织的优化 Agent。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "Triton",
+        "HIP",
+        "TileLang"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "GEAK-eval"
+      ],
+      "work_ids": [
+        "geak"
+      ],
+      "works": [
+        {
+          "work_id": "geak",
+          "name": "GEAK",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "算子任务 → Triton",
+          "summary": "围绕 Triton kernel 生成与执行反馈组织的优化 Agent。",
+          "contribution": "把生成、修订、正确性验证与性能评价接入迭代流程。",
+          "limitations": "AMD GPU 和特定评测设置下的结论需要保留环境上下文。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "Triton",
+            "HIP",
+            "TileLang"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "GEAK-eval"
+          ],
+          "training": "推理时 agentic 优化，不推断参数训练。",
+          "budget": "Agent 重试次数与执行反馈成本需对齐。",
+          "paper_id": "https://arxiv.org/abs/2507.23194",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "Anjiang-Wei/Astra",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/Anjiang-Wei/Astra",
+      "org": "Anjiang-Wei",
+      "org_type": "User",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 155513,
+          "percent": 80.6
+        },
+        {
+          "language": "Cuda",
+          "bytes": 37456,
+          "percent": 19.4
+        }
+      ],
+      "stars": 19,
+      "forks": 2,
+      "open_issues": 2,
+      "created_at": "2025-11-20T01:12:52Z",
+      "pushed_at": "2026-01-12T13:25:52Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "test"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "SGLang CUDA → 优化 CUDA",
+      "summary": "从 SGLang 的现成 CUDA 实现出发，让专门 Agent 协作进行生成、测试、profile 和规划。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "astra"
+      ],
+      "works": [
+        {
+          "work_id": "astra",
+          "name": "Astra",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "SGLang CUDA → 优化 CUDA",
+          "summary": "从 SGLang 的现成 CUDA 实现出发，让专门 Agent 协作进行生成、测试、profile 和规划。",
+          "contribution": "将优化任务放在实际 serving kernel 上，区别于仅从 PyTorch 模块重新生成实现的任务设定。",
+          "limitations": "SGLang 提取任务及既有 CUDA 起点与 PyTorch→CUDA 任务不同；生成测试与快速数学变换的语义覆盖仍需审计。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [],
+          "training": "零样本提示与多 Agent 推理，未训练专用模型。",
+          "budget": "README 的 --max-iterations 默认 5；应同时报告模型调用、测试生成和 profiling 成本。",
+          "paper_id": "https://arxiv.org/abs/2509.07506",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "meta-pytorch/KernelAgent",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/meta-pytorch/KernelAgent",
+      "org": "meta-pytorch",
+      "org_type": "Organization",
+      "description": "Autonomous GPU Kernel Generation & Optimization via Deep Agents",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1470244,
+          "percent": 96.4
+        },
+        {
+          "language": "Jinja",
+          "bytes": 54293,
+          "percent": 3.6
+        }
+      ],
+      "stars": 610,
+      "forks": 101,
+      "open_issues": 16,
+      "created_at": "2025-07-10T20:02:09Z",
+      "pushed_at": "2026-09-08T13:25:17Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "assets",
+        "examples",
+        "Fuser",
+        "kernel_perf_agent",
+        "oink",
+        "scripts",
+        "tests",
+        "triton_kernel_agent",
+        "utils"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "PyTorch → 优化 GPU kernel",
+      "summary": "使用多 Agent 与硬件反馈生成、诊断和优化 GPU kernel。",
+      "hardware": [
+        "NVIDIA",
+        "Intel"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "kernelagent"
+      ],
+      "works": [
+        {
+          "work_id": "kernelagent",
+          "name": "KernelAgent",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → 优化 GPU kernel",
+          "summary": "使用多 Agent 与硬件反馈生成、诊断和优化 GPU kernel。",
+          "contribution": "将任务拆分、实现、执行验证和性能诊断组织为工具循环。",
+          "limitations": "名称与架构会随项目版本演进；历史 KernelFalcon 描述不能直接覆盖当前实现。",
+          "hardware": [
+            "NVIDIA",
+            "Intel"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "推理时 Agent 工作流。",
+          "budget": "需要保存工具调用、并行候选和 profile 预算。",
+          "paper_id": "https://github.com/meta-pytorch/KernelAgent",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "mindspore-ai/akg",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/mindspore-ai/akg",
+      "org": "mindspore-ai",
+      "org_type": "Organization",
+      "description": "AKG (Auto Kernel Generator) is an optimizer for operators in Deep Learning Networks, which provides the ability to automatically fuse ops with specific patterns.",
+      "homepage": "https://gitee.com/mindspore/akg",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 7139837,
+          "percent": 52.6
+        },
+        {
+          "language": "C++",
+          "bytes": 4785634,
+          "percent": 35.3
+        },
+        {
+          "language": "MLIR",
+          "bytes": 1232956,
+          "percent": 9.1
+        },
+        {
+          "language": "Jinja",
+          "bytes": 214823,
+          "percent": 1.6
+        },
+        {
+          "language": "CMake",
+          "bytes": 107927,
+          "percent": 0.8
+        },
+        {
+          "language": "Shell",
+          "bytes": 61192,
+          "percent": 0.5
+        },
+        {
+          "language": "C",
+          "bytes": 13168,
+          "percent": 0.1
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 10424,
+          "percent": 0.1
+        }
+      ],
+      "stars": 264,
+      "forks": 48,
+      "open_issues": 9,
+      "created_at": "2020-06-22T08:09:05Z",
+      "pushed_at": "2026-10-29T20:15:38Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".gitcode",
+        ".github",
+        ".jenkins",
+        "akg-mlir",
+        "akg_agents",
+        "docs",
+        "mfusion"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "算子任务 → 多后端 kernel",
+      "summary": "以模块化多 Agent 组织 kernel 生成、迁移及调优，面向多种 DSL 与 GPU/NPU 后端。",
+      "hardware": [
+        "NVIDIA",
+        "Ascend",
+        "CPU",
+        "Other"
+      ],
+      "languages": [
+        "Triton",
+        "TileLang",
+        "CUDA",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "akg-agent"
+      ],
+      "works": [
+        {
+          "work_id": "akg-agent",
+          "name": "AKG kernel Agent",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "算子任务 → 多后端 kernel",
+          "summary": "以模块化多 Agent 组织 kernel 生成、迁移及调优，面向多种 DSL 与 GPU/NPU 后端。",
+          "contribution": "支持 Triton、TileLang、C++、CUDA-C 等目标的接入；当前仓库明确区分 AKG-AGENT 与传统 AKG-MLIR 编译器。",
+          "limitations": "2020年 AKG 总仓库创建日不是 LLM Agent 的首发日；论文支持语言与当前 Ascend/SWFT 子项目覆盖应分开核查。",
+          "hardware": [
+            "NVIDIA",
+            "Ascend",
+            "CPU",
+            "Other"
+          ],
+          "languages": [
+            "Triton",
+            "TileLang",
+            "CUDA",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "多 Agent 合成和调优；未推断专用模型训练。",
+          "budget": "需按后端保存生成、迁移、重试和测量预算，不能把总仓库支持硬件当作统一完成的实验。",
+          "paper_id": "https://arxiv.org/abs/2512.23424",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "paper",
+              "note": "AKG kernel Agent 摘要明确在 KernelBench 上用 Triton 评价。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "OptimAI-Lab/CudaForge",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/OptimAI-Lab/CudaForge",
+      "org": "OptimAI-Lab",
+      "org_type": "Organization",
+      "description": "Official Repo of CudaForge",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 620548,
+          "percent": 100.0
+        }
+      ],
+      "stars": 94,
+      "forks": 16,
+      "open_issues": 2,
+      "created_at": "2025-10-23T20:56:23Z",
+      "pushed_at": "2025-12-02T20:18:42Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "agents",
+        "KernelBench",
+        "pic",
+        "prompts",
+        "scripts",
+        "utils"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "PyTorch → CUDA 生成与优化",
+      "summary": "以 Coder 与 Judge 两类 Agent 结合正确性测试和 Nsight Compute 指标，迭代改写 CUDA kernel。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "cudaforge"
+      ],
+      "works": [
+        {
+          "work_id": "cudaforge",
+          "name": "CudaForge",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → CUDA 生成与优化",
+          "summary": "以 Coder 与 Judge 两类 Agent 结合正确性测试和 Nsight Compute 指标，迭代改写 CUDA kernel。",
+          "contribution": "明确采用无需训练的工作流，将硬件瓶颈分析转为代码修订，并检查多 GPU、多基础模型设置。",
+          "limitations": "成本来自特定模型、RTX6000 和任务配置；跨 GPU 测试不等于同一生成 kernel 无需重新优化即可移植。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "论文明确 training-free。",
+          "budget": "README 示例 --round 10；摘要给单项约26.5分钟和0.3美元 API 成本，仅作该设置个案。",
+          "paper_id": "https://arxiv.org/abs/2511.01884",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "paper",
+              "note": "CudaForge 摘要明确报告 KernelBench 结果。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "RightNow-AI/autokernel",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/RightNow-AI/autokernel",
+      "org": "RightNow-AI",
+      "org_type": "Organization",
+      "description": "Autoresearch for GPU kernels. Give it any PyTorch model, go to sleep, wake up to optimized Triton kernels.",
+      "homepage": "https://www.rightnowai.co/forge",
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 449957,
+          "percent": 100.0
+        }
+      ],
+      "stars": 1614,
+      "forks": 162,
+      "open_issues": 15,
+      "created_at": "2026-03-11T00:12:46Z",
+      "pushed_at": "2026-10-23T02:35:40Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "autoresearch",
+        "cuda",
+        "gpu",
+        "kernel-optimization",
+        "pytorch",
+        "triton"
+      ],
+      "root_dirs": [
+        "examples",
+        "kernelbench",
+        "kernels",
+        "models"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "PyTorch模型 → 瓶颈提取与kernel替换",
+      "summary": "从 PyTorch 模型 profile 定位瓶颈，按 Amdahl 定律决定优化顺序，再循环改写 Triton/CUDA kernel。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton",
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "autokernel"
+      ],
+      "works": [
+        {
+          "work_id": "autokernel",
+          "name": "AutoKernel",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "PyTorch模型 → 瓶颈提取与kernel替换",
+          "summary": "从 PyTorch 模型 profile 定位瓶颈，按 Amdahl 定律决定优化顺序，再循环改写 Triton/CUDA kernel。",
+          "contribution": "提供形状扫描、数值稳定性、确定性和边界输入等五阶段检查，并在优化后重新接入模型验证。",
+          "limitations": "README 的大量循环预算不能与单次生成直接比较；已测试配置的验证不构成任意模型及输入语义保证。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton",
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "外部编码 Agent 运行实验循环，不包含参数训练。",
+          "budget": "README称每实验约90秒、KernelBench每任务50–300+次；需报告实际终止条件及端到端收益。",
+          "paper_id": "https://arxiv.org/abs/2603.21331",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "uses",
+              "kind": "repository",
+              "note": "AutoKernel README 明确集成 KernelBench bridge 与 scorer。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "taratt/cutegen",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/taratt/cutegen",
+      "org": "taratt",
+      "org_type": "User",
+      "description": "An LLM-Based Agentic Framework for Generation and Optimization of High-Performance GPU Kernels using CuTe",
+      "homepage": null,
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 879271,
+          "percent": 99.2
+        },
+        {
+          "language": "Shell",
+          "bytes": 7511,
+          "percent": 0.8
+        }
+      ],
+      "stars": 7,
+      "forks": 2,
+      "open_issues": 0,
+      "created_at": "2026-05-27T18:01:56Z",
+      "pushed_at": "2026-09-04T11:59:06Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".idea",
+        "cutegen",
+        "exports",
+        "KernelBench",
+        "saved_nodes",
+        "scripts"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "PyTorch → CuTe kernel",
+      "summary": "在 CuTe 抽象层运行生成、测试、修订循环，等高层结构稳定后再提供底层 profile。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "cutegen"
+      ],
+      "works": [
+        {
+          "work_id": "cutegen",
+          "name": "CuTeGen",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → CuTe kernel",
+          "summary": "在 CuTe 抽象层运行生成、测试、修订循环，等高层结构稳定后再提供底层 profile。",
+          "contribution": "把目标表示选择与延迟 profiling 联合设计，研究更稳定的平铺和数据搬运优化。",
+          "limitations": "论文的209个 Level-1/2 任务属特定版本；当前仓库另含PTX/Triton流程，不将其作为原论文同等验证的结果。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "推理时 Agent 循环，未提出模型参数训练。",
+          "budget": "需报告延迟profile前后轮数和token；README提供TOKEN_USAGE_CSV_PATH并保留候选节点。",
+          "paper_id": "https://arxiv.org/abs/2604.01489",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "paper",
+              "note": "CuTeGen 摘要明确在 KernelBench Level-1/Level-2 的209个任务上评价。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "zhang677/AccelOpt",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/zhang677/AccelOpt",
+      "org": "zhang677",
+      "org_type": "User",
+      "description": "[MLSys 2026] AccelOpt: Self-improving Agents for AI Accelerator Kernel Optimization",
+      "homepage": "https://ppl.stanford.edu/accelopt.html",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 616200,
+          "percent": 90.7
+        },
+        {
+          "language": "Shell",
+          "bytes": 63494,
+          "percent": 9.3
+        }
+      ],
+      "stars": 79,
+      "forks": 8,
+      "open_issues": 1,
+      "created_at": "2025-12-10T21:04:55Z",
+      "pushed_at": "2026-07-28T22:43:11Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "accelopt",
+        "experiments",
+        "img",
+        "NKIBench",
+        "prompts",
+        "samples",
+        "scripts",
+        "skills",
+        "templates",
+        "tests"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "已有 kernel → 记忆辅助优化",
+      "summary": "从慢快 kernel 对中积累优化记忆，驱动新兴 AI 加速器上的 Agent 反复优化。",
+      "hardware": [
+        "Trainium",
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "NKIBench",
+        "FlashInfer-Bench"
+      ],
+      "work_ids": [
+        "accelopt"
+      ],
+      "works": [
+        {
+          "work_id": "accelopt",
+          "name": "AccelOpt",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "已有 kernel → 记忆辅助优化",
+          "summary": "从慢快 kernel 对中积累优化记忆，驱动新兴 AI 加速器上的 Agent 反复优化。",
+          "contribution": "以 AWS Trainium 的 NKIBench 和性能上限估计检验跨任务经验积累；当前仓库另提供 H100/FlashInfer 流程。",
+          "limitations": "记忆的跨任务可见范围影响公平比较；Trainium 论文结果与后续 H100 Fixer 实现需要分别记录。",
+          "hardware": [
+            "Trainium",
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "NKIBench",
+            "FlashInfer-Bench"
+          ],
+          "training": "自改进指优化记忆积累；摘要未说明参数训练。",
+          "budget": "应区分记忆构建与单任务推理成本；模型价格、GPU执行和 profile 服务费用单列。",
+          "paper_id": "https://arxiv.org/abs/2511.15915",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "flashinfer-bench",
+              "type": "evaluated_on",
+              "kind": "repository",
+              "note": "AccelOpt 官方 README 明确提供 FlashInfer-Bench 实验流程；论文主要报告 NKIBench，二者需分开计量。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "zhang677/PCL-lite",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/zhang677/PCL-lite",
+      "org": "zhang677",
+      "org_type": "User",
+      "description": "[ICML 2025] Adaptive Self-improvement LLM Agentic System for ML Library Development",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 216649,
+          "percent": 98.4
+        },
+        {
+          "language": "Shell",
+          "bytes": 3470,
+          "percent": 1.6
+        }
+      ],
+      "stars": 17,
+      "forks": 3,
+      "open_issues": 1,
+      "created_at": "2024-12-02T23:09:13Z",
+      "pushed_at": "2026-01-06T05:49:03Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "benchmark",
+        "experiments",
+        "prompts",
+        "reinforce",
+        "scripts",
+        "step",
+        "tools"
+      ],
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "task": "ML 库任务 → STeP ASPL",
+      "summary": "在样例稀少的架构专用语言上，通过自改进 Agent 构造机器学习库实现。",
+      "hardware": [
+        "Other"
+      ],
+      "languages": [
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "aspl"
+      ],
+      "works": [
+        {
+          "work_id": "aspl",
+          "name": "ASPL self-improvement / PCL-lite",
+          "group": "agent",
+          "group_label": "Agent 与环境",
+          "roles": [
+            "method"
+          ],
+          "task": "ML 库任务 → STeP ASPL",
+          "summary": "在样例稀少的架构专用语言上，通过自改进 Agent 构造机器学习库实现。",
+          "contribution": "以 STeP 语言及库任务研究复杂推理与有限示例下的程序开发，提供单次、Agent 与迭代自改进实验入口。",
+          "limitations": "官方 README 明确目标是早期研究版 STeP，公开 benchmark 仅包含 bmm 任务；不能当作通用 CUDA 评测。",
+          "hardware": [
+            "Other"
+          ],
+          "languages": [
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "自改进 Agent 流程；未据名称推断更新模型参数。",
+          "budget": "README 允许调整 NUM_SAMPLES 与 TEMPERATURE；应报告迭代次数、并行样本和总 token。",
+          "paper_id": "https://arxiv.org/abs/2502.02534",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "aisa-group/InferenceBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/aisa-group/InferenceBench",
+      "org": "aisa-group",
+      "org_type": "Organization",
+      "description": "Benchmarking Open-Ended Inference Optimization by AI Agents",
+      "homepage": "https://inferencebench.ai/",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 190949,
+          "percent": 63.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 105945,
+          "percent": 35.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 4597,
+          "percent": 1.5
+        }
+      ],
+      "stars": 50,
+      "forks": 8,
+      "open_issues": 1,
+      "created_at": "2026-04-30T12:33:43Z",
+      "pushed_at": "2026-10-26T00:04:33Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "ai-evals",
+        "ai-research-automation",
+        "ai-safety",
+        "benchmarks",
+        "claude-code",
+        "codex-cli",
+        "sglang",
+        "vllm"
+      ],
+      "root_dirs": [
+        "agents",
+        "containers",
+        "src"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "目标模型与服务场景 → 优化推理服务器",
+      "summary": "在固定时间和 GPU 预算下评估 Agent 部署并优化 LLM 推理服务。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Other"
+      ],
+      "methods": [
+        "Agent"
+      ],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "InferenceBench"
+      ],
+      "work_ids": [
+        "inferencebench"
+      ],
+      "works": [
+        {
+          "work_id": "inferencebench",
+          "name": "InferenceBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "environment"
+          ],
+          "task": "目标模型与服务场景 → 优化推理服务器",
+          "summary": "在固定时间和 GPU 预算下评估 Agent 部署并优化 LLM 推理服务。",
+          "contribution": "区分 prefill、decode、并发吞吐和综合场景，提供开放策略空间与同预算搜索参照。",
+          "limitations": "优化可来自引擎选择和参数调整，因此它是系统级 Agent benchmark，不能将总成绩解释为自写 kernel 质量。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Other"
+          ],
+          "methods": [
+            "Agent"
+          ],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "InferenceBench"
+          ],
+          "training": "评测任务，不是 kernel 生成训练方法。",
+          "budget": "论文设置为单 H100、两小时；比较时同时固定服务负载、搜索预算和硬件资源。",
+          "paper_id": "https://arxiv.org/abs/2607.20468",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "alibaba/atrex-bench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/alibaba/atrex-bench",
+      "org": "alibaba",
+      "org_type": "Organization",
+      "description": "End-to-end benchmark for AI-generated GPU kernels, drawn from real production traces — turn a PyTorch reference into a DSL kernel (Triton, Gluon, FlyDSL, CuteDSL) and grade it on compilation, numerical correctness, and speed-of-light efficiency, on both AMD and NVIDIA GPUs.",
+      "homepage": "https://alibaba.github.io/atrex-bench/",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1185679,
+          "percent": 91.7
+        },
+        {
+          "language": "Astro",
+          "bytes": 91584,
+          "percent": 7.1
+        },
+        {
+          "language": "Shell",
+          "bytes": 12361,
+          "percent": 1.0
+        },
+        {
+          "language": "CSS",
+          "bytes": 1857,
+          "percent": 0.1
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 1013,
+          "percent": 0.1
+        },
+        {
+          "language": "TypeScript",
+          "bytes": 747,
+          "percent": 0.1
+        }
+      ],
+      "stars": 38,
+      "forks": 14,
+      "open_issues": 2,
+      "created_at": "2026-06-18T07:42:01Z",
+      "pushed_at": "2026-10-29T09:46:29Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "agent",
+        "amd-gpus",
+        "benchmark-suite",
+        "domain-specific-languages",
+        "kernel-generation",
+        "nvidia-gpus",
+        "production-trace"
+      ],
+      "root_dirs": [
+        ".github",
+        "assets",
+        "configs",
+        "data",
+        "docker",
+        "docs",
+        "prompt",
+        "scripts",
+        "site",
+        "src",
+        "tests"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "生产 trace → 加权 kernel 正确性与性能评测",
+      "summary": "用生产推理 trace 的算子和形状衡量生成 kernel 的实际重要性。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "Triton",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "Atrex-Bench"
+      ],
+      "work_ids": [
+        "atrex-bench"
+      ],
+      "works": [
+        {
+          "work_id": "atrex-bench",
+          "name": "Atrex-Bench / Atrex-Kernel-Agent",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "method"
+          ],
+          "task": "生产 trace → 加权 kernel 正确性与性能评测",
+          "summary": "用生产推理 trace 的算子和形状衡量生成 kernel 的实际重要性。",
+          "contribution": "将 GPU 时间占比、应用卡时和服务阶段纳入权重，并以逐题 roofline 衡量效率；同文给出 profile 驱动优化 Agent。",
+          "limitations": "trace 来自特定生产集群与硬件配置，其权重不能直接移用到其他部署；还需排查 PyTorch fallback 对通过率的贡献。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "Triton",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "Atrex-Bench"
+          ],
+          "training": "Agent 为执行反馈搜索，不据此认定参数训练。",
+          "budget": "固定 trace 权重、服务阶段、fallback 规则及迭代预算；知识库与 profiling 成本须计入。",
+          "paper_id": "https://arxiv.org/abs/2607.14541",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "AMDResearch/NPUEval",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/AMDResearch/NPUEval",
+      "org": "AMDResearch",
+      "org_type": "Organization",
+      "description": "NPUEval is an LLM evaluation dataset written specifically to target AIE kernel code generation on RyzenAI hardware.",
+      "homepage": "https://amdresearch.github.io/NPUEval/",
+      "license": null,
+      "license_name": null,
+      "primary_language": "C++",
+      "language_breakdown": [
+        {
+          "language": "C++",
+          "bytes": 265332,
+          "percent": 41.0
+        },
+        {
+          "language": "Jupyter Notebook",
+          "bytes": 213131,
+          "percent": 32.9
+        },
+        {
+          "language": "Python",
+          "bytes": 161529,
+          "percent": 24.9
+        },
+        {
+          "language": "Shell",
+          "bytes": 7450,
+          "percent": 1.2
+        },
+        {
+          "language": "Makefile",
+          "bytes": 171,
+          "percent": 0.0
+        }
+      ],
+      "stars": 34,
+      "forks": 5,
+      "open_issues": 4,
+      "created_at": "2025-03-17T16:24:59Z",
+      "pushed_at": "2025-11-08T00:55:17Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "benchmark",
+        "codegen",
+        "kernels",
+        "llm",
+        "npu",
+        "optimization"
+      ],
+      "root_dirs": [
+        ".github",
+        "dataset",
+        "demo",
+        "docker",
+        "docs",
+        "notebooks",
+        "npueval",
+        "rag",
+        "scripts"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "算子任务 → AIE C++ kernel",
+      "summary": "在 AMD RyzenAI NPU 上评估 AIE 向量化 kernel 生成。",
+      "hardware": [
+        "AMD",
+        "Other"
+      ],
+      "languages": [
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "NPUEval"
+      ],
+      "work_ids": [
+        "npueval"
+      ],
+      "works": [
+        {
+          "work_id": "npueval",
+          "name": "NPUEval",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "dataset"
+          ],
+          "task": "算子任务 → AIE C++ kernel",
+          "summary": "在 AMD RyzenAI NPU 上评估 AIE 向量化 kernel 生成。",
+          "contribution": "结合真实 NPU 执行、功能正确性与向量化效率，检验训练语料较少的专用架构。",
+          "limitations": "官方 README 限定 AIE2/AIE2P 和单输出 kernel；并非 Ascend 的 NPUKernelBench，也不是通用 GPU 评测。",
+          "hardware": [
+            "AMD",
+            "Other"
+          ],
+          "languages": [
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "NPUEval"
+          ],
+          "training": "benchmark 与 AIECoder 调用流程，不据此认定有参数训练。",
+          "budget": "固定 AIE 架构、编译工具链、反馈轮数和真实设备执行成本。",
+          "paper_id": "https://arxiv.org/abs/2507.14403",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "BonnieW05/KernelBenchX",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/BonnieW05/KernelBenchX",
+      "org": "BonnieW05",
+      "org_type": "User",
+      "description": "KernelBenchX: A Comprehensive Benchmark for Evaluating LLM-Generated GPU Kernels",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 969085,
+          "percent": 98.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 14933,
+          "percent": 1.5
+        }
+      ],
+      "stars": 54,
+      "forks": 1,
+      "open_issues": 1,
+      "created_at": "2026-05-06T02:19:52Z",
+      "pushed_at": "2026-06-01T15:47:50Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "data",
+        "EVAL",
+        "examples",
+        "metrics",
+        "scripts",
+        "utils"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "Triton 候选 → 分类别正确性与效率评测",
+      "summary": "按算子类别分析 Triton 生成在正确性与硬件效率上的失效点。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBenchX"
+      ],
+      "work_ids": [
+        "kernelbenchx"
+      ],
+      "works": [
+        {
+          "work_id": "kernelbenchx",
+          "name": "KernelBenchX",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "Triton 候选 → 分类别正确性与效率评测",
+          "summary": "按算子类别分析 Triton 生成在正确性与硬件效率上的失效点。",
+          "contribution": "提供 176 个任务、15 个类别和 call → exe → perf 评测，并用 GPU 特定 golden timing 区分可编译、数值正确与效率。",
+          "limitations": "任务类别解释方差来自五种方法与当前任务集；量化 0/30 等结论不能外推到所有模型或后续版本。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBenchX"
+          ],
+          "training": "评测 harness 与数据，不提供训练器。",
+          "budget": "golden baseline 按 GPU 型号解析；比较时需固定机器、任务类别和迭代轮次。",
+          "paper_id": "https://arxiv.org/abs/2605.04956",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "CUDA-Bench/CUDABench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/CUDA-Bench/CUDABench",
+      "org": "CUDA-Bench",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 82612,
+          "percent": 100.0
+        }
+      ],
+      "stars": 20,
+      "forks": 3,
+      "open_issues": 0,
+      "created_at": "2026-02-09T08:27:08Z",
+      "pushed_at": "2026-03-04T08:14:33Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "Datasets",
+        "Evaluate",
+        "figs",
+        "Generate"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "自然语言 → CUDA",
+      "summary": "以自然语言任务而非仅以高层框架代码为输入评测 CUDA 生成。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "CUDABench"
+      ],
+      "work_ids": [
+        "cudabench"
+      ],
+      "works": [
+        {
+          "work_id": "cudabench",
+          "name": "CUDABench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "自然语言 → CUDA",
+          "summary": "以自然语言任务而非仅以高层框架代码为输入评测 CUDA 生成。",
+          "contribution": "区分编译通过、执行一致性和 roofline 性能，并通过不同提示细节层次诊断算法与实现能力。",
+          "limitations": "生成式验证的测试覆盖及 roofline 假设仍需审查；编译率不能替代正确率，提示难度也不能与代码翻译任务直接对齐。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "CUDABench"
+          ],
+          "training": "评测框架与数据，不是统一训练方案。",
+          "budget": "同时固定提示层次、每题采样数量、验证器与 Nsight Compute 测量开销。",
+          "paper_id": "https://arxiv.org/abs/2603.02236",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "facebookresearch/kernel_bench_verified",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/facebookresearch/kernel_bench_verified",
+      "org": "facebookresearch",
+      "org_type": "Organization",
+      "description": "Welcome to KernelBench-Verified. This repository provides a robust, realistic evaluation framework for assessing custom CUDA kernels generated by Large Language Models (LLMs).",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1226880,
+          "percent": 99.9
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 1249,
+          "percent": 0.1
+        }
+      ],
+      "stars": 16,
+      "forks": 3,
+      "open_issues": 2,
+      "created_at": "2026-06-15T21:13:24Z",
+      "pushed_at": "2026-07-17T20:13:48Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "docs",
+        "hidden_tests",
+        "KernelBench",
+        "scripts",
+        "src",
+        "stripped_prompts"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "生成 CUDA kernel → 可靠性复核",
+      "summary": "关注隐藏输入、TF32 baseline 和内存效率的严格评测。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "verified"
+      ],
+      "works": [
+        {
+          "work_id": "verified",
+          "name": "KernelBench-Verified",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "生成 CUDA kernel → 可靠性复核",
+          "summary": "关注隐藏输入、TF32 baseline 和内存效率的严格评测。",
+          "contribution": "将输入盲生成与稳健性检查加入生成 CUDA kernel 的结果验证。",
+          "limitations": "扩展评测不能替代对不受信任代码的安全隔离；适用条件以仓库版本为准。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "评测，不包含模型训练。",
+          "budget": "隐藏输入通过率和内存开销应独立报告。",
+          "paper_id": "https://github.com/facebookresearch/kernel_bench_verified",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "flagos-ai/KernelGenBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/flagos-ai/KernelGenBench",
+      "org": "flagos-ai",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 2890979,
+          "percent": 98.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 34328,
+          "percent": 1.2
+        },
+        {
+          "language": "Cuda",
+          "bytes": 7552,
+          "percent": 0.3
+        },
+        {
+          "language": "C++",
+          "bytes": 884,
+          "percent": 0.0
+        },
+        {
+          "language": "C",
+          "bytes": 697,
+          "percent": 0.0
+        },
+        {
+          "language": "Nix",
+          "bytes": 273,
+          "percent": 0.0
+        }
+      ],
+      "stars": 25,
+      "forks": 7,
+      "open_issues": 3,
+      "created_at": "2026-05-24T13:26:50Z",
+      "pushed_at": "2026-09-28T09:53:18Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "agent_bench",
+        "docs",
+        "paper",
+        "requirements",
+        "scripts",
+        "sota_agents",
+        "src",
+        "tests"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "多来源算子 → 多硬件 Triton kernel",
+      "summary": "以共同 Triton 目标研究算子来源和硬件平台变化时的生成能力与成本。",
+      "hardware": [
+        "NVIDIA",
+        "Ascend",
+        "Other"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelGenBench"
+      ],
+      "work_ids": [
+        "kernelgenbench"
+      ],
+      "works": [
+        {
+          "work_id": "kernelgenbench",
+          "name": "KernelGenBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "environment"
+          ],
+          "task": "多来源算子 → 多硬件 Triton kernel",
+          "summary": "以共同 Triton 目标研究算子来源和硬件平台变化时的生成能力与成本。",
+          "contribution": "分离多来源与多芯片两条受控评测视角，覆盖 ATen、vLLM、cuBLAS 来源和多个厂商平台，并统计成功算子的 token 成本。",
+          "limitations": "通用语言不消除硬件工具链差异；跨来源和跨芯片任务子集不同，不能将所有分数拼为同一排行榜。",
+          "hardware": [
+            "NVIDIA",
+            "Ascend",
+            "Other"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelGenBench"
+          ],
+          "training": "LLM Pass@K 与 Agent 迭代评测，不是统一训练器。",
+          "budget": "分别报告多来源/多芯片轨道、成功率、成功算子的 token 成本和失败消耗。",
+          "paper_id": "https://arxiv.org/abs/2607.27231",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "flashinfer-ai/flashinfer-bench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/flashinfer-ai/flashinfer-bench",
+      "org": "flashinfer-ai",
+      "org_type": "Organization",
+      "description": "Building the Virtuous Cycle for AI-driven LLM Systems",
+      "homepage": "https://bench.flashinfer.ai",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1116938,
+          "percent": 76.6
+        },
+        {
+          "language": "TypeScript",
+          "bytes": 316183,
+          "percent": 21.7
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 8972,
+          "percent": 0.6
+        },
+        {
+          "language": "CSS",
+          "bytes": 8564,
+          "percent": 0.6
+        },
+        {
+          "language": "Shell",
+          "bytes": 8121,
+          "percent": 0.6
+        }
+      ],
+      "stars": 301,
+      "forks": 52,
+      "open_issues": 74,
+      "created_at": "2025-06-30T23:55:54Z",
+      "pushed_at": "2026-09-25T20:05:00Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".claude",
+        ".github",
+        "docs",
+        "examples",
+        "flashinfer_bench",
+        "licenses",
+        "scripts",
+        "tests",
+        "thirdparty",
+        "tools",
+        "web"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "Serving workload → kernel 评测",
+      "summary": "面向 LLM serving kernel 的持续评测与优化基础设施。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "FlashInfer-Bench"
+      ],
+      "work_ids": [
+        "flashinfer-bench"
+      ],
+      "works": [
+        {
+          "work_id": "flashinfer-bench",
+          "name": "FlashInfer-Bench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "Serving workload → kernel 评测",
+          "summary": "面向 LLM serving kernel 的持续评测与优化基础设施。",
+          "contribution": "连接实际工作负载、kernel 提交、验证与部署相关评价。",
+          "limitations": "kernel-level 改善不能直接等同于服务端到端收益；性能依赖特定 workload。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "FlashInfer-Bench"
+          ],
+          "training": "评测基础设施与任务。",
+          "budget": "应记录测试硬件和服务轨迹的适用范围。",
+          "paper_id": "https://arxiv.org/abs/2601.00227",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ISO-Bench/ISO-Bench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ISO-Bench/ISO-Bench",
+      "org": "ISO-Bench",
+      "org_type": "User",
+      "description": "A benchmark framework for evaluating AI agents on software performance optimization tasks",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 507686688,
+          "percent": 84.1
+        },
+        {
+          "language": "Cuda",
+          "bytes": 60946034,
+          "percent": 10.1
+        },
+        {
+          "language": "C++",
+          "bytes": 22086090,
+          "percent": 3.7
+        },
+        {
+          "language": "Shell",
+          "bytes": 4387313,
+          "percent": 0.7
+        },
+        {
+          "language": "C",
+          "bytes": 3393601,
+          "percent": 0.6
+        },
+        {
+          "language": "Jinja",
+          "bytes": 2202859,
+          "percent": 0.4
+        },
+        {
+          "language": "CMake",
+          "bytes": 2136204,
+          "percent": 0.4
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 600186,
+          "percent": 0.1
+        }
+      ],
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "created_at": "2026-01-29T11:44:12Z",
+      "pushed_at": "2026-01-29T11:53:50Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".vscode",
+        "archive",
+        "configs",
+        "data",
+        "docs",
+        "hf_cache",
+        "ISO-Bench",
+        "scripts",
+        "src",
+        "third-party",
+        "tools"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "代码库 + 瓶颈描述 → 推理系统优化 patch",
+      "summary": "从 vLLM 与 SGLang 的实际优化提交构造代码库级性能修复任务。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Other"
+      ],
+      "methods": [
+        "Agent"
+      ],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "ISO-Bench"
+      ],
+      "work_ids": [
+        "iso-bench"
+      ],
+      "works": [
+        {
+          "work_id": "iso-bench",
+          "name": "ISO-Bench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "代码库 + 瓶颈描述 → 推理系统优化 patch",
+          "summary": "从 vLLM 与 SGLang 的实际优化提交构造代码库级性能修复任务。",
+          "contribution": "让 Agent 从瓶颈描述生成 patch，结合执行指标和 LLM 评审判断是否满足优化意图。",
+          "limitations": "并非每个任务都要求编写 kernel；软指标有评审偏差，运行指标也可能被利用，需结合真实代码变化审查。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Other"
+          ],
+          "methods": [
+            "Agent"
+          ],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "ISO-Bench"
+          ],
+          "training": "Agent 系统评测，不是模型训练器。",
+          "budget": "固定历史代码状态、依赖、硬件、Agent 工具和 patch 生成总预算。",
+          "paper_id": "https://arxiv.org/abs/2602.19594",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "meta-pytorch/BackendBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/meta-pytorch/BackendBench",
+      "org": "meta-pytorch",
+      "org_type": "Organization",
+      "description": "Ship correct and fast LLM kernels to PyTorch",
+      "homepage": null,
+      "license": "BSD-3-Clause",
+      "license_name": "BSD 3-Clause \"New\" or \"Revised\" License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 493518,
+          "percent": 100.0
+        }
+      ],
+      "stars": 156,
+      "forks": 19,
+      "open_issues": 38,
+      "created_at": "2025-06-24T22:44:22Z",
+      "pushed_at": "2026-01-14T23:27:46Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "BackendBench",
+        "docs",
+        "test"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "PyTorch backend → 实现与验证",
+      "summary": "评估为 PyTorch 算子编写替代 backend 的正确性与性能。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "BackendBench"
+      ],
+      "work_ids": [
+        "backendbench"
+      ],
+      "works": [
+        {
+          "work_id": "backendbench",
+          "name": "BackendBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "PyTorch backend → 实现与验证",
+          "summary": "评估为 PyTorch 算子编写替代 backend 的正确性与性能。",
+          "contribution": "把 backend 实现放回实际算子语义和执行验证中比较。",
+          "limitations": "复合算子语义、误差设置与 baseline 版本需要锁定。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "BackendBench"
+          ],
+          "training": "任务与 harness，不是完整 RL trainer。",
+          "budget": "需要固定输入、框架及测量协议。",
+          "paper_id": "https://github.com/meta-pytorch/BackendBench",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "NVIDIA/compute-eval",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/NVIDIA/compute-eval",
+      "org": "NVIDIA",
+      "org_type": "Organization",
+      "description": "Evaluating Large Language Models for CUDA Code Generation ComputeEval is a framework designed to generate and evaluate CUDA code from Large Language Models.",
+      "homepage": null,
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 293295,
+          "percent": 82.3
+        },
+        {
+          "language": "C++",
+          "bytes": 45074,
+          "percent": 12.6
+        },
+        {
+          "language": "Cuda",
+          "bytes": 9197,
+          "percent": 2.6
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 5858,
+          "percent": 1.6
+        },
+        {
+          "language": "Makefile",
+          "bytes": 1557,
+          "percent": 0.4
+        },
+        {
+          "language": "C",
+          "bytes": 1140,
+          "percent": 0.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 286,
+          "percent": 0.1
+        }
+      ],
+      "stars": 149,
+      "forks": 19,
+      "open_issues": 15,
+      "created_at": "2025-04-02T20:54:44Z",
+      "pushed_at": "2026-09-14T20:23:26Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        ".vscode",
+        "compute_eval",
+        "data",
+        "docker",
+        "docs"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "自然语言 → CUDA",
+      "summary": "用于 CUDA 代码生成的测试问题与评测工具。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "ComputeEval"
+      ],
+      "work_ids": [
+        "compute-eval"
+      ],
+      "works": [
+        {
+          "work_id": "compute-eval",
+          "name": "ComputeEval",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "自然语言 → CUDA",
+          "summary": "用于 CUDA 代码生成的测试问题与评测工具。",
+          "contribution": "以可执行任务检验模型能否满足 CUDA 程序的功能要求。",
+          "limitations": "功能通过不等于性能最优；任务与评分以选定版本为准。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "ComputeEval"
+          ],
+          "training": "生成能力评测工具。",
+          "budget": "应区分编译失败、执行失败与性能测试。",
+          "paper_id": "https://github.com/NVIDIA/compute-eval",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "NVIDIA/SOL-ExecBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/NVIDIA/SOL-ExecBench",
+      "org": "NVIDIA",
+      "org_type": "Organization",
+      "description": "A benchmark of real-world DL kernel problems ",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 452076,
+          "percent": 98.1
+        },
+        {
+          "language": "Shell",
+          "bytes": 4988,
+          "percent": 1.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 3924,
+          "percent": 0.9
+        }
+      ],
+      "stars": 328,
+      "forks": 36,
+      "open_issues": 5,
+      "created_at": "2026-03-04T23:59:22Z",
+      "pushed_at": "2026-07-15T17:31:33Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "data",
+        "docker",
+        "docs",
+        "examples",
+        "scripts",
+        "src",
+        "tests"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "真实模型算子 → 正确性与硬件效率评测",
+      "summary": "将生成 kernel 的性能与分析推导的硬件 Speed-of-Light 上限比较。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton",
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "SOL-ExecBench"
+      ],
+      "work_ids": [
+        "sol-execbench"
+      ],
+      "works": [
+        {
+          "work_id": "sol-execbench",
+          "name": "SOL-ExecBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "environment"
+          ],
+          "task": "真实模型算子 → 正确性与硬件效率评测",
+          "summary": "将生成 kernel 的性能与分析推导的硬件 Speed-of-Light 上限比较。",
+          "contribution": "从真实模型提取前后向任务，结合 SOLAR 上限、固定评分基线和时钟/缓存控制及反作弊检查。",
+          "limitations": "SOL 是分析目标而非所有 kernel 必然可达的实测性能；当前面向 Blackwell/B200，评分依赖发布版本与建模假设。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton",
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "SOL-ExecBench"
+          ],
+          "training": "执行和评价框架，不是模型训练器。",
+          "budget": "保存评分 release、SOL 目标、编译超时、GPU 时钟、缓存策略及候选总执行次数。",
+          "paper_id": "https://arxiv.org/abs/2603.19173",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "parallelcodefoundry/ParEval",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/parallelcodefoundry/ParEval",
+      "org": "parallelcodefoundry",
+      "org_type": "Organization",
+      "description": "Parallel Code Evaluation Benchmark",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "C++",
+      "language_breakdown": [
+        {
+          "language": "C++",
+          "bytes": 400232,
+          "percent": 50.8
+        },
+        {
+          "language": "Cuda",
+          "bytes": 211804,
+          "percent": 26.9
+        },
+        {
+          "language": "Python",
+          "bytes": 170378,
+          "percent": 21.6
+        },
+        {
+          "language": "Shell",
+          "bytes": 3997,
+          "percent": 0.5
+        },
+        {
+          "language": "Makefile",
+          "bytes": 1775,
+          "percent": 0.2
+        }
+      ],
+      "stars": 47,
+      "forks": 18,
+      "open_issues": 2,
+      "created_at": "2023-10-06T17:25:46Z",
+      "pushed_at": "2025-11-04T17:04:52Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "analysis",
+        "bin",
+        "drivers",
+        "generate",
+        "prompts",
+        "test",
+        "tpl"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "任务描述 → 并行程序",
+      "summary": "以科学计算任务检验 LLM 生成并行程序的正确性和性能。",
+      "hardware": [
+        "CPU",
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "ParEval"
+      ],
+      "work_ids": [
+        "pareval"
+      ],
+      "works": [
+        {
+          "work_id": "pareval",
+          "name": "ParEval",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "任务描述 → 并行程序",
+          "summary": "以科学计算任务检验 LLM 生成并行程序的正确性和性能。",
+          "contribution": "将计算问题类型与并行编程模型交叉组织，补充仅覆盖深度学习 GPU 算子的评测视角。",
+          "limitations": "范围包含 CPU 和分布式并行，不能将整套成绩解释为 GPU kernel 生成能力；模型间比较仍需固定编译和执行环境。",
+          "hardware": [
+            "CPU",
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "ParEval"
+          ],
+          "training": "评测数据与驱动程序，不是参数训练方法。",
+          "budget": "按并行模型报告采样数、编译选项、线程或进程数量和测量成本。",
+          "paper_id": "https://arxiv.org/abs/2401.12554",
+          "paper_venue": "HPDC 2024",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "SakanaAI/robust-kbench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/SakanaAI/robust-kbench",
+      "org": "SakanaAI",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 937794,
+          "percent": 86.7
+        },
+        {
+          "language": "Cuda",
+          "bytes": 139228,
+          "percent": 12.9
+        },
+        {
+          "language": "Shell",
+          "bytes": 4252,
+          "percent": 0.4
+        }
+      ],
+      "stars": 107,
+      "forks": 12,
+      "open_issues": 6,
+      "created_at": "2025-09-16T15:49:44Z",
+      "pushed_at": "2025-11-22T15:58:10Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "highlighted",
+        "robust_kbench",
+        "tasks",
+        "tests",
+        "third_party"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "PyTorch → CUDA + 稳健验证",
+      "summary": "围绕 Agent 生成 kernel 的稳健性、验证和优化进行评测。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "robust-kbench"
+      ],
+      "work_ids": [
+        "robust-kbench"
+      ],
+      "works": [
+        {
+          "work_id": "robust-kbench",
+          "name": "robust-kbench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "method"
+          ],
+          "task": "PyTorch → CUDA + 稳健验证",
+          "summary": "围绕 Agent 生成 kernel 的稳健性、验证和优化进行评测。",
+          "contribution": "将输入变化和正确性风险带入 agentic CUDA 优化的评价。",
+          "limitations": "与 AI CUDA Engineer 相关，但公开 benchmark 代码不自动等于完整 Agent 方法发布。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "robust-kbench"
+          ],
+          "training": "执行反馈驱动优化；不据此推断更新模型参数。",
+          "budget": "需要单独报告搜索预算与隐藏输入验证范围。",
+          "paper_id": "https://arxiv.org/abs/2509.14279",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ScalingIntelligence/KernelBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ScalingIntelligence/KernelBench",
+      "org": "ScalingIntelligence",
+      "org_type": "Organization",
+      "description": "KernelBench: Can LLMs Write GPU Kernels? - Benchmark + Toolkit with Torch -> CUDA (+ more DSLs)",
+      "homepage": "https://scalingintelligence.stanford.edu/blogs/kernelbench/",
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "Jupyter Notebook",
+      "language_breakdown": [
+        {
+          "language": "Jupyter Notebook",
+          "bytes": 978158,
+          "percent": 52.7
+        },
+        {
+          "language": "Python",
+          "bytes": 878864,
+          "percent": 47.3
+        }
+      ],
+      "stars": 1302,
+      "forks": 198,
+      "open_issues": 57,
+      "created_at": "2024-10-25T00:08:19Z",
+      "pushed_at": "2026-03-24T04:29:13Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "benchmark",
+        "codegen",
+        "evaluation",
+        "gpu",
+        "rl-environment",
+        "tooling"
+      ],
+      "root_dirs": [
+        "assets",
+        "KernelBench",
+        "notebooks",
+        "results",
+        "scripts",
+        "src"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "PyTorch → GPU kernel",
+      "summary": "以 PyTorch 工作负载衡量生成 kernel 的正确性与加速能力。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "kernelbench"
+      ],
+      "works": [
+        {
+          "work_id": "kernelbench",
+          "name": "KernelBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "PyTorch → GPU kernel",
+          "summary": "以 PyTorch 工作负载衡量生成 kernel 的正确性与加速能力。",
+          "contribution": "提供分层任务和 fast_p 指标，将正确性与超过指定加速阈值的比例结合。",
+          "limitations": "任务数量随论文与仓库版本变化；结果依赖基线、硬件和测试预算，不能跨版本直接排名。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "评测框架，不提供通用训练器。",
+          "budget": "需要记录候选数量、迭代预算、硬件与 baseline 版本。",
+          "paper_id": "https://arxiv.org/abs/2502.10517",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "Snowflake-AI-Research/fastkernels",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/Snowflake-AI-Research/fastkernels",
+      "org": "Snowflake-AI-Research",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 5919962,
+          "percent": 82.5
+        },
+        {
+          "language": "Cuda",
+          "bytes": 1248963,
+          "percent": 17.4
+        },
+        {
+          "language": "Shell",
+          "bytes": 3516,
+          "percent": 0.0
+        }
+      ],
+      "stars": 10,
+      "forks": 1,
+      "open_issues": 0,
+      "created_at": "2026-05-20T01:51:13Z",
+      "pushed_at": "2026-09-26T06:26:54Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".claude",
+        "docs",
+        "fastkernels",
+        "tests"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "生产模型模块 → kernel 生成与模型内评测",
+      "summary": "在生产模型接口和真实调用路径中复核生成 kernel 的有效收益。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton",
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "FastKernels"
+      ],
+      "work_ids": [
+        "fastkernels"
+      ],
+      "works": [
+        {
+          "work_id": "fastkernels",
+          "name": "FastKernels",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "environment"
+          ],
+          "task": "生产模型模块 → kernel 生成与模型内评测",
+          "summary": "在生产模型接口和真实调用路径中复核生成 kernel 的有效收益。",
+          "contribution": "通过可组合的原语至模型任务层级，同时测量局部和端到端正确性、覆盖率与加速，暴露独立 microbenchmark 排名失真。",
+          "limitations": "已覆盖模型与生产框架限定其代表性；通过局部任务不保证可直接组合部署，当前核查没有独立重跑 MacroEval。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton",
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "FastKernels"
+          ],
+          "training": "benchmark 与评测环境，不是训练方法。",
+          "budget": "同时计入 Agent 时间、模型内验证和子模块组合测试，固定生产框架与原生 kernel 基线。",
+          "paper_id": "https://arxiv.org/abs/2605.23215",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "thunlp/TritonBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/thunlp/TritonBench",
+      "org": "thunlp",
+      "org_type": "Organization",
+      "description": "TritonBench: Benchmarking Large Language Model Capabilities for Generating Triton Operators",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 2509879,
+          "percent": 100.0
+        },
+        {
+          "language": "Shell",
+          "bytes": 430,
+          "percent": 0.0
+        }
+      ],
+      "stars": 143,
+      "forks": 16,
+      "open_issues": 11,
+      "created_at": "2025-02-20T11:58:51Z",
+      "pushed_at": "2025-06-14T15:49:37Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "data",
+        "EVAL",
+        "LLM_generated",
+        "performance_metrics"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "自然语言 / PyTorch → Triton",
+      "summary": "面向 Triton 算子生成的任务、数据与执行评测。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "TritonBench"
+      ],
+      "work_ids": [
+        "tritonbench"
+      ],
+      "works": [
+        {
+          "work_id": "tritonbench",
+          "name": "TritonBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "自然语言 / PyTorch → Triton",
+          "summary": "面向 Triton 算子生成的任务、数据与执行评测。",
+          "contribution": "从自然语言和 PyTorch 两类入口考察 Triton operator generation。",
+          "limitations": "不要与 meta-pytorch/tritonbench 混淆；任务规模、执行设置与论文版本需要分别记录。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "TritonBench"
+          ],
+          "training": "包含生成评测相关数据，不能等同于已训练模型。",
+          "budget": "比较需对齐生成次数与测试条件。",
+          "paper_id": "https://arxiv.org/abs/2502.14752",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "wzzll123/MultiKernelBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/wzzll123/MultiKernelBench",
+      "org": "wzzll123",
+      "org_type": "User",
+      "description": "MultiArchKernelBench: A Multi-Platform Benchmark for Kernel Generation",
+      "homepage": null,
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1012310,
+          "percent": 97.2
+        },
+        {
+          "language": "C++",
+          "bytes": 28278,
+          "percent": 2.7
+        },
+        {
+          "language": "Shell",
+          "bytes": 845,
+          "percent": 0.1
+        }
+      ],
+      "stars": 75,
+      "forks": 18,
+      "open_issues": 2,
+      "created_at": "2025-07-18T07:25:37Z",
+      "pushed_at": "2026-07-08T09:54:20Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "ascend_op_projects",
+        "backends",
+        "prompt_generators",
+        "prompts",
+        "reference",
+        "scripts",
+        "utils"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "PyTorch → 多后端 kernel",
+      "summary": "把 kernel 生成评测扩展到多种加速器与目标语言。",
+      "hardware": [
+        "NVIDIA",
+        "Ascend",
+        "TPU",
+        "Intel",
+        "Other"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton",
+        "AscendC",
+        "Pallas",
+        "TileLang",
+        "SYCL"
+      ],
+      "methods": [],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "MultiKernelBench"
+      ],
+      "work_ids": [
+        "multikernelbench"
+      ],
+      "works": [
+        {
+          "work_id": "multikernelbench",
+          "name": "MultiKernelBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark"
+          ],
+          "task": "PyTorch → 多后端 kernel",
+          "summary": "把 kernel 生成评测扩展到多种加速器与目标语言。",
+          "contribution": "组织不同 backend 的 reference、提示和执行评测。",
+          "limitations": "各后端硬件、任务覆盖和编译器不同；支持多后端不代表同一候选可直接移植。",
+          "hardware": [
+            "NVIDIA",
+            "Ascend",
+            "TPU",
+            "Intel",
+            "Other"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton",
+            "AscendC",
+            "Pallas",
+            "TileLang",
+            "SYCL"
+          ],
+          "methods": [],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "MultiKernelBench"
+          ],
+          "training": "评测任务，不是训练策略。",
+          "budget": "应按后端报告硬件和候选成本。",
+          "paper_id": "https://arxiv.org/abs/2507.17773",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "zhang677/PTXBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/zhang677/PTXBench",
+      "org": "zhang677",
+      "org_type": "User",
+      "description": "PTXBench: an open-source environment for kernel agents with architecture-specifc CUDA/PTX",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1875322,
+          "percent": 89.1
+        },
+        {
+          "language": "C++",
+          "bytes": 110520,
+          "percent": 5.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 77528,
+          "percent": 3.7
+        },
+        {
+          "language": "C",
+          "bytes": 29448,
+          "percent": 1.4
+        },
+        {
+          "language": "Go",
+          "bytes": 8955,
+          "percent": 0.4
+        },
+        {
+          "language": "Cuda",
+          "bytes": 2209,
+          "percent": 0.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 672,
+          "percent": 0.0
+        }
+      ],
+      "stars": 37,
+      "forks": 3,
+      "open_issues": 0,
+      "created_at": "2026-07-27T00:57:29Z",
+      "pushed_at": "2026-10-25T04:42:21Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "data",
+        "experiments",
+        "fib-profile",
+        "img",
+        "multiturn",
+        "ptxbench-eval",
+        "scripts"
+      ],
+      "group": "benchmark",
+      "group_label": "评测与验证",
+      "task": "架构指令约束 → CUDA/PTX kernel",
+      "summary": "检验生成 kernel 是否正确且实际执行指定架构的 PTX 指令。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Other"
+      ],
+      "methods": [
+        "SFT"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "PTXBench"
+      ],
+      "work_ids": [
+        "ptxbench"
+      ],
+      "works": [
+        {
+          "work_id": "ptxbench",
+          "name": "PTXBench",
+          "group": "benchmark",
+          "group_label": "评测与验证",
+          "roles": [
+            "benchmark",
+            "method"
+          ],
+          "task": "架构指令约束 → CUDA/PTX kernel",
+          "summary": "检验生成 kernel 是否正确且实际执行指定架构的 PTX 指令。",
+          "contribution": "在 H100/B200 的 GEMM 与 attention 上同时检查正确性、运行时目标指令和相对前沿算子库性能，并研究修复条件 SFT。",
+          "limitations": "目标指令出现不等于性能获益；任务覆盖集中于 GEMM/attention，训练数据覆盖与教师推理质量会影响泛化。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Other"
+          ],
+          "methods": [
+            "SFT"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "PTXBench"
+          ],
+          "training": "论文同时研究监督微调；本站主归属保留为针对 ISA 的诊断评测。",
+          "budget": "固定 GPU 架构、目标指令与动态计数工具，分离 SFT 成本和测试时修复预算。",
+          "paper_id": "https://arxiv.org/abs/2608.17379",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "flagos-ai/FlagGems",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/flagos-ai/FlagGems",
+      "org": "flagos-ai",
+      "org_type": "Organization",
+      "description": "FlagGems is an operator library for large language models implemented in the Triton Language.",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 46183272,
+          "percent": 98.7
+        },
+        {
+          "language": "C++",
+          "bytes": 442580,
+          "percent": 0.9
+        },
+        {
+          "language": "Shell",
+          "bytes": 91183,
+          "percent": 0.2
+        },
+        {
+          "language": "CMake",
+          "bytes": 53294,
+          "percent": 0.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 3845,
+          "percent": 0.0
+        },
+        {
+          "language": "CSS",
+          "bytes": 3613,
+          "percent": 0.0
+        },
+        {
+          "language": "Makefile",
+          "bytes": 2804,
+          "percent": 0.0
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 2062,
+          "percent": 0.0
+        }
+      ],
+      "stars": 1164,
+      "forks": 606,
+      "open_issues": 1249,
+      "created_at": "2024-03-21T02:04:53Z",
+      "pushed_at": "2026-10-30T06:37:46Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "pytorch",
+        "triton",
+        "triton-kernels"
+      ],
+      "root_dirs": [
+        ".devcontainer",
+        ".github",
+        "benchmark",
+        "conf",
+        "cpp",
+        "docs",
+        "examples",
+        "experimental_tests",
+        "modules_tests",
+        "packaging",
+        "src",
+        "tests",
+        "tools"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "PyTorch operator → Triton 实现",
+      "summary": "基于 Triton 的通用算子库与多后端参考实现。",
+      "hardware": [
+        "NVIDIA",
+        "AMD",
+        "Other"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "flaggems"
+      ],
+      "works": [
+        {
+          "work_id": "flaggems",
+          "name": "FlagGems",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "library"
+          ],
+          "task": "PyTorch operator → Triton 实现",
+          "summary": "基于 Triton 的通用算子库与多后端参考实现。",
+          "contribution": "为生成、验证与对比提供 PyTorch 兼容算子实现。",
+          "limitations": "参考实现与 benchmark 需要避免训练测试泄漏；硬件覆盖随版本变化。",
+          "hardware": [
+            "NVIDIA",
+            "AMD",
+            "Other"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "参考算子底座，非 AI 生成模型。",
+          "budget": "参考版本与 autotune 成本需固定。",
+          "paper_id": "https://github.com/flagos-ai/FlagGems",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "HazyResearch/ThunderKittens",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/HazyResearch/ThunderKittens",
+      "org": "HazyResearch",
+      "org_type": "Organization",
+      "description": "Tile primitives for speedy kernels",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Cuda",
+      "language_breakdown": [
+        {
+          "language": "Cuda",
+          "bytes": 2573833,
+          "percent": 87.1
+        },
+        {
+          "language": "Python",
+          "bytes": 357781,
+          "percent": 12.1
+        },
+        {
+          "language": "Makefile",
+          "bytes": 22679,
+          "percent": 0.8
+        }
+      ],
+      "stars": 3786,
+      "forks": 341,
+      "open_issues": 89,
+      "created_at": "2024-03-04T13:27:35Z",
+      "pushed_at": "2026-09-12T19:29:53Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".claude",
+        "assets",
+        "demos",
+        "include",
+        "kernels",
+        "prototype",
+        "tests"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "Tile 级程序 → CUDA kernel",
+      "summary": "以嵌入 CUDA 的 tile primitives 简化高性能深度学习 kernel 实现。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "thunderkittens"
+      ],
+      "works": [
+        {
+          "work_id": "thunderkittens",
+          "name": "ThunderKittens",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "library"
+          ],
+          "task": "Tile 级程序 → CUDA kernel",
+          "summary": "以嵌入 CUDA 的 tile primitives 简化高性能深度学习 kernel 实现。",
+          "contribution": "封装 tensor core、共享内存、异步搬运和计算/访存重叠等底层模式，为生成程序提供实现积木与专家样例。",
+          "limitations": "它是执行库而非 AI 生成算法；版本与 GPU 架构紧密相关，当前不再积极支持 Ampere，不能假定所有历史样例可直接编译。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "代码原语和专家实现，不是生成模型训练器。",
+          "budget": "锁定库提交、CUDA 工具链和 GPU 架构，分别报告编译与执行成本。",
+          "paper_id": "https://github.com/HazyResearch/ThunderKittens",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "meta-pytorch/tritonbench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/meta-pytorch/tritonbench",
+      "org": "meta-pytorch",
+      "org_type": "Organization",
+      "description": "Tritonbench is a collection of PyTorch custom operators with example inputs to measure their performance.",
+      "homepage": null,
+      "license": "BSD-3-Clause",
+      "license_name": "BSD 3-Clause \"New\" or \"Revised\" License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 2840155,
+          "percent": 90.8
+        },
+        {
+          "language": "Cuda",
+          "bytes": 239979,
+          "percent": 7.7
+        },
+        {
+          "language": "Shell",
+          "bytes": 37555,
+          "percent": 1.2
+        },
+        {
+          "language": "C++",
+          "bytes": 4539,
+          "percent": 0.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 4503,
+          "percent": 0.1
+        },
+        {
+          "language": "Makefile",
+          "bytes": 1352,
+          "percent": 0.0
+        }
+      ],
+      "stars": 374,
+      "forks": 93,
+      "open_issues": 37,
+      "created_at": "2024-10-07T21:06:25Z",
+      "pushed_at": "2026-10-30T03:36:47Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".ci",
+        ".claude",
+        ".github",
+        "benchmarks",
+        "docker",
+        "docs",
+        "submodules",
+        "test",
+        "tools",
+        "tritonbench"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "现有算子实现 → 正确性与性能回归测试",
+      "summary": "用于测量 Triton 及其 PyTorch 集成性能的算子测试集合。",
+      "hardware": [
+        "NVIDIA",
+        "AMD"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [],
+      "feedback": [
+        "Runtime"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "meta-tritonbench"
+      ],
+      "works": [
+        {
+          "work_id": "meta-tritonbench",
+          "name": "TritonBench (Meta/PyTorch)",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "benchmark",
+            "library"
+          ],
+          "task": "现有算子实现 → 正确性与性能回归测试",
+          "summary": "用于测量 Triton 及其 PyTorch 集成性能的算子测试集合。",
+          "contribution": "通过统一 operator benchmark 接口比较 Triton、CUTLASS 及其他算子库实现，为生成 kernel 提供可复用工作负载和执行参照。",
+          "limitations": "与 thunlp/TritonBench 不是同一项目；本身不是自然语言生成 benchmark，默认 nightly 依赖也会改变基线。",
+          "hardware": [
+            "NVIDIA",
+            "AMD"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [],
+          "feedback": [
+            "Runtime"
+          ],
+          "benchmarks": [],
+          "training": "执行生态工具，不训练生成模型。",
+          "budget": "固定 PyTorch、Triton 与全部 submodule 版本，按 operator 记录测量协议。",
+          "paper_id": "https://github.com/meta-pytorch/tritonbench",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "NVIDIA/cutlass",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/NVIDIA/cutlass",
+      "org": "NVIDIA",
+      "org_type": "Organization",
+      "description": "CUDA Templates and Python DSLs for High-Performance Linear Algebra",
+      "homepage": "https://docs.nvidia.com/cutlass/index.html",
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "C++",
+      "language_breakdown": [
+        {
+          "language": "C++",
+          "bytes": 32608911,
+          "percent": 51.7
+        },
+        {
+          "language": "Cuda",
+          "bytes": 14486282,
+          "percent": 23.0
+        },
+        {
+          "language": "Python",
+          "bytes": 12034848,
+          "percent": 19.1
+        },
+        {
+          "language": "MLIR",
+          "bytes": 2518114,
+          "percent": 4.0
+        },
+        {
+          "language": "HTML",
+          "bytes": 870024,
+          "percent": 1.4
+        },
+        {
+          "language": "CMake",
+          "bytes": 396424,
+          "percent": 0.6
+        },
+        {
+          "language": "Jupyter Notebook",
+          "bytes": 138169,
+          "percent": 0.2
+        },
+        {
+          "language": "C",
+          "bytes": 27994,
+          "percent": 0.0
+        }
+      ],
+      "stars": 10679,
+      "forks": 2151,
+      "open_issues": 813,
+      "created_at": "2017-11-30T00:11:24Z",
+      "pushed_at": "2026-10-28T20:27:07Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "cpp",
+        "cuda",
+        "deep-learning",
+        "deep-learning-library",
+        "gpu",
+        "nvidia",
+        "python"
+      ],
+      "root_dirs": [
+        ".github",
+        "cmake",
+        "cutlass_cicd",
+        "cutlass_compiler",
+        "docs",
+        "examples",
+        "include",
+        "media",
+        "operators",
+        "python",
+        "test",
+        "tools"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "布局 / tile → CUDA 线性代数",
+      "summary": "用于高性能线性代数的 CUDA 模板与 Python DSL。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "cutlass"
+      ],
+      "works": [
+        {
+          "work_id": "cutlass",
+          "name": "CUTLASS / CuTe",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "library",
+            "compiler"
+          ],
+          "task": "布局 / tile → CUDA 线性代数",
+          "summary": "用于高性能线性代数的 CUDA 模板与 Python DSL。",
+          "contribution": "提供硬件特定构件、布局和矩阵运算参考，是生成的可选目标空间。",
+          "limitations": "模板与硬件特性存在版本约束；参考库性能不能直接作为所有任务的公平 baseline。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "库与 DSL 底座，非生成模型。",
+          "budget": "明确编译时间、调优配置与设备架构。",
+          "paper_id": "https://github.com/NVIDIA/cutlass",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ROCm/aiter",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ROCm/aiter",
+      "org": "ROCm",
+      "org_type": "Organization",
+      "description": "AI Tensor Engine for ROCm",
+      "homepage": "https://rocm.github.io/aiter/",
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 31071952,
+          "percent": 71.1
+        },
+        {
+          "language": "Cuda",
+          "bytes": 8876586,
+          "percent": 20.3
+        },
+        {
+          "language": "C++",
+          "bytes": 3410674,
+          "percent": 7.8
+        },
+        {
+          "language": "Shell",
+          "bytes": 247736,
+          "percent": 0.6
+        },
+        {
+          "language": "Jinja",
+          "bytes": 65160,
+          "percent": 0.1
+        },
+        {
+          "language": "C",
+          "bytes": 16152,
+          "percent": 0.0
+        },
+        {
+          "language": "Makefile",
+          "bytes": 2935,
+          "percent": 0.0
+        }
+      ],
+      "stars": 599,
+      "forks": 671,
+      "open_issues": 1155,
+      "created_at": "2024-11-11T10:38:20Z",
+      "pushed_at": "2026-10-30T06:24:57Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".claude",
+        ".githooks",
+        ".github",
+        "3rdparty",
+        "aiter",
+        "aiter_logs",
+        "csrc",
+        "docs",
+        "gradlib",
+        "hsa",
+        "op_tests",
+        "scripts",
+        "tests"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "AMD 推理算子 → 高性能执行",
+      "summary": "面向 AMD GPU 推理工作负载的高性能算子与 kernel 库。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "HIP",
+        "Triton",
+        "Other"
+      ],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "aiter"
+      ],
+      "works": [
+        {
+          "work_id": "aiter",
+          "name": "AITER",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "library"
+          ],
+          "task": "AMD 推理算子 → 高性能执行",
+          "summary": "面向 AMD GPU 推理工作负载的高性能算子与 kernel 库。",
+          "contribution": "汇集 attention、MoE、GEMM、归一化和量化等实现及算子测试，可作为生成优化的生产基线和参考。",
+          "limitations": "是人工与工程优化的执行生态，不是 LLM 方法；CDNA/RDNA 支持和 HIP/Triton/FlyDSL/汇编实现范围各异。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "HIP",
+            "Triton",
+            "Other"
+          ],
+          "methods": [],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "算子库，不提供生成模型参数训练。",
+          "budget": "固定 ROCm、GPU 架构、算子 backend 和构建版本；测量首次 JIT 与稳定运行应分开。",
+          "paper_id": "https://github.com/ROCm/aiter",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "tensormux/kernel-skills",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/tensormux/kernel-skills",
+      "org": "tensormux",
+      "org_type": "Organization",
+      "description": "Open source skill library for AI coding agents to write, optimize, and debug high performance compute kernels across CUDA, Triton, and quantized workloads.",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "TypeScript",
+      "language_breakdown": [
+        {
+          "language": "TypeScript",
+          "bytes": 13722,
+          "percent": 73.9
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 4852,
+          "percent": 26.1
+        }
+      ],
+      "stars": 87,
+      "forks": 11,
+      "open_issues": 3,
+      "created_at": "2026-04-10T16:26:31Z",
+      "pushed_at": "2026-06-21T20:51:18Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "ai-coding",
+        "cuda",
+        "gpu-kernels",
+        "high-performance-computing",
+        "kernel-optimization",
+        "llm-agents",
+        "prompt-engineering",
+        "quantization",
+        "rocm",
+        "triton"
+      ],
+      "root_dirs": [
+        ".github",
+        "examples",
+        "proof",
+        "schema",
+        "scripts",
+        "skills",
+        "src"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "专家规则 → Agent context",
+      "summary": "面向 coding Agent 的 kernel 开发、优化与调试知识。",
+      "hardware": [],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [
+        "Knowledge"
+      ],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "kernel-skills"
+      ],
+      "works": [
+        {
+          "work_id": "kernel-skills",
+          "name": "kernel-skills",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "knowledge"
+          ],
+          "task": "专家规则 → Agent context",
+          "summary": "面向 coding Agent 的 kernel 开发、优化与调试知识。",
+          "contribution": "将约束、算法、正确性和性能推理整理为可注入的技能。",
+          "limitations": "技能文档不是执行验证；CPU 可读取文档不等于项目支持 CPU kernel benchmark。",
+          "hardware": [],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [
+            "Knowledge"
+          ],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "上下文知识，不自动更新模型参数。",
+          "budget": "检索、上下文 token 和技能消融需记录。",
+          "paper_id": "https://github.com/tensormux/kernel-skills",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "tile-ai/BitBLAS",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/tile-ai/BitBLAS",
+      "org": "tile-ai",
+      "org_type": "Organization",
+      "description": "ReDesign of https://github.com/microsoft/BitBLAS",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 2161337,
+          "percent": 80.0
+        },
+        {
+          "language": "Jupyter Notebook",
+          "bytes": 304013,
+          "percent": 11.3
+        },
+        {
+          "language": "Cuda",
+          "bytes": 122401,
+          "percent": 4.5
+        },
+        {
+          "language": "C++",
+          "bytes": 94403,
+          "percent": 3.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 17995,
+          "percent": 0.7
+        },
+        {
+          "language": "CMake",
+          "bytes": 1684,
+          "percent": 0.1
+        }
+      ],
+      "stars": 10,
+      "forks": 4,
+      "open_issues": 2,
+      "created_at": "2025-11-11T16:47:00Z",
+      "pushed_at": "2026-01-28T14:32:45Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "benchmark",
+        "bitblas",
+        "docker",
+        "docs",
+        "examples",
+        "images",
+        "integration",
+        "maint",
+        "testing",
+        "tools",
+        "tutorials"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "量化 GEMM / GEMV",
+      "summary": "量化与混合精度矩阵运算的优化库。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "TileLang"
+      ],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "bitblas"
+      ],
+      "works": [
+        {
+          "work_id": "bitblas",
+          "name": "BitBLAS",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "library"
+          ],
+          "task": "量化 GEMM / GEMV",
+          "summary": "量化与混合精度矩阵运算的优化库。",
+          "contribution": "为 GEMM / GEMV 和量化部署提供具体目标与参考实现。",
+          "limitations": "当前 tile-ai 仓库与早期 microsoft/BitBLAS 历史不同，不能用新仓库日期定义技术首发。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "TileLang"
+          ],
+          "methods": [],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "部署与算子底座。",
+          "budget": "量化格式、误差和实际 serving 收益需要分别报告。",
+          "paper_id": "https://github.com/tile-ai/BitBLAS",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "tile-ai/tilelang",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/tile-ai/tilelang",
+      "org": "tile-ai",
+      "org_type": "Organization",
+      "description": " Domain-specific language designed to streamline the development of high-performance GPU/CPU/Accelerators kernels",
+      "homepage": "https://tilelang.com/",
+      "license": "NOASSERTION",
+      "license_name": "Other",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 8732804,
+          "percent": 52.4
+        },
+        {
+          "language": "C++",
+          "bytes": 7724225,
+          "percent": 46.4
+        },
+        {
+          "language": "CMake",
+          "bytes": 96271,
+          "percent": 0.6
+        },
+        {
+          "language": "Cython",
+          "bytes": 43190,
+          "percent": 0.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 42801,
+          "percent": 0.3
+        },
+        {
+          "language": "Cuda",
+          "bytes": 23476,
+          "percent": 0.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 793,
+          "percent": 0.0
+        }
+      ],
+      "stars": 8850,
+      "forks": 941,
+      "open_issues": 371,
+      "created_at": "2024-10-03T09:25:45Z",
+      "pushed_at": "2026-10-30T05:48:48Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".agents",
+        ".claude",
+        ".github",
+        "3rdparty",
+        "benchmark",
+        "cmake",
+        "docker",
+        "docs",
+        "examples",
+        "images",
+        "maint",
+        "src",
+        "testing",
+        "tilelang"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "Tile-level DSL → kernel",
+      "summary": "面向 tile 级 kernel 编程的 DSL 与编译基础设施。",
+      "hardware": [
+        "NVIDIA",
+        "AMD",
+        "Ascend",
+        "CPU",
+        "Other"
+      ],
+      "languages": [
+        "TileLang"
+      ],
+      "methods": [
+        "Compiler"
+      ],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "tilelang"
+      ],
+      "works": [
+        {
+          "work_id": "tilelang",
+          "name": "TileLang",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "compiler"
+          ],
+          "task": "Tile-level DSL → kernel",
+          "summary": "面向 tile 级 kernel 编程的 DSL 与编译基础设施。",
+          "contribution": "把线程、数据布局和硬件映射组织在更高层的 kernel 表达中。",
+          "limitations": "DSL 表达能力与后端支持不等于 LLM 已具备生成能力；需独立评测。",
+          "hardware": [
+            "NVIDIA",
+            "AMD",
+            "Ascend",
+            "CPU",
+            "Other"
+          ],
+          "languages": [
+            "TileLang"
+          ],
+          "methods": [
+            "Compiler"
+          ],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "执行与编译底座。",
+          "budget": "编译与调优成本需和运行时间分开。",
+          "paper_id": "https://github.com/tile-ai/tilelang",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "triton-lang/triton",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/triton-lang/triton",
+      "org": "triton-lang",
+      "org_type": "Organization",
+      "description": "Development repository for the Triton language and compiler",
+      "homepage": "https://triton-lang.org/",
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "MLIR",
+      "language_breakdown": [
+        {
+          "language": "MLIR",
+          "bytes": 7347404,
+          "percent": 40.7
+        },
+        {
+          "language": "Python",
+          "bytes": 6007986,
+          "percent": 33.3
+        },
+        {
+          "language": "C++",
+          "bytes": 4444185,
+          "percent": 24.6
+        },
+        {
+          "language": "LLVM",
+          "bytes": 89487,
+          "percent": 0.5
+        },
+        {
+          "language": "Cuda",
+          "bytes": 72283,
+          "percent": 0.4
+        },
+        {
+          "language": "CMake",
+          "bytes": 54800,
+          "percent": 0.3
+        },
+        {
+          "language": "Makefile",
+          "bytes": 6260,
+          "percent": 0.0
+        },
+        {
+          "language": "C",
+          "bytes": 4804,
+          "percent": 0.0
+        }
+      ],
+      "stars": 20485,
+      "forks": 3347,
+      "open_issues": 1370,
+      "created_at": "2014-08-30T17:07:16Z",
+      "pushed_at": "2026-10-30T02:26:45Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "bin",
+        "cmake",
+        "docs",
+        "examples",
+        "include",
+        "lib",
+        "python",
+        "scripts",
+        "test",
+        "third_party",
+        "unittest",
+        "utils"
+      ],
+      "group": "foundation",
+      "group_label": "执行与知识底座",
+      "task": "Triton DSL → GPU kernel",
+      "summary": "高性能 kernel 的 Python DSL、编译器与运行时底座。",
+      "hardware": [
+        "NVIDIA",
+        "AMD"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "Compiler"
+      ],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [
+        "triton"
+      ],
+      "works": [
+        {
+          "work_id": "triton",
+          "name": "Triton",
+          "group": "foundation",
+          "group_label": "执行与知识底座",
+          "roles": [
+            "compiler"
+          ],
+          "task": "Triton DSL → GPU kernel",
+          "summary": "高性能 kernel 的 Python DSL、编译器与运行时底座。",
+          "contribution": "提供程序表达、编译与硬件映射，是大量生成工作的目标语言。",
+          "limitations": "编译器不是 AI 优化方法；编译器版本改变会影响模型生成和性能结论。",
+          "hardware": [
+            "NVIDIA",
+            "AMD"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "Compiler"
+          ],
+          "feedback": [],
+          "benchmarks": [],
+          "training": "执行底座，不训练生成模型。",
+          "budget": "锁定编译器、驱动和后端版本。",
+          "paper_id": "https://github.com/triton-lang/triton",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "caoshiyi/K-Search",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/caoshiyi/K-Search",
+      "org": "caoshiyi",
+      "org_type": "User",
+      "description": "Automated High-Performance GPU Kernel Generation",
+      "homepage": "https://arxiv.org/pdf/2602.19128",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 926646,
+          "percent": 77.9
+        },
+        {
+          "language": "Cuda",
+          "bytes": 199912,
+          "percent": 16.8
+        },
+        {
+          "language": "Shell",
+          "bytes": 35455,
+          "percent": 3.0
+        },
+        {
+          "language": "C++",
+          "bytes": 22943,
+          "percent": 1.9
+        },
+        {
+          "language": "C",
+          "bytes": 4775,
+          "percent": 0.4
+        }
+      ],
+      "stars": 144,
+      "forks": 29,
+      "open_issues": 6,
+      "created_at": "2026-02-07T05:47:43Z",
+      "pushed_at": "2026-06-01T20:54:48Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "assets",
+        "baselines",
+        "k_search",
+        "results",
+        "scripts"
+      ],
+      "group": "search",
+      "group_label": "搜索与优化",
+      "task": "Serving kernel → 规划驱动搜索",
+      "summary": "以共演化世界模型表示瓶颈假设和设计策略，将高层规划与低层 kernel 实现分开搜索。",
+      "hardware": [
+        "NVIDIA",
+        "Other"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "FlashInfer-Bench",
+        "KernelBench",
+        "GPUMode"
+      ],
+      "work_ids": [
+        "k-search"
+      ],
+      "works": [
+        {
+          "work_id": "k-search",
+          "name": "K-Search",
+          "group": "search",
+          "group_label": "搜索与优化",
+          "roles": [
+            "method"
+          ],
+          "task": "Serving kernel → 规划驱动搜索",
+          "summary": "以共演化世界模型表示瓶颈假设和设计策略，将高层规划与低层 kernel 实现分开搜索。",
+          "contribution": "允许中间实现暂时变慢或有缺陷，保留需要多步结构变换的路径；在复杂 FlashInfer 与 TriMul 任务上评价。",
+          "limitations": "复杂特选任务结果不同于全 KernelBench 成功率；当前仓库新增 MLX 等后端不视为原论文已验证结果。",
+          "hardware": [
+            "NVIDIA",
+            "Other"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "FlashInfer-Bench",
+            "KernelBench",
+            "GPUMode"
+          ],
+          "training": "世界模型是运行中的结构化搜索知识，不据名称推断训练参数化动力学模型。",
+          "budget": "README 示例 TriMul 最多300轮、FlashInfer示例20轮；须按任务报告总模型与执行开销。",
+          "paper_id": "https://arxiv.org/abs/2602.19128",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "repository",
+              "note": "K-Search 官方 README 明确提供 KernelBench task backend；论文摘要重点是 FlashInfer 与 GPUMode。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "Dogacel/auto-gpu-kernel",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/Dogacel/auto-gpu-kernel",
+      "org": "Dogacel",
+      "org_type": "User",
+      "description": "Winner 🏆 (Agent-only) MLSys 2026 - FlashInfer AI Kernel Generation Contest for the DeepSeek Sparse Attention (DSA) track with an average speedup of 34.93x",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1739411,
+          "percent": 100.0
+        }
+      ],
+      "stars": 317,
+      "forks": 17,
+      "open_issues": 0,
+      "created_at": "2026-04-24T20:11:06Z",
+      "pushed_at": "2026-09-12T06:10:13Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "attention",
+        "gpu",
+        "kernel",
+        "triton"
+      ],
+      "root_dirs": [
+        ".vscode",
+        "archive",
+        "configs",
+        "examples",
+        "kbench",
+        "kopt",
+        "tests"
+      ],
+      "group": "search",
+      "group_label": "搜索与优化",
+      "task": "参考 kernel → 自动优化",
+      "summary": "把优化 Agent 与 kernel 验证、benchmark 历史连接起来。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "FlashInfer-Bench"
+      ],
+      "work_ids": [
+        "auto-gpu-kernel"
+      ],
+      "works": [
+        {
+          "work_id": "auto-gpu-kernel",
+          "name": "auto-gpu-kernel",
+          "group": "search",
+          "group_label": "搜索与优化",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "参考 kernel → 自动优化",
+          "summary": "把优化 Agent 与 kernel 验证、benchmark 历史连接起来。",
+          "contribution": "kopt 与 kbench 分工组织候选修改、验证和性能反馈。",
+          "limitations": "比赛或特定任务上的加速数字不能外推到任意 GPU workload。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "FlashInfer-Bench"
+          ],
+          "training": "Agent 优化循环；训练机制未独立核实。",
+          "budget": "搜索历史和候选预算应保留。",
+          "paper_id": "https://github.com/Dogacel/auto-gpu-kernel",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "StigLidu/AdaExplore",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/StigLidu/AdaExplore",
+      "org": "StigLidu",
+      "org_type": "User",
+      "description": "[COLM-LLA 2026] The official implementation for paper \"AdaExplore: Failure-Driven Adaptation and Diversity-Preserving Search for Efficient Kernel Generation\"",
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 4333709,
+          "percent": 98.9
+        },
+        {
+          "language": "JavaScript",
+          "bytes": 22529,
+          "percent": 0.5
+        },
+        {
+          "language": "CSS",
+          "bytes": 12528,
+          "percent": 0.3
+        },
+        {
+          "language": "HTML",
+          "bytes": 11864,
+          "percent": 0.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 2126,
+          "percent": 0.0
+        }
+      ],
+      "stars": 24,
+      "forks": 4,
+      "open_issues": 0,
+      "created_at": "2026-04-13T16:51:45Z",
+      "pushed_at": "2026-08-23T02:03:58Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "gpu-kernels",
+        "inference-time-scaling",
+        "llm-agent",
+        "llm-inference",
+        "self-improving-agent"
+      ],
+      "root_dirs": [
+        ".github",
+        "agent",
+        "agentprompt",
+        "assets",
+        "config",
+        "datasets",
+        "online_judge",
+        "results",
+        "skill_memory",
+        "src",
+        "synthesis",
+        "tool_scripts",
+        "web"
+      ],
+      "group": "search",
+      "group_label": "搜索与优化",
+      "task": "PyTorch → 失败记忆辅助 Triton 搜索",
+      "summary": "通过合成任务把重复失败转化为有效性规则记忆，再用保留多样性的树搜索优化 Triton。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "adaexplore"
+      ],
+      "works": [
+        {
+          "work_id": "adaexplore",
+          "name": "AdaExplore",
+          "group": "search",
+          "group_label": "搜索与优化",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → 失败记忆辅助 Triton 搜索",
+          "summary": "通过合成任务把重复失败转化为有效性规则记忆，再用保留多样性的树搜索优化 Triton。",
+          "contribution": "结合失败驱动的跨任务适应与局部修订/结构重生成，在不微调模型、不引入外部知识的条件下积累执行经验。",
+          "limitations": "适应阶段的数据构造及评测可见范围尚未审计；官方候选仓库API403且main/master README均404，只有论文内容核查成功。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "摘要明确无额外fine-tuning；测试时适应依靠规则记忆。",
+          "budget": "摘要报告100步设置并继续随算力提升；适应阶段合成任务和反馈的预先成本需另计。",
+          "paper_id": "https://arxiv.org/abs/2604.16625",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "paper",
+              "note": "AdaExplore 摘要明确报告 KernelBench Level-2/3 speedup。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "ucb-bar/autocomp",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ucb-bar/autocomp",
+      "org": "ucb-bar",
+      "org_type": "Organization",
+      "description": "Autocomp: Optimize any AI kernel, anywhere.",
+      "homepage": null,
+      "license": "BSD-3-Clause",
+      "license_name": "BSD 3-Clause \"New\" or \"Revised\" License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1812551,
+          "percent": 75.8
+        },
+        {
+          "language": "C",
+          "bytes": 401599,
+          "percent": 16.8
+        },
+        {
+          "language": "TypeScript",
+          "bytes": 130264,
+          "percent": 5.5
+        },
+        {
+          "language": "C++",
+          "bytes": 21234,
+          "percent": 0.9
+        },
+        {
+          "language": "Metal",
+          "bytes": 15943,
+          "percent": 0.7
+        },
+        {
+          "language": "CMake",
+          "bytes": 5716,
+          "percent": 0.2
+        },
+        {
+          "language": "Makefile",
+          "bytes": 2058,
+          "percent": 0.1
+        },
+        {
+          "language": "CSS",
+          "bytes": 387,
+          "percent": 0.0
+        }
+      ],
+      "stars": 152,
+      "forks": 14,
+      "open_issues": 13,
+      "created_at": "2025-06-06T18:44:31Z",
+      "pushed_at": "2026-07-11T20:13:51Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        ".vscode",
+        "autocomp",
+        "autocomp_tests",
+        "examples",
+        "harnesses",
+        "img",
+        "sols",
+        "visualizer"
+      ],
+      "group": "search",
+      "group_label": "搜索与优化",
+      "task": "Kernel → 硬件特定优化",
+      "summary": "使用 LLM 驱动的搜索，在不同加速器后端优化 kernel。",
+      "hardware": [
+        "NVIDIA",
+        "TPU",
+        "Trainium",
+        "CPU",
+        "Other"
+      ],
+      "languages": [
+        "CUDA",
+        "Pallas",
+        "Other"
+      ],
+      "methods": [
+        "Agent",
+        "Search"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "autocomp"
+      ],
+      "works": [
+        {
+          "work_id": "autocomp",
+          "name": "Autocomp",
+          "group": "search",
+          "group_label": "搜索与优化",
+          "roles": [
+            "method"
+          ],
+          "task": "Kernel → 硬件特定优化",
+          "summary": "使用 LLM 驱动的搜索，在不同加速器后端优化 kernel。",
+          "contribution": "以 agent / backend 抽象连接硬件特定生成、执行与性能反馈。",
+          "limitations": "可扩展后端不代表跨硬件性能自动迁移；每个后端仍需工具链和验证。",
+          "hardware": [
+            "NVIDIA",
+            "TPU",
+            "Trainium",
+            "CPU",
+            "Other"
+          ],
+          "languages": [
+            "CUDA",
+            "Pallas",
+            "Other"
+          ],
+          "methods": [
+            "Agent",
+            "Search"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [],
+          "training": "推理时搜索，不自动归为参数训练。",
+          "budget": "应比较相同 token、编译与 wall-clock 预算。",
+          "paper_id": "https://arxiv.org/abs/2505.18574",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "AI9Stars/AutoTriton",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/AI9Stars/AutoTriton",
+      "org": "AI9Stars",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": null,
+      "language_breakdown": [],
+      "stars": 68,
+      "forks": 3,
+      "open_issues": 3,
+      "created_at": "2025-06-16T02:19:14Z",
+      "pushed_at": "2025-07-14T13:07:16Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → Triton",
+      "summary": "以监督与强化学习提高 Triton 代码生成能力。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "TritonBench",
+        "KernelBench"
+      ],
+      "work_ids": [
+        "autotriton"
+      ],
+      "works": [
+        {
+          "work_id": "autotriton",
+          "name": "AutoTriton",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "model"
+          ],
+          "task": "PyTorch → Triton",
+          "summary": "以监督与强化学习提高 Triton 代码生成能力。",
+          "contribution": "利用训练与执行反馈改进 PyTorch 到 Triton 的自动编程。",
+          "limitations": "训练数据、可见任务和测试集重叠需检查；提升不意味着跨硬件泛化。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "TritonBench",
+            "KernelBench"
+          ],
+          "training": "SFT / RL 方法，训练和推理预算须独立。",
+          "budget": "检查训练计算、rollout 数量及验证成本。",
+          "paper_id": "https://arxiv.org/abs/2507.05687",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "AMD-AGI/AMDKernelVault",
+      "referenced_slug": "AMD-AGI/hip_kernel_llm_lab",
+      "aliases": [
+        "AMD-AGI/hip_kernel_llm_lab"
+      ],
+      "url": "https://github.com/AMD-AGI/AMDKernelVault",
+      "org": "AMD-AGI",
+      "org_type": "Organization",
+      "description": "AMDKernelVault A research and engineering playground for HIP and Triton kernel generation, optimization, and LLM training, including continued pretraining, SFT, and RL (RLHF/RLVR) pipelines.",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 6121621,
+          "percent": 87.0
+        },
+        {
+          "language": "Shell",
+          "bytes": 561958,
+          "percent": 8.0
+        },
+        {
+          "language": "C++",
+          "bytes": 110846,
+          "percent": 1.6
+        },
+        {
+          "language": "HIP",
+          "bytes": 82727,
+          "percent": 1.2
+        },
+        {
+          "language": "MDX",
+          "bytes": 57541,
+          "percent": 0.8
+        },
+        {
+          "language": "CMake",
+          "bytes": 34205,
+          "percent": 0.5
+        },
+        {
+          "language": "Jupyter Notebook",
+          "bytes": 31443,
+          "percent": 0.4
+        },
+        {
+          "language": "Jinja",
+          "bytes": 14558,
+          "percent": 0.2
+        }
+      ],
+      "stars": 10,
+      "forks": 1,
+      "open_issues": 1,
+      "created_at": "2026-05-14T08:29:35Z",
+      "pushed_at": "2026-10-07T15:03:34Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "gpu-kernels",
+        "hip",
+        "llm",
+        "rl",
+        "rocm",
+        "training"
+      ],
+      "root_dirs": [
+        ".github",
+        "cpt",
+        "hip-kernel-generator",
+        "rl",
+        "sft",
+        "triton-kernel-generator"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch/CUDA → HIP 或 Triton",
+      "summary": "面向 AMD CDNA/ROCm 的执行验证 HIP、Triton kernel 语料与 agentic 训练框架。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "HIP",
+        "Triton"
+      ],
+      "methods": [
+        "SFT",
+        "RL",
+        "Agent"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "ROCmBench",
+        "TritonBench"
+      ],
+      "work_ids": [
+        "amdkernelvault"
+      ],
+      "works": [
+        {
+          "work_id": "amdkernelvault",
+          "name": "AMDKernelVault / HIPKernelGen",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "dataset",
+            "method",
+            "model"
+          ],
+          "task": "PyTorch/CUDA → HIP 或 Triton",
+          "summary": "面向 AMD CDNA/ROCm 的执行验证 HIP、Triton kernel 语料与 agentic 训练框架。",
+          "contribution": "汇集 HIP、ROCm library QA 和 Triton 数据，并训练 Qwen3-8B 做 SFT 与执行感知 RL，补足 CUDA/NVIDIA 中心缺口。",
+          "limitations": "摘要报告的正确率仅对应固定预算和 AMD 基准；仓库匿名 API 403，训练代码未审计，数据许可证需按子集查看。",
+          "hardware": [
+            "AMD"
+          ],
+          "languages": [
+            "HIP",
+            "Triton"
+          ],
+          "methods": [
+            "SFT",
+            "RL",
+            "Agent"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "ROCmBench",
+            "TritonBench"
+          ],
+          "training": "HIPKernelGen/TritonKernelGen 生成、编译、正确性验证和延迟 profiling，再做 SFT/执行 RL。",
+          "budget": "数据子集版本、ROCm GPU profiling、SFT/RL rollout 和许可清理成本必须分开。",
+          "paper_id": "https://arxiv.org/abs/2609.12471",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ByteDance-Seed/cudaLLM",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ByteDance-Seed/cudaLLM",
+      "org": "ByteDance-Seed",
+      "org_type": "Organization",
+      "description": null,
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 143301,
+          "percent": 94.2
+        },
+        {
+          "language": "Shell",
+          "bytes": 8890,
+          "percent": 5.8
+        }
+      ],
+      "stars": 156,
+      "forks": 7,
+      "open_issues": 3,
+      "created_at": "2025-08-01T22:30:11Z",
+      "pushed_at": "2025-08-18T06:56:11Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "config",
+        "scripts"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "自然语言/PyTorch → CUDA",
+      "summary": "基于 Qwen3-8B 的 CUDA 专用模型，模型卡记录两阶段 SFT 与性能反馈 RL。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "cudallm"
+      ],
+      "works": [
+        {
+          "work_id": "cudallm",
+          "name": "cudaLLM",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "model",
+            "dataset"
+          ],
+          "task": "自然语言/PyTorch → CUDA",
+          "summary": "基于 Qwen3-8B 的 CUDA 专用模型，模型卡记录两阶段 SFT 与性能反馈 RL。",
+          "contribution": "公开 CUDA 问题-解答数据和训练流程：DeepSeek R1、DeepSeek Coder-7B、Qwen2-32B 生成的 SFT 数据，以及性能奖励 RL 数据。",
+          "limitations": "模型卡性能表只对应其 KernelBench 配置；匿名 GitHub 请求失败，训练代码和数据版本未完整审计。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "模型卡明确使用 verl，先 SFT CUDA 对，再以执行性能奖励做 RL。",
+          "budget": "需报告 SFT/RL 数据规模、rollout、GPU 型号、编译与执行次数；不要把卡片分数当跨项目排名。",
+          "paper_id": "https://github.com/ByteDance-Seed/cudaLLM",
+          "paper_venue": "Artifact: repository, model",
+          "relations": [
+            {
+              "to": "kernelbench",
+              "type": "evaluated_on",
+              "kind": "model",
+              "note": "cudaLLM 模型卡将 KernelBench 列为评测集并给出分层结果表。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "canonical": "BytedTsinghua-SIA/CUDA-Agent",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/BytedTsinghua-SIA/CUDA-Agent",
+      "org": "BytedTsinghua-SIA",
+      "org_type": "Organization",
+      "description": "CUDA Agent: Large-Scale Agentic RL for High-Performance CUDA Kernel Generation",
+      "homepage": "https://cuda-agent.github.io/",
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 9780,
+          "percent": 68.2
+        },
+        {
+          "language": "C++",
+          "bytes": 3109,
+          "percent": 21.7
+        },
+        {
+          "language": "Cuda",
+          "bytes": 1222,
+          "percent": 8.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 229,
+          "percent": 1.6
+        }
+      ],
+      "stars": 1346,
+      "forks": 139,
+      "open_issues": 15,
+      "created_at": "2026-02-02T10:36:11Z",
+      "pushed_at": "2026-07-08T12:01:09Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "agent_workdir",
+        "assets"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → CUDA",
+      "summary": "面向高性能 CUDA kernel 生成的大规模 Agentic RL。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "Agent",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "cuda-agent"
+      ],
+      "works": [
+        {
+          "work_id": "cuda-agent",
+          "name": "CUDA Agent",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method"
+          ],
+          "task": "PyTorch → CUDA",
+          "summary": "面向高性能 CUDA kernel 生成的大规模 Agentic RL。",
+          "contribution": "将 agentic 执行轨迹和 kernel 性能目标结合进行训练。",
+          "limitations": "大规模训练结果受数据构造、环境和验证策略影响；公开 artifact 范围须单独判断。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "Agent",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "大规模 Agentic RL。",
+          "budget": "训练资源与测试时优化预算需分开列出。",
+          "paper_id": "https://arxiv.org/abs/2602.24286",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "CSJianYang/Industrial-Coder",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/CSJianYang/Industrial-Coder",
+      "org": "CSJianYang",
+      "org_type": "User",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 34104,
+          "percent": 93.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 2366,
+          "percent": 6.5
+        }
+      ],
+      "stars": 118,
+      "forks": 5,
+      "open_issues": 1,
+      "created_at": "2026-03-15T10:27:35Z",
+      "pushed_at": "2026-03-27T09:14:53Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "sft"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "工业代码 / GPU kernel 优化",
+      "summary": "32B 工业代码基础模型，统一芯片设计、GPU kernel、嵌入式和编译器优化等场景。",
+      "hardware": [
+        "NVIDIA",
+        "Other"
+      ],
+      "languages": [
+        "CUDA",
+        "C++",
+        "Verilog",
+        "Other"
+      ],
+      "methods": [
+        "Pretraining",
+        "SFT"
+      ],
+      "feedback": [
+        "Correctness"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "incoder32b"
+      ],
+      "works": [
+        {
+          "work_id": "incoder32b",
+          "name": "InCoder-32B / Industrial-Coder",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "model"
+          ],
+          "task": "工业代码 / GPU kernel 优化",
+          "summary": "32B 工业代码基础模型，统一芯片设计、GPU kernel、嵌入式和编译器优化等场景。",
+          "contribution": "从零预训练，经过工业代码退火、中训上下文扩展和执行验证后训练，提供跨工业领域专用代码基线。",
+          "limitations": "不是只针对 kernel 的模型；仓库匿名 API 403，摘要未给出 kernel 专项数据规模或可复现实验预算。",
+          "hardware": [
+            "NVIDIA",
+            "Other"
+          ],
+          "languages": [
+            "CUDA",
+            "C++",
+            "Verilog",
+            "Other"
+          ],
+          "methods": [
+            "Pretraining",
+            "SFT"
+          ],
+          "feedback": [
+            "Correctness"
+          ],
+          "benchmarks": [],
+          "training": "一般代码预训练、工业代码 annealing、8K→128K context mid-training 与执行验证 post-training。",
+          "budget": "从零预训练和长上下文中训成本远高于专用 SFT，应单独报告 token、序列长度、硬件和验证执行。",
+          "paper_id": "https://arxiv.org/abs/2603.16790",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "hgl71964/cuasmrl",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/hgl71964/cuasmrl",
+      "org": "hgl71964",
+      "org_type": "User",
+      "description": null,
+      "homepage": null,
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "C++",
+      "language_breakdown": [
+        {
+          "language": "C++",
+          "bytes": 1633358,
+          "percent": 40.1
+        },
+        {
+          "language": "Python",
+          "bytes": 1492683,
+          "percent": 36.6
+        },
+        {
+          "language": "MLIR",
+          "bytes": 883335,
+          "percent": 21.7
+        },
+        {
+          "language": "CMake",
+          "bytes": 33059,
+          "percent": 0.8
+        },
+        {
+          "language": "C",
+          "bytes": 29604,
+          "percent": 0.7
+        },
+        {
+          "language": "Shell",
+          "bytes": 3567,
+          "percent": 0.1
+        },
+        {
+          "language": "LLVM",
+          "bytes": 1165,
+          "percent": 0.0
+        }
+      ],
+      "stars": 19,
+      "forks": 8,
+      "open_issues": 0,
+      "created_at": "2024-02-26T09:18:28Z",
+      "pushed_at": "2024-11-09T07:42:57Z",
+      "archived": true,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "benchmarks",
+        "bin",
+        "cmake",
+        "cuasmrl",
+        "docs",
+        "include",
+        "lib",
+        "python",
+        "test",
+        "torch_benchmarks",
+        "unittest",
+        "utils"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "CUDA cubin/SASS → 调度优化",
+      "summary": "在 NVIDIA SASS 指令层把调度改写建模为 assembly game，以 PPO 和实机吞吐奖励优化既有 CUDA kernel。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "SASS",
+        "CUDA"
+      ],
+      "methods": [
+        "RL"
+      ],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "cuasmrl"
+      ],
+      "works": [
+        {
+          "work_id": "cuasmrl",
+          "name": "CuAsmRL",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "CUDA cubin/SASS → 调度优化",
+          "summary": "在 NVIDIA SASS 指令层把调度改写建模为 assembly game，以 PPO 和实机吞吐奖励优化既有 CUDA kernel。",
+          "contribution": "从 -O3 SASS schedule 出发迭代变异指令顺序，并可嵌入 Triton cubin 流程，覆盖 LLM kernel 之外的低层编译优化路径。",
+          "limitations": "不是 LLM 训练；依赖特定 NVIDIA 架构、CuAssembler、依赖启发式和反复实机测量，论文仅有限 kernel 验证。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "SASS",
+            "CUDA"
+          ],
+          "methods": [
+            "RL"
+          ],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [],
+          "training": "PPO agent 在 assembly game 中通过吞吐奖励学习指令调度；作为非 LLM RL 训练基线收录。",
+          "budget": "实机测量约束训练吞吐，需记录 PPO steps、候选 cubin、重复 timing 和架构依赖。",
+          "paper_id": "https://arxiv.org/abs/2501.08071",
+          "paper_venue": "CGO 2025",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "hkust-nlp/KernelGYM",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/hkust-nlp/KernelGYM",
+      "org": "hkust-nlp",
+      "org_type": "Organization",
+      "description": "[KernelGYM & Dr. Kernel] A distributed GPU environment and a collection of RL training methods to support RL for Kernel Generations [ICML 2026]",
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 2524330,
+          "percent": 95.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 119969,
+          "percent": 4.5
+        }
+      ],
+      "stars": 216,
+      "forks": 34,
+      "open_issues": 6,
+      "created_at": "2026-02-04T07:46:12Z",
+      "pushed_at": "2026-03-29T11:20:00Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "assets",
+        "drkernel",
+        "kernelgym",
+        "scripts"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → Triton",
+      "summary": "将多轮 RL 与 Triton kernel 执行环境结合。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime",
+        "Profile"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "dr-kernel"
+      ],
+      "works": [
+        {
+          "work_id": "dr-kernel",
+          "name": "Dr. Kernel",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "PyTorch → Triton",
+          "summary": "将多轮 RL 与 Triton kernel 执行环境结合。",
+          "contribution": "提供 KernelGYM 及面向正确性与性能的训练反馈。",
+          "limitations": "reward hacking、验证覆盖与计算预算仍需单独审查；不将摘要阅读视为复现。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime",
+            "Profile"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "多轮强化学习与 kernel 环境。",
+          "budget": "profiling、GPU 执行和训练 rollout 成本需计入。",
+          "paper_id": "https://arxiv.org/abs/2602.05885",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ornith-ai/CUDA-L1",
+      "referenced_slug": "deepreinforce-ai/CUDA-L1",
+      "aliases": [
+        "deepreinforce-ai/CUDA-L1"
+      ],
+      "url": "https://github.com/ornith-ai/CUDA-L1",
+      "org": "ornith-ai",
+      "org_type": "Organization",
+      "description": "CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning",
+      "homepage": "https://arxiv.org/abs/2507.14111",
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 61873,
+          "percent": 100.0
+        }
+      ],
+      "stars": 327,
+      "forks": 110,
+      "open_issues": 11,
+      "created_at": "2025-07-18T03:05:03Z",
+      "pushed_at": "2025-11-03T04:18:33Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "assets",
+        "eval",
+        "more_baselines",
+        "optimized_cuda_code"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "CUDA kernel → 优化实现",
+      "summary": "使用对比式强化学习研究 CUDA kernel 优化。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "RL"
+      ],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "cuda-l1"
+      ],
+      "works": [
+        {
+          "work_id": "cuda-l1",
+          "name": "CUDA-L1",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "model"
+          ],
+          "task": "CUDA kernel → 优化实现",
+          "summary": "使用对比式强化学习研究 CUDA kernel 优化。",
+          "contribution": "以正确性和性能反馈训练优化策略。",
+          "limitations": "论文报告的加速需结合 baseline、硬件、任务形状与搜索预算理解。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "RL"
+          ],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "Contrastive RL；不把训练收益与额外测试时搜索混为一谈。",
+          "budget": "训练和测试时 compute 必须分别报告。",
+          "paper_id": "https://arxiv.org/abs/2507.14111",
+          "paper_venue": "ICLR 2026",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ornith-ai/CUDA-L2",
+      "referenced_slug": "deepreinforce-ai/CUDA-L2",
+      "aliases": [
+        "deepreinforce-ai/CUDA-L2"
+      ],
+      "url": "https://github.com/ornith-ai/CUDA-L2",
+      "org": "ornith-ai",
+      "org_type": "Organization",
+      "description": "CUDA-L2: Surpassing cuBLAS Performance for Matrix Multiplication through Reinforcement Learning",
+      "homepage": "https://arxiv.org/abs/2512.02551",
+      "license": "MIT",
+      "license_name": "MIT License",
+      "primary_language": "Cuda",
+      "language_breakdown": [
+        {
+          "language": "Cuda",
+          "bytes": 43516186,
+          "percent": 99.8
+        },
+        {
+          "language": "Python",
+          "bytes": 56457,
+          "percent": 0.1
+        },
+        {
+          "language": "C++",
+          "bytes": 9261,
+          "percent": 0.0
+        },
+        {
+          "language": "Shell",
+          "bytes": 3540,
+          "percent": 0.0
+        }
+      ],
+      "stars": 486,
+      "forks": 33,
+      "open_issues": 5,
+      "created_at": "2025-12-02T13:29:53Z",
+      "pushed_at": "2026-03-30T06:44:15Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "cublas",
+        "cuda-kernels",
+        "large-language-models",
+        "matrix-multiplication",
+        "nvidia",
+        "reinforcement-learning"
+      ],
+      "root_dirs": [
+        ".vscode",
+        "assets",
+        "cublas",
+        "eval_results",
+        "kernels",
+        "pybind",
+        "tools"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "HGEMM 配置 → 优化 CUDA kernel",
+      "summary": "以执行速度为奖励，用 LLM 与 RL 优化 HGEMM CUDA kernel。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "RL"
+      ],
+      "feedback": [
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "cuda-l2"
+      ],
+      "works": [
+        {
+          "work_id": "cuda-l2",
+          "name": "CUDA-L2",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method"
+          ],
+          "task": "HGEMM 配置 → 优化 CUDA kernel",
+          "summary": "以执行速度为奖励，用 LLM 与 RL 优化 HGEMM CUDA kernel。",
+          "contribution": "在 1000 种配置上搜索半精度矩阵乘实现，并与 torch.matmul、cuBLAS、cuBLASLt 启发式和 AutoTuning 分别比较。",
+          "limitations": "结果限定于 HGEMM、指定 GPU、layout 与累加精度；仓库已从 deepreinforce-ai 迁移到 ornith-ai，论文与后续发布需分开核对。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "RL"
+          ],
+          "feedback": [
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [],
+          "training": "以 CUDA 执行速度为 RL 奖励；仓库发布优化 kernel 与代码，不等同于公开完整训练流水线。",
+          "budget": "offline 与 server 两种测量模式、layout、累加精度和 1000 配置搜索成本必须一起报告。",
+          "paper_id": "https://arxiv.org/abs/2512.02551",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "QiMeng-IPRC/QiMeng-Kernel",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/QiMeng-IPRC/QiMeng-Kernel",
+      "org": "QiMeng-IPRC",
+      "org_type": "Organization",
+      "description": "[AAAI 2026] QiMeng-Kernel: Macro-Thinking Micro-Coding Paradigm for LLM-Based High-Performance GPU Kernel Generation",
+      "homepage": "https://qimeng-iprc.github.io/QiMeng-Kernel/",
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": null,
+      "language_breakdown": [],
+      "stars": 10,
+      "forks": 2,
+      "open_issues": 0,
+      "created_at": "2025-11-09T09:39:21Z",
+      "pushed_at": "2026-05-24T10:31:10Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "docs"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → Triton/CUDA kernel",
+      "summary": "宏观策略思考、微观增量编码的分层 GPU kernel 生成训练范式。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench",
+        "TritonBench"
+      ],
+      "work_ids": [
+        "qimeng-kernel"
+      ],
+      "works": [
+        {
+          "work_id": "qimeng-kernel",
+          "name": "QiMeng-Kernel / MTMC",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "model"
+          ],
+          "task": "PyTorch → Triton/CUDA kernel",
+          "summary": "宏观策略思考、微观增量编码的分层 GPU kernel 生成训练范式。",
+          "contribution": "用 RL 训练轻量策略模型探索优化语义，再让通用模型逐步实现策略，降低一次性生成完整低层 kernel 的搜索空间。",
+          "limitations": "论文性能依赖其 benchmark、硬件和策略/编码模型组合；仓库匿名 API 403，代码版本未核查。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench",
+            "TritonBench"
+          ],
+          "training": "MTMC 将宏观 RL 策略学习与微观增量实现结合，避免把两个阶段混为单模型训练。",
+          "budget": "应分别核算策略模型 rollout、编码模型调用、编译执行和测试时搜索成本。",
+          "paper_id": "https://arxiv.org/abs/2511.20100",
+          "paper_venue": "AAAI 2026",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "QiMeng-IPRC/QiMeng-MuPa",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/QiMeng-IPRC/QiMeng-MuPa",
+      "org": "QiMeng-IPRC",
+      "org_type": "Organization",
+      "description": "[NeurIPS 2025] QiMeng-MuPa: Mutual-Supervised Learning for Sequential-to-Parallel Code Translation",
+      "homepage": "https://arxiv.org/abs/2506.11153",
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1146290,
+          "percent": 99.3
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 5566,
+          "percent": 0.5
+        },
+        {
+          "language": "Shell",
+          "bytes": 1564,
+          "percent": 0.1
+        },
+        {
+          "language": "Makefile",
+          "bytes": 391,
+          "percent": 0.0
+        }
+      ],
+      "stars": 12,
+      "forks": 1,
+      "open_issues": 0,
+      "created_at": "2025-05-16T09:04:51Z",
+      "pushed_at": "2025-11-03T02:50:48Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "BabelTower",
+        "figures",
+        "models",
+        "scripts",
+        "trans",
+        "unit_test"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "顺序代码 → 并行代码",
+      "summary": "以 Translator/Tester 互监督循环解决顺序到并行代码翻译的数据稀缺和功能等价过滤。",
+      "hardware": [
+        "CPU",
+        "NVIDIA"
+      ],
+      "languages": [
+        "C",
+        "CUDA",
+        "OpenMP"
+      ],
+      "methods": [
+        "SFT",
+        "Agent"
+      ],
+      "feedback": [
+        "Correctness"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "qimeng-mupa"
+      ],
+      "works": [
+        {
+          "work_id": "qimeng-mupa",
+          "name": "QiMeng-MuPa",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "dataset"
+          ],
+          "task": "顺序代码 → 并行代码",
+          "summary": "以 Translator/Tester 互监督循环解决顺序到并行代码翻译的数据稀缺和功能等价过滤。",
+          "contribution": "Tester 生成单元测试筛选等价翻译，Translator 生成翻译代码反过来增强 Tester，形成 Co-verify/Co-evolve 数据闭环。",
+          "limitations": "任务是通用顺序到并行翻译，不限于 GPU kernel；论文性能主要以 Pass@1、BLEU/CodeBLEU 衡量，不能替换实机性能评测。",
+          "hardware": [
+            "CPU",
+            "NVIDIA"
+          ],
+          "languages": [
+            "C",
+            "CUDA",
+            "OpenMP"
+          ],
+          "methods": [
+            "SFT",
+            "Agent"
+          ],
+          "feedback": [
+            "Correctness"
+          ],
+          "benchmarks": [],
+          "training": "互监督数据构造与模型联合演化，基座示例包括 Qwen2.5-Coder。",
+          "budget": "翻译器/测试器迭代次数、生成单元测试的执行成本和过滤通过率应单独统计。",
+          "paper_id": "https://arxiv.org/abs/2506.11153",
+          "paper_venue": "NeurIPS 2025",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "RLsys-Foundation/TritonForge",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/RLsys-Foundation/TritonForge",
+      "org": "RLsys-Foundation",
+      "org_type": "Organization",
+      "description": "🔥 LLM-powered GPU kernel synthesis: Train models to convert PyTorch ops into optimized Triton kernels via SFT+RL. Multi-turn compilation feedback,    cross-platform NVIDIA/AMD, Kernelbook + KernelBench",
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 1534829,
+          "percent": 93.8
+        },
+        {
+          "language": "Shell",
+          "bytes": 99873,
+          "percent": 6.1
+        },
+        {
+          "language": "Dockerfile",
+          "bytes": 1926,
+          "percent": 0.1
+        }
+      ],
+      "stars": 153,
+      "forks": 8,
+      "open_issues": 3,
+      "created_at": "2025-09-09T19:05:58Z",
+      "pushed_at": "2025-11-10T20:56:33Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "docs",
+        "KBenchEval",
+        "SLIME"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → Triton",
+      "summary": "支持 PyTorch 到 Triton 生成的 SFT、RL 和多轮反馈框架。",
+      "hardware": [
+        "NVIDIA",
+        "AMD"
+      ],
+      "languages": [
+        "Triton"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench",
+        "KernelBook"
+      ],
+      "work_ids": [
+        "tritonforge"
+      ],
+      "works": [
+        {
+          "work_id": "tritonforge",
+          "name": "TritonForge",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "environment"
+          ],
+          "task": "PyTorch → Triton",
+          "summary": "支持 PyTorch 到 Triton 生成的 SFT、RL 和多轮反馈框架。",
+          "contribution": "连接训练数据、编译反馈和 NVIDIA / AMD 目标环境。",
+          "limitations": "存在同名论文；未独立确认的论文与仓库配对不收录为同一研究。",
+          "hardware": [
+            "NVIDIA",
+            "AMD"
+          ],
+          "languages": [
+            "Triton"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench",
+            "KernelBook"
+          ],
+          "training": "仓库描述包含 SFT + RL；具体训练配置需固定版本。",
+          "budget": "训练与推理时 refinement 成本应分开报告。",
+          "paper_id": "https://github.com/RLsys-Foundation/TritonForge",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "ScalingIntelligence/kernelbench-tinker",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/ScalingIntelligence/kernelbench-tinker",
+      "org": "ScalingIntelligence",
+      "org_type": "Organization",
+      "description": "Tinker ↔ KernelBench Integration enabling RL for GPU Kernel Generation",
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 154159,
+          "percent": 99.1
+        },
+        {
+          "language": "Just",
+          "bytes": 1349,
+          "percent": 0.9
+        }
+      ],
+      "stars": 31,
+      "forks": 6,
+      "open_issues": 2,
+      "created_at": "2025-12-29T14:37:05Z",
+      "pushed_at": "2026-03-05T01:53:48Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [
+        "rl",
+        "rl-infra",
+        "rlvr",
+        "tinker"
+      ],
+      "root_dirs": [
+        "docs",
+        "src"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "模型 rollout → kernel reward",
+      "summary": "连接 Tinker、KernelBench 与远程 GPU 执行的 RL pipeline。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "methods": [
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "KernelBench"
+      ],
+      "work_ids": [
+        "tinker"
+      ],
+      "works": [
+        {
+          "work_id": "tinker",
+          "name": "KernelBench-Tinker",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "environment"
+          ],
+          "task": "模型 rollout → kernel reward",
+          "summary": "连接 Tinker、KernelBench 与远程 GPU 执行的 RL pipeline。",
+          "contribution": "把生成候选的编译、测试和性能结果转为 rollout 反馈。",
+          "limitations": "依赖外部服务与费用；远程执行环境和失败处理影响可复现性。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA",
+            "Triton"
+          ],
+          "methods": [
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "KernelBench"
+          ],
+          "training": "RL 集成流程，须区分模型服务与执行服务。",
+          "budget": "LLM、Modal 和 GPU 成本需要分别记录。",
+          "paper_id": "https://github.com/ScalingIntelligence/kernelbench-tinker",
+          "paper_venue": "Artifact: repository",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "Wangyaoyuu/SparseRL",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/Wangyaoyuu/SparseRL",
+      "org": "Wangyaoyuu",
+      "org_type": "User",
+      "description": "[ICLR'26 Oral] The open-source code release for the SparseRL paper (\"Mastering Sparse CUDA Generation Through Pretrained Models and Deep Reinforcement Learning\").",
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 48324,
+          "percent": 100.0
+        }
+      ],
+      "stars": 9,
+      "forks": 3,
+      "open_issues": 1,
+      "created_at": "2026-01-27T07:22:22Z",
+      "pushed_at": "2026-01-27T07:29:17Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "dataset",
+        "sft_data",
+        "sparserl"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "稀疏矩阵 → CUDA kernel",
+      "summary": "针对稀疏矩阵 SpMV/SpMM 的 CUDA 生成，将稀疏索引嵌入、SFT 与 PPO 结合。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [],
+      "work_ids": [
+        "sparserl"
+      ],
+      "works": [
+        {
+          "work_id": "sparserl",
+          "name": "SparseRL",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "model"
+          ],
+          "task": "稀疏矩阵 → CUDA kernel",
+          "summary": "针对稀疏矩阵 SpMV/SpMM 的 CUDA 生成，将稀疏索引嵌入、SFT 与 PPO 结合。",
+          "contribution": "用行列索引的正弦嵌入表达动态稀疏模式，并以编译、正确性和执行时间组成层次奖励。",
+          "limitations": "官方仓库是最小可运行管线，明确称预训练和 SFT 数据将后续发布；OpenReview 页面本次被验证挑战拦截。",
+          "hardware": [
+            "NVIDIA"
+          ],
+          "languages": [
+            "CUDA"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [],
+          "training": "README 明确提供 SFT 与 PPO 最小实现；稀疏数据集和完整预训练语料尚未公开。",
+          "budget": "稀疏形状、max-nnz、PPO rollout 和真实 GPU 执行必须单独记录。",
+          "paper_id": "https://openreview.net/forum?id=VdLEaGPYWT",
+          "paper_venue": "ICLR 2026 Oral",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "weich97/NPUKernelBench",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/weich97/NPUKernelBench",
+      "org": "weich97",
+      "org_type": "User",
+      "description": null,
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "C++",
+      "language_breakdown": [
+        {
+          "language": "C++",
+          "bytes": 11352698,
+          "percent": 90.5
+        },
+        {
+          "language": "Python",
+          "bytes": 786697,
+          "percent": 6.3
+        },
+        {
+          "language": "CMake",
+          "bytes": 292268,
+          "percent": 2.3
+        },
+        {
+          "language": "Shell",
+          "bytes": 93014,
+          "percent": 0.7
+        },
+        {
+          "language": "C",
+          "bytes": 14523,
+          "percent": 0.1
+        },
+        {
+          "language": "Roff",
+          "bytes": 3079,
+          "percent": 0.0
+        }
+      ],
+      "stars": 14,
+      "forks": 3,
+      "open_issues": 0,
+      "created_at": "2026-04-14T08:45:23Z",
+      "pushed_at": "2026-06-06T11:22:50Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "docs",
+        "figures",
+        "framework",
+        "kernel_generator",
+        "libs",
+        "tasks"
+      ],
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "算子描述 → AscendC kernel",
+      "summary": "面向昇腾 NPU 的 AscendC 生成、领域模型与评测一体化框架。",
+      "hardware": [
+        "Ascend"
+      ],
+      "languages": [
+        "AscendC"
+      ],
+      "methods": [
+        "SFT",
+        "RL"
+      ],
+      "feedback": [
+        "Compile",
+        "Correctness",
+        "Runtime"
+      ],
+      "benchmarks": [
+        "NPUKernelBench"
+      ],
+      "work_ids": [
+        "ascend-kernel-gen"
+      ],
+      "works": [
+        {
+          "work_id": "ascend-kernel-gen",
+          "name": "AscendKernelGen / NPUKernelBench",
+          "group": "training",
+          "group_label": "训练、模型与数据",
+          "roles": [
+            "method",
+            "model",
+            "benchmark"
+          ],
+          "task": "算子描述 → AscendC kernel",
+          "summary": "面向昇腾 NPU 的 AscendC 生成、领域模型与评测一体化框架。",
+          "contribution": "提供 Ascend-CoT 推理数据、经 SFT 与执行反馈 RL 训练的 KernelGen-LM，以及分层评测编译、正确性和性能的 NPUKernelBench。",
+          "limitations": "论文 v1 早于当前仓库 V2.0，任务数与模型能力不能混用；CANN 工具链、芯片型号和 Pass@10 预算决定结果。",
+          "hardware": [
+            "Ascend"
+          ],
+          "languages": [
+            "AscendC"
+          ],
+          "methods": [
+            "SFT",
+            "RL"
+          ],
+          "feedback": [
+            "Compile",
+            "Correctness",
+            "Runtime"
+          ],
+          "benchmarks": [
+            "NPUKernelBench"
+          ],
+          "training": "领域 SFT 与执行反馈 RL；仓库还包含生成和评测流水线。",
+          "budget": "复杂 Level-2 的 95.5% 是 Pass@10 编译成功率，须与功能正确率、采样次数和硬件版本一起阅读。",
+          "paper_id": "https://arxiv.org/abs/2601.07160",
+          "paper_venue": "arXiv preprint（未核实正式 venue）",
+          "relations": []
+        }
+      ]
+    },
+    {
+      "canonical": "flagos-ai/awesome-LLM-driven-kernel-generation",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/flagos-ai/awesome-LLM-driven-kernel-generation",
+      "org": "flagos-ai",
+      "org_type": "Organization",
+      "description": "Review automated kernel generation in the era of LLMs",
+      "homepage": null,
+      "license": "Apache-2.0",
+      "license_name": "Apache License 2.0",
+      "primary_language": null,
+      "language_breakdown": [],
+      "stars": 325,
+      "forks": 26,
+      "open_issues": 1,
+      "created_at": "2026-01-05T03:33:31Z",
+      "pushed_at": "2026-10-12T07:36:17Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        "img"
+      ],
+      "group": null,
+      "group_label": null,
+      "task": null,
+      "summary": null,
+      "hardware": [],
+      "languages": [],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [],
+      "works": []
+    },
+    {
+      "canonical": "qhy991/Awesome-LLM-Kernel-Agent",
+      "referenced_slug": null,
+      "aliases": [],
+      "url": "https://github.com/qhy991/Awesome-LLM-Kernel-Agent",
+      "org": "qhy991",
+      "org_type": "User",
+      "description": "A repository with academic works about Kernel generation with LLM Agent",
+      "homepage": null,
+      "license": null,
+      "license_name": null,
+      "primary_language": "Python",
+      "language_breakdown": [
+        {
+          "language": "Python",
+          "bytes": 58479,
+          "percent": 64.0
+        },
+        {
+          "language": "Mermaid",
+          "bytes": 32310,
+          "percent": 35.3
+        },
+        {
+          "language": "Makefile",
+          "bytes": 650,
+          "percent": 0.7
+        }
+      ],
+      "stars": 24,
+      "forks": 2,
+      "open_issues": 1,
+      "created_at": "2025-11-09T05:41:46Z",
+      "pushed_at": "2026-10-30T06:39:26Z",
+      "archived": false,
+      "is_fork": false,
+      "topics": [],
+      "root_dirs": [
+        ".github",
+        "assets",
+        "llm_kernel_agent_landscape"
+      ],
+      "group": null,
+      "group_label": null,
+      "task": null,
+      "summary": null,
+      "hardware": [],
+      "languages": [],
+      "methods": [],
+      "feedback": [],
+      "benchmarks": [],
+      "work_ids": [],
+      "works": []
+    }
+  ],
+  "huggingface": [
+    {
+      "canonical": "amd/AIG-Datasets",
+      "url": "https://huggingface.co/amd/AIG-Datasets",
+      "kind": "dataset",
+      "work_id": "amdkernelvault",
+      "name": "AMDKernelVault / HIPKernelGen",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch/CUDA → HIP 或 Triton",
+      "summary": "面向 AMD CDNA/ROCm 的执行验证 HIP、Triton kernel 语料与 agentic 训练框架。",
+      "hardware": [
+        "AMD"
+      ],
+      "languages": [
+        "HIP",
+        "Triton"
+      ],
+      "source_ids": []
+    },
+    {
+      "canonical": "ByteDance-Seed/cudaLLM-8B",
+      "url": "https://huggingface.co/ByteDance-Seed/cudaLLM-8B",
+      "kind": "model",
+      "work_id": "cudallm",
+      "name": "cudaLLM",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "自然语言/PyTorch → CUDA",
+      "summary": "基于 Qwen3-8B 的 CUDA 专用模型，模型卡记录两阶段 SFT 与性能反馈 RL。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "source_ids": [
+        "cudallm-model"
+      ]
+    },
+    {
+      "canonical": "cognition-ai/Kevin-32B",
+      "url": "https://huggingface.co/cognition-ai/Kevin-32B",
+      "kind": "model",
+      "work_id": "kevin",
+      "name": "Kevin",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → CUDA",
+      "summary": "用多轮强化学习训练 CUDA kernel 生成模型。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA"
+      ],
+      "source_ids": [
+        "kevin-model"
+      ]
+    },
+    {
+      "canonical": "facebook/KernelLLM",
+      "url": "https://huggingface.co/facebook/KernelLLM",
+      "kind": "model",
+      "work_id": "kernelllm",
+      "name": "KernelLLM",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → Triton",
+      "summary": "面向 PyTorch 到 Triton 转换的专用模型。",
+      "hardware": [],
+      "languages": [
+        "Triton"
+      ],
+      "source_ids": [
+        "kernelllm-model"
+      ]
+    },
+    {
+      "canonical": "GPUMODE/KernelBook",
+      "url": "https://huggingface.co/GPUMODE/KernelBook",
+      "kind": "dataset",
+      "work_id": "kernelbook",
+      "name": "KernelBook",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch ↔ Triton 数据",
+      "summary": "配对 PyTorch 与 Triton 实现的代码翻译数据集。",
+      "hardware": [],
+      "languages": [
+        "Triton"
+      ],
+      "source_ids": []
+    },
+    {
+      "canonical": "hpcgroup/hpc-instruct",
+      "url": "https://huggingface.co/hpcgroup/hpc-instruct",
+      "kind": "dataset",
+      "work_id": "hpc-instruct",
+      "name": "HPC-Instruct",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "HPC 代码指令微调数据",
+      "summary": "用于 HPC-Coder-V2 的 121,551 条合成指令数据，含代码综合、并行化、优化和执行模型翻译。",
+      "hardware": [
+        "CPU",
+        "NVIDIA"
+      ],
+      "languages": [
+        "C",
+        "C++",
+        "MPI",
+        "OpenMP",
+        "CUDA"
+      ],
+      "source_ids": []
+    },
+    {
+      "canonical": "lkongam/KernelCoder",
+      "url": "https://huggingface.co/lkongam/KernelCoder",
+      "kind": "model",
+      "work_id": "concur",
+      "name": "ConCuR / KernelCoder",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch 模块 → CUDA kernel",
+      "summary": "以简洁且信息充分的推理轨迹构造 PyTorch-推理-CUDA 配对数据并训练 KernelCoder。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Python"
+      ],
+      "source_ids": [
+        "concur-model"
+      ]
+    },
+    {
+      "canonical": "MooreThreads/MusaCoder-27B",
+      "url": "https://huggingface.co/MooreThreads/MusaCoder-27B",
+      "kind": "model",
+      "work_id": "musacoder",
+      "name": "MusaCoder",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "PyTorch → CUDA/MUSA native kernel",
+      "summary": "面向 Moore Threads GPU 的 CUDA/MUSA 原生 kernel 全栈训练框架与 27B 模型。",
+      "hardware": [
+        "NVIDIA",
+        "Other"
+      ],
+      "languages": [
+        "CUDA",
+        "MUSA"
+      ],
+      "source_ids": [
+        "musacoder-model"
+      ]
+    },
+    {
+      "canonical": "SakanaAI/AI-CUDA-Engineer-Archive",
+      "url": "https://huggingface.co/SakanaAI/AI-CUDA-Engineer-Archive",
+      "kind": "dataset",
+      "work_id": "ai-cuda-archive",
+      "name": "AI CUDA Engineer Archive",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "CUDA kernel 生成/优化轨迹",
+      "summary": "约三万条 Agent 生成 CUDA kernel 及 torch/NCU/Clang-tidy 轨迹，含错误、正确性和 speedup 字段。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Python"
+      ],
+      "source_ids": []
+    },
+    {
+      "canonical": "ScalingIntelligence/kernelbench-samples",
+      "url": "https://huggingface.co/ScalingIntelligence/kernelbench-samples",
+      "kind": "dataset",
+      "work_id": "kernelbench-samples",
+      "name": "KernelBench Samples",
+      "group": "training",
+      "group_label": "训练、模型与数据",
+      "task": "KernelBench 候选与执行轨迹",
+      "summary": "KernelBench 实验生成样本及评测结果数据，按 baseline、重复采样和迭代 refinement 组织。",
+      "hardware": [
+        "NVIDIA"
+      ],
+      "languages": [
+        "CUDA",
+        "Triton"
+      ],
+      "source_ids": []
+    }
+  ],
+  "other_hosts": [
+    {
+      "url": "https://gitcode.com/cann/cannbot-skills",
+      "work_id": "cannbot-cake",
+      "name": "CANNBot-CAKE",
+      "group": "agent",
+      "group_label": "Agent 与环境",
+      "summary": "面向昇腾 NPU 的 CANN 原生 Agent 工作流，从自然语言或已有 AscendC 基线生成、演化并交付可部署算子。",
+      "hardware": [
+        "Ascend"
+      ],
+      "source_ids": [
+        "cannbot-cake-repository"
+      ]
+    }
+  ]
+}

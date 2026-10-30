@@ -1,0 +1,689 @@
+[
+  {
+    "canonical": "ScalingIntelligence/KernelBench",
+    "role": "benchmark",
+    "role_summary_zh": "衡量 LLM 生成 GPU kernel 正确性与加速比的基准套件",
+    "entrypoints": [
+      "uv run python scripts/generate_and_eval_single_sample.py dataset_src=huggingface level=2 problem_id=40 server_type=google model_name=gemini/gemini-2.5-flash",
+      "uv run python scripts/generate_samples.py run_name=test_hf_level_1 dataset_src=huggingface level=1 num_workers=50",
+      "uv run python scripts/eval_from_generations.py run_name=test_hf_level_1 dataset_src=local level=1 num_gpu_devices=8 timeout=300",
+      "uv run python scripts/benchmark_eval_analysis.py run_name=test_hf_level_1 level=1 hardware=L40S_matx3 baseline=baseline_time_torch",
+      "uv run python scripts/generate_baseline_time.py",
+      "uv run python scripts/run_and_check.py",
+      "notebooks/tutorial.ipynb",
+      "from kernelbench import timing / eval as kb_eval / from kernelbench.utils import set_gpu_arch"
+    ],
+    "key_modules": [
+      {"name": "KernelBench/", "purpose_zh": "分级基准数据集（Level1-4）"},
+      {"name": "src/kernelbench/", "purpose_zh": "核心逻辑：unit_tests 与 prompts"},
+      {"name": "src/eval.py", "purpose_zh": "正确性校验与计时实现"},
+      {"name": "src/prompt_constructor_toml.py", "purpose_zh": "prompt 与后端选项构造"},
+      {"name": "scripts/", "purpose_zh": "生成/评测/分析脚本集"},
+      {"name": "results/", "purpose_zh": "跨硬件基线时间"},
+      {"name": "runs/", "purpose_zh": "运行产物存储目录"}
+    ],
+    "arch_pattern": "评测三段式: 数据集-prompt-生成器 与 评测脚本 分离 + 离线结果分析",
+    "arch_notes_zh": "README 明确本仓库只提供 KernelBench 核心功能与易用评测脚本，不提供复杂 agentic scaffold，建议 clone 后自行改造或作为 git submodule 使用。数据集分 Level1-4（单 kernel、简单融合、整模型、HF 模型），生成与评测拆成 generate_samples 与 eval_from_generations 两个脚本，runs/ 与 results/ 分别承载运行结果和跨代际 NVIDIA GPU 基线。评测核心在 src/eval.py，指标 fast_p 表示既正确又超过阈值 p 的加速比任务占比。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "分级数据集 + 随机输入正确性校验 + 与 torch 基线的加速比"
+    },
+    "verification": {
+      "mechanisms": ["compile", "correctness", "runtime"],
+      "notes_zh": "与参考 torch 算子多次随机比对并计时算加速比"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA", "AMD"],
+    "hardware_arch": ["AMD-GPU-CDG", "AMD-GPU-MI300"],
+    "base_layer": ["torch", "CUDA-C++", "Triton", "TileLang", "ThunderKittens", "CUTLASS", "HIP"],
+    "engineering_practices": [
+      "用 uv + pyproject.toml 管理依赖，ROCm 与 GPU 依赖拆成可选 extras",
+      "生成与评测解耦成两个脚本，评测支持多 GPU 并行与 build_cache 把编译并行放到 CPU",
+      "统一 backend 参数抽象（cuda/triton/cute/tilelang/thunderkittens/hip），一套代码多后端",
+      "结果按 runs/{run_name} 目录归档，并提供 results/timing 的跨硬件基线参考",
+      "无本地 GPU 时可用 Modal serverless 做云端评测，eval_mode=local/modal 切换"
+    ],
+    "stated_limits": [
+      "自述不提供复杂 agentic scaffold，仅是核心功能与评测脚本",
+      "ThunderKittens 后端目前仅支持 BF16，且需手动 clone 并设 THUNDERKITTENS_ROOT",
+      "ROCm 需 >=7.1，README 建议用 docker 镜像规避环境复杂度",
+      "基线时间受集群功耗与软件版本影响，README 建议自行生成基线"
+    ]
+  },
+  {
+    "canonical": "ScalingIntelligence/kernelbench-tinker",
+    "role": "training-pipeline",
+    "role_summary_zh": "把 KernelBench 题目接入 Tinker 做 RL 微调的最小流水线",
+    "entrypoints": [
+      "uv run modal deploy src/kernelbench_tinker/modal/app.py",
+      "uv run python -m kernelbench_tinker.scripts.train_kernel_rl --config src/kernelbench_tinker/config/rl_kernelbench.yaml log_path=./runs/my_experiment",
+      "uv run python -m kernelbench_tinker.scripts.eval_kernel_rl checkpoint_path=... level=1 output_path=...",
+      "just train run=my_experiment",
+      "just resume run=my_experiment",
+      "just status run=my_experiment",
+      "just logs run=my_experiment",
+      "uv run python -m kernelbench_tinker.scripts.run_and_check"
+    ],
+    "key_modules": [
+      {"name": "src/kernelbench_tinker/envs/kernelbench_env.py", "purpose_zh": "单轮 RL 环境实现"},
+      {"name": "src/kernelbench_tinker/envs/kernelbench_client.py", "purpose_zh": "KernelBench API 封装"},
+      {"name": "src/kernelbench_tinker/training/loop.py", "purpose_zh": "GRPO 训练循环"},
+      {"name": "src/kernelbench_tinker/training/reward.py", "purpose_zh": "奖励整形与 reward hack 检测"},
+      {"name": "src/kernelbench_tinker/modal/app.py", "purpose_zh": "Modal 隔离 GPU 评测服务"},
+      {"name": "src/kernelbench_tinker/config/rl_kernelbench.yaml", "purpose_zh": "默认训练配置"},
+      {"name": "src/kernelbench_tinker/training/models.py", "purpose_zh": "模型与 Renderer 配置"},
+      {"name": "KernelBench/ (git submodule)", "purpose_zh": "锁定上游题库与评测代码"}
+    ],
+    "arch_pattern": "RL 闭环: Tinker Env 单轮交互 + Modal 远程评测 + 奖励整形",
+    "arch_notes_zh": "KernelBench 以 git submodule 嵌入并从本地路径安装成 Python 包，环境从 KernelBench 取题并用 Tinker Renderer 格式化为观测；动作是模型产出的候选 kernel，环境解析响应中的 <KERNEL> 块后送到 Modal 隔离 GPU 容器编译、测试并 profile，再把正确性、加速比与静态检查结果按 RewardConfig 折成标量奖励。扩展点是 KernelBenchEnvGroupBuilder（分组归一化实现 GRPO）与 KernelBenchDatasetBuilder（按 level 划分训练/评估集）。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "复用 KernelBench 检查器，在 Modal 隔离 GPU 上编译+正确性+计时"
+    },
+    "verification": {
+      "mechanisms": ["compile", "correctness", "runtime", "static-check"],
+      "notes_zh": "编译/正确性/加速比反馈，另有静态检查与 reward hack 侦测"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "RL 策略模型单轮生成 kernel，无多轮工具循环",
+      "memory_zh": "无跨任务记忆，仅同组 rollout 内做奖励归一化",
+      "feedback_zh": "Modal 评测的正确性、加速比与静态检查告警"
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": [],
+    "base_layer": ["torch", "CUDA-C++"],
+    "engineering_practices": [
+      "KernelBench 以 git submodule 固定评测代码版本，避免上游漂移",
+      "所有 rollout 评测放到 Modal 隔离容器，坏 kernel 不污染训练进程",
+      "每 batch 存 checkpoint 并提供 just resume，崩溃后可断点续训",
+      "reward 计算与静态检查拆成独立模块，并输出可读 WARNING/ERROR 日志",
+      "训练配置外置为 YAML + dataclass，CLI 可逐项覆盖",
+      "集成 KernelBench 的 reward hack 检查器（pass 语句、torch.nn.functional 调用等）"
+    ],
+    "stated_limits": [
+      "自述为 minimal integration，不含新的 RL 技术，仅是可用性基线",
+      "奖励稀疏，早期训练可能出现所有奖励相同而无梯度",
+      "step 时间受 Modal 并发 GPU 容器数量限制",
+      "生成的 kernel 可能触发 CUDA illegal memory access 导致崩溃"
+    ]
+  },
+  {
+    "canonical": "Snowflake-AI-Research/fastkernels",
+    "role": "benchmark",
+    "role_summary_zh": "面向生产模型算子的 kernel 基准套件兼端到端服务框架",
+    "entrypoints": [
+      "pip install .",
+      "fastkernels list [--workloads | --map]",
+      "fastkernels capture minimal",
+      "fastkernels bench --target rms_norm",
+      "fastkernels eval full",
+      "docs/model-optimization-guide.md",
+      "docs/agent-kernels-guide.md",
+      "docs/serving-framework-guide.md"
+    ],
+    "key_modules": [
+      {"name": "tasks/baseline/", "purpose_zh": "各架构的参考实现"},
+      {"name": "tasks/candidate/", "purpose_zh": "候选替换算子槽位"},
+      {"name": "fastkernels CLI", "purpose_zh": "列出/采集/跑算子/端到端评测"},
+      {"name": "docs/model-optimization-guide.md", "purpose_zh": "模型优化流程指南"},
+      {"name": "docs/agent-kernels-guide.md", "purpose_zh": "Agent kernel 评测指南"},
+      {"name": "docs/serving-framework-guide.md", "purpose_zh": "端到端服务框架指南"}
+    ],
+    "arch_pattern": "四级抽象 L1-L4 + baseline/candidate 槽位替换 + benchmark-serve 一体",
+    "arch_notes_zh": "算子按 L1 单 kernel、L2 融合复合、L3 层/块、L4 端到端管线四级抽象组织，覆盖 dense/MoE LLM、线性注意力、扩散视频音频、多模态、检测、3D/机器人/科学、推荐与 world model。每个架构同时提供参考实现（tasks/baseline/）和候选替换槽位（tasks/candidate/），runner 把候选换入后先校验正确性再测加速比。README 强调在模型优化与 agent kernel 评测中开发的优化 kernel，会在作为服务框架使用时被自动换入部署，使评测产物与部署产物合一。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "baseline/candidate 同架构对照，先校验正确性再测加速比与吞吐"
+    },
+    "verification": {
+      "mechanisms": ["correctness", "runtime"],
+      "notes_zh": "候选 kernel 与 baseline 比对正确性后比较运行时间"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": ["NVIDIA-GPU-Hopper", "NVIDIA-GPU-Blackwell", "NVIDIA-GPU-Ampere"],
+    "base_layer": ["torch", "CUDA-C++", "Triton"],
+    "engineering_practices": [
+      "同一算子同时维护 baseline 与 candidate 目录，保证对照实验结构一致",
+      "以 L1-L4 四级抽象分层，便于按粒度定位优化收益来源",
+      "把优化过的 kernel 与服务框架打通，评测产物即部署产物",
+      "用统一 CLI（list/capture/bench/eval）承载优化、评测、部署三类工作流",
+      "采集运行期 init/forward 的 shape 与 dtype 元数据以复现真实 workload"
+    ],
+    "stated_limits": [
+      "需 Python 3.10+、CUDA 12+ 与较新的 NVIDIA GPU",
+      "Ampere 仅支持部分 kernel，Hopper/Blackwell 为测试主力",
+      "README 未给出各架构的算子数量与误差容忍细节"
+    ]
+  },
+  {
+    "canonical": "StigLidu/AdaExplore",
+    "role": "agent-loop",
+    "role_summary_zh": "失败驱动技能记忆 + 多样性保持树搜索的 kernel 生成框架",
+    "entrypoints": [
+      "python synthesis/generate_data.py --server_type azure --model_name gpt-5-mini --prompt_style composite --input_levels 1 --num_generations 200 --num_examples_per_request 3 --temperature 1.0",
+      "python synthesis/rename.py --source_path ... --data_path datasets/KernelBench_syn/... --force",
+      "python agent/agent_entry.py --config config/SYN-v1/config_SYN-v1_none_MCTS.yaml",
+      "python skill_memory/skill_memory.py --log-dir outputs/example_run --knowledge-store-path outputs/example_run/general_memory.txt --server openai --model-name gpt-5-mini --max-logs 3000 --seed 42",
+      "bash online_judge/start_server.sh",
+      "python -m uvicorn online_judge.app_with_queue:app --host 0.0.0.0 --port 12017",
+      "python tool_scripts/stats.py --log_folder outputs/KB-l2_AdaExplore_50 --step 50",
+      "python tool_scripts/re_evaluate.py --log_folder outputs/<run> --num_correct_trials 5 --num_perf_trials 100 --use_remote_eval"
+    ],
+    "key_modules": [
+      {"name": "synthesis/", "purpose_zh": "合成多样化 kernel 训练任务"},
+      {"name": "skill_memory/", "purpose_zh": "失败模式抽取与记忆更新"},
+      {"name": "agent/", "purpose_zh": "MCTS 搜索 agent 入口"},
+      {"name": "online_judge/app_with_queue.py", "purpose_zh": "带队列的在线评测服务"},
+      {"name": "src/eval_subprocess_runner.py", "purpose_zh": "隔离子进程执行 kernel"},
+      {"name": "src/eval.py", "purpose_zh": "正确性与性能评测逻辑"},
+      {"name": "config/", "purpose_zh": "各 benchmark 的运行配置"},
+      {"name": "results/memory/general_memory_v1_200.txt", "purpose_zh": "预生成技能记忆"},
+      {"name": "tool_scripts/stats.py", "purpose_zh": "复现论文表格的统计脚本"}
+    ],
+    "arch_pattern": "两阶段: Adapt(合成任务-失败蒸馏-技能记忆) + Explore(MCTS 树搜索)",
+    "arch_notes_zh": "仓库按 Adapt/Explore 两阶段切分目录：synthesis/ 生成多样化 kernel 任务，agent/ 在其上运行并把重复的编译/运行失败蒸馏成跨任务规则写入技能记忆文件，skill_memory/ 负责离线抽取或更新该记忆，记忆再被注入后续 prompt。Explore 阶段用 MCTS 把候选组织成搜索树，交替进行局部精修与结构性重写以保持多样性。评测走 online_judge/app_with_queue.py 提供的 API 服务，按 GPU 设并发上限并排队，请求路由到最空闲 GPU，执行放在隔离子进程以防崩溃或非法访存拖垮主服务。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "在线评测服务 + 子进程隔离，正确性与性能分开测量"
+    },
+    "verification": {
+      "mechanisms": ["compile", "correctness", "runtime"],
+      "notes_zh": "随机输入多次校验(atol=rtol=1e-2)，预热后多次计时去离群"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "MCTS 树搜索，LLM 提案后在局部精修与结构性重写间切换",
+      "memory_zh": "有：失败模式蒸馏为跨任务技能记忆并注入 prompt",
+      "feedback_zh": "评测服务返回的正确性判定与运行时间统计"
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": ["NVIDIA-GPU-Ampere"],
+    "base_layer": ["torch", "Triton"],
+    "engineering_practices": [
+      "把评测做成带队列的常驻服务，按 GPU 限并发并路由到最空闲卡",
+      "kernel 执行放独立子进程，崩溃或非法访存不影响主服务",
+      "正确性与性能测量分离，容差与试验次数可配（CORRECTNESS_TOL / KERNEL_EVAL_TOL）",
+      "预生成技能记忆随仓库发布，复现实验无需重跑 Adapt 阶段",
+      "配置驱动（config/ 下按 benchmark 命名的 YAML），并提供 stats/re_evaluate 复算工具",
+      "多个 agent worker 并行但共享同一评测服务，避免 GPU 超卖"
+    ],
+    "stated_limits": [
+      "完整 50 步 Level2 运行约 10^4 次 API 请求，需数小时墙钟时间",
+      "论文实验固定 A6000 频率 1500MHz、fp32 精度",
+      "自述为论文的简化开源版本，非完整系统复现"
+    ]
+  },
+  {
+    "canonical": "Wangyaoyuu/SparseRL",
+    "role": "training-pipeline",
+    "role_summary_zh": "稀疏 CUDA 生成的 SFT+PPO 最小强化学习流水线",
+    "entrypoints": [
+      "python -m sparserl.train_sft --dataset-dir dataset --max-nnz 128 --steps 2",
+      "python -m sparserl.train_sft --data sft_data/sft_samples.jsonl --steps 2",
+      "python -m sparserl.train_minimal --steps 1 --max-nnz 128 --model-path /data02/wangyaoyu/models/Qwen/Qwen3-8B --tokenizer-path /data02/wangyaoyu/models/Qwen/Qwen3-8B"
+    ],
+    "key_modules": [
+      {"name": "sparserl.train_sft", "purpose_zh": "稀疏矩阵到 CUDA kernel 的 SFT 训练"},
+      {"name": "sparserl.train_minimal", "purpose_zh": "PPO 强化学习训练入口"},
+      {"name": "稀疏矩阵嵌入", "purpose_zh": "行列索引正弦编码捕捉稀疏模式"},
+      {"name": "层次奖励", "purpose_zh": "编译/正确性/执行时间三段奖励"}
+    ],
+    "arch_pattern": "预训练-SFT-PPO 三段式 + 编译器/执行器反馈的层次奖励",
+    "arch_notes_zh": "把预训练代码 LLM 当作随机策略：输入稀疏矩阵的行/列索引，用正弦嵌入编码动态稀疏模式，模型输出稀疏算子（SpMV、SpMM）的 CUDA kernel。训练链为预训练扩域 → SFT 学映射 → PPO 优化，RL 阶段用编译器与执行器反馈构造含编译、正确性、执行时间的层次奖励。README 自述只提供 SFT 与 PPO 的最小可跑流水线，数据以 .mtx 或 JSONL 两种形式喂入。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "编译与执行反馈构成正确性与耗时分层奖励"
+    },
+    "verification": {
+      "mechanisms": ["compile", "correctness", "runtime"],
+      "notes_zh": "由编译器与执行器返回编译、正确性与耗时反馈"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "策略模型（预训练 LLM）单步采样 kernel",
+      "memory_zh": "无记忆或经验复用机制",
+      "feedback_zh": "编译器/执行器返回的正确性与运行时间"
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": [],
+    "base_layer": ["CUDA-C++"],
+    "engineering_practices": [
+      "用 --max-nnz 限制非零元素数以控制生成代码规模与编译开销",
+      "把稀疏格式选择编码进 prompt 首行（FORMAT: CSR）以对齐 PPO 格式选择逻辑",
+      "kernel 抽取失败时给出负的编译奖励，作为显式失败信号",
+      "SFT 数据同时支持 .mtx 矩阵与带 rows/cols/shape/format/code 字段的 JSONL",
+      "SFT 与 PPO 拆成两个可独立运行的模块入口，便于分阶段调试"
+    ],
+    "stated_limits": [
+      "仅提供 SFT 与 PPO 的最小流水线，非完整论文复现",
+      "预训练与 SFT 数据集尚未发布，计划在『齐物』项目下释出",
+      "PPO prompt 要求首行声明格式且 kernel 需匹配该格式签名"
+    ]
+  },
+  {
+    "canonical": "aisa-group/InferenceBench",
+    "role": "benchmark",
+    "role_summary_zh": "评测 CLI coding agent 优化 LLM 推理服务的端到端基准",
+    "entrypoints": [
+      "bash src/commit_utils/commit.sh --agents codex:gpt-5.3-codex-high --scenarios all --num-hours 2 --seed-pairs 21:1337 --bid 40 [--dry-run]",
+      "bash containers/build_container.sh inference",
+      "bash containers/build_backend_containers.sh torch vllm sglang",
+      "bash containers/download_hf_cache/download_hf_cache.sh --resources-file containers/download_hf_cache/resources.json --workers 4",
+      "bash src/commit_utils/baselines/submit_precompute_all_baselines.sh \"mistralai/Mistral-7B-Instruct-v0.3\" 40 torch 248 248 500 4",
+      "bash src/commit_utils/baselines/submit_hpo_search_baselines.sh \"mistralai/Mistral-7B-Instruct-v0.3\" 40 random vllm a 7200",
+      "source src/commit_utils/set_env_vars.sh",
+      "apptainer exec ... bash src/commit_utils/precache_seeds.sh"
+    ],
+    "key_modules": [
+      {"name": "containers/", "purpose_zh": "容器镜像构建与依赖锁文件"},
+      {"name": "agents/", "purpose_zh": "codex/claude/gemini/opencode 适配器"},
+      {"name": "src/commit_utils/", "purpose_zh": "作业提交脚本与基线计算"},
+      {"name": "src/eval/inference/baselines/quality/", "purpose_zh": "PyTorch 质量参考产物"},
+      {"name": "src/harbor_adapter/", "purpose_zh": "Modal/Cloud 运行适配"},
+      {"name": "containers/locks/", "purpose_zh": "Python 包版本锁定"}
+    ],
+    "arch_pattern": "容器隔离 + 批调度作业: agent 写 launcher → 容器内评测速度与质量 → LLM 裁判审查",
+    "arch_notes_zh": "每个 agent 在固定时间预算内为一个基座模型编写 server launcher，随后在全新容器中运行它，在四种负载场景下测服务速度，并与 PyTorch 参考实现比对回答质量。生成与评测用 Apptainer 容器加 HTCondor 批作业隔离，容器内预置 torch/vllm/sglang/tgi 后端镜像与锁定的 Python 依赖。另设 Claude 裁判审阅 launcher 与服务日志以识别被禁的取巧手段，并提供同等时间预算的 vLLM/SGLang 随机搜索基线做公平对照。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "四场景吞吐延迟 + PyTorch 质量参考 + Claude 裁判审查"
+    },
+    "verification": {
+      "mechanisms": ["correctness", "runtime", "contract"],
+      "notes_zh": "比对 PyTorch 质量参考，固定输出长度不符即失败，裁判查取巧"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "外部 CLI coding agent 在时间预算内自主写 launcher",
+      "memory_zh": "仅开发种子上的请求可用于调优，无跨任务记忆",
+      "feedback_zh": "开发种子上的服务表现与评测种子上的最终得分"
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": ["NVIDIA-GPU-Hopper", "NVIDIA-GPU-Ampere"],
+    "base_layer": ["torch", "vLLM", "SGLang"],
+    "engineering_practices": [
+      "用 Apptainer 容器隔离每个 agent 的服务环境，保证评测无宿主干扰",
+      "Python 依赖锁在 containers/locks/ 中固定版本",
+      "把评测拆成开发种子与评测种子两段，防止在评测集上偷偷调优",
+      "用同预算的 vLLM/SGLang 随机搜索（random/tpe/smac）做 matched-budget 对照",
+      "每个作业把模型权重复制到私有缓存，避免多作业互相污染",
+      "用 INFERENCE_BENCH_* 环境变量统一指定共享存储路径便于集群迁移"
+    ],
+    "stated_limits": [
+      "需要 Linux、Bash、Python 3.10+、Apptainer 与 fakeroot 网络访问",
+      "需 H100 80GB 或 A100（用 _a100 镜像）及共享存储",
+      "TGI 无法忽略 EOS 结束符，故只支持质量参考不支持速度基线",
+      "提交脚本默认依赖 HTCondor，换调度器需改 .sub 文件"
+    ]
+  },
+  {
+    "canonical": "alibaba/atrex-bench",
+    "role": "benchmark",
+    "role_summary_zh": "生产 trace 驱动的多 DSL 算子生成端到端基准",
+    "entrypoints": [
+      "python scripts/run_generate.py --operator attention_forward --backend flydsl --cli claude --output-dir outputs/attention_forward_flydsl --mirror-trace",
+      "python scripts/run_eval.py --input path/to/generated_kernel.py --reference-dir data/attention_forward --output results/attention_forward_flydsl --num-correctness-cases 5 --bench-iters 3",
+      "python scripts/run_eval.py --torch-compile --reference-dir data/attention_forward --output results/torch_compile",
+      "python scripts/run_eval.py --baseline-input A --input B --reference-dir ... (A-B-B-A 对照)",
+      "python scripts/run_eval.py --distribution ray_data --ray-max-workers 4 --ray-shapes-per-shard 1 ...",
+      "python scripts/cleanup_for_generation.py",
+      "python scripts/roofline.py",
+      "python scripts/static_roofline_check.py",
+      "docker run -it --rm --gpus all treinfra/atrex-bench:2.10.0-cuda12.8-cudnn9-devel"
+    ],
+    "key_modules": [
+      {"name": "data/<operator>/", "purpose_zh": "每算子五件套自描述目录"},
+      {"name": "src/atrex_bench/", "purpose_zh": "生成 runner、评测器、roofline"},
+      {"name": "configs/", "purpose_zh": "硬件 SKU profile（roofline 峰值）"},
+      {"name": "prompt/", "purpose_zh": "生成阶段 prompt 模板"},
+      {"name": "scripts/", "purpose_zh": "generate/cleanup/eval/roofline/trace 入口"},
+      {"name": "tests/", "purpose_zh": "单元与端到端测试"},
+      {"name": "docs/run_eval_cli_contract.md", "purpose_zh": "评测 CLI 与分片契约"}
+    ],
+    "arch_pattern": "三段式评测: compile → correctness → performance(SOL)，生成与评测分会话隔离",
+    "arch_notes_zh": "每个算子是一个自描述目录（reference.py、input.py、shapes.json、metadata.json、roofline.json），评测器分编译、数值正确性、性能三段，性能按缓存的 roofline SOL 效率打分。生成与评测强制分两次独立 clone：生成前用 cleanup_for_generation.py 就地删掉 metadata/roofline/评测器与 .git 历史，避免 agent 读到答案，评测用完整的新 clone。评测支持 torch.compile 基线、A-B-B-A 反向平衡对照、按 shape 分片并用 Ray Data 分发到多 GPU worker，worker 失败只重试受影响分片且已成功分片被提交保留。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "trace 派生算子集 + 三段评测 + roofline SOL 效率 + ABBA 对照"
+    },
+    "verification": {
+      "mechanisms": ["compile", "correctness", "runtime", "static-check"],
+      "notes_zh": "编译、数值正确性、相对 roofline SOL 的性能，并可静态校验 SOL 值"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "外部 LLM CLI（Claude Code/Codex）单次生成，可挂 Atrex Kernel Agent skill",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA", "AMD"],
+    "hardware_arch": [],
+    "base_layer": ["torch", "torch.compile", "Triton", "CUTLASS"],
+    "engineering_practices": [
+      "生成与评测强制分离，cleanup 脚本就地删除答案文件与 .git 历史防泄漏",
+      "算子目录自描述五件套，元数据与 roofline 对 agent 隐藏",
+      "A-B-B-A 反向平衡调度抵消顺序偏差，并配合时钟锁定",
+      "按 shape 分片 + Ray Data 分发多 GPU，失败只重试受影响分片并提交成功分片",
+      "分片合并要求覆盖率完整且输入/评测器哈希、硬件、种子一致",
+      "用 static_roofline_check.py 离线校验缓存 SOL 值并与生产延迟对照"
+    ],
+    "stated_limits": [
+      "状态标注为 early stage，当前仅 30 个算子",
+      "面向算力受限、显存充裕的集群（如 XPU-A、H20）",
+      "GPU 型号/架构与软件运行时必须一致，否则不能合并分片",
+      "带 --skill 的运行与不带 skill 的运行不可直接比较"
+    ]
+  },
+  {
+    "canonical": "caoshiyi/K-Search",
+    "role": "agent-loop",
+    "role_summary_zh": "以共演化世界模型引导的 LLM kernel 迭代优化系统",
+    "entrypoints": [
+      "bash scripts/gpumode_trimul_wm.sh",
+      "bash scripts/mla_decode_wm.sh",
+      "bash scripts/kernelbench_wm.sh",
+      "bash scripts/mlx_mamba_wm.sh",
+      "python -m k_search ... --task-source {flashinfer,gpumode,kernelbench,mlx} --definition ... --max-opt-rounds ... --world-model --wandb"
+    ],
+    "key_modules": [
+      {"name": "k_search/kernel_generators/kernel_generator_world_model.py", "purpose_zh": "世界模型驱动的主循环"},
+      {"name": "k_search/kernel_generators/world_model.py", "purpose_zh": "世界模型结构与 JSON schema"},
+      {"name": "k_search/kernel_generators/world_model_manager.py", "purpose_zh": "世界模型 init/refine/select 生命周期"},
+      {"name": "k_search/kernel_generators/world_model_prompts.py", "purpose_zh": "世界模型注入的 prompt 模板"},
+      {"name": "k_search/tasks/task_base.py", "purpose_zh": "任务协议与 Solution/EvalResult 类型"},
+      {"name": "k_search/tasks/*_task.py", "purpose_zh": "各 benchmark 任务适配器"},
+      {"name": "k_search/utils/solution_db.py", "purpose_zh": "解法 JSONL 持久化"},
+      {"name": "baselines/openevolve/, baselines/shinkaevolve/", "purpose_zh": "演化搜索对照基线"}
+    ],
+    "arch_pattern": "世界模型引导的迭代优化: 生成器 + 共演化世界模型 + 任务后端适配层",
+    "arch_notes_zh": "核心在 k_search/kernel_generators/：除基础 LLM 生成器外还提供 world-model-aware 生成器，配套 world_model.py（结构化 JSON schema）、world_model_manager.py（init/refine/select 生命周期）与专用 prompt 模板，世界模型编码瓶颈假设、设计备选与优化策略来指导下一轮动作。任务侧由 task_base.py 定义统一协议，各 benchmark 以适配器接入（FlashInfer-Bench、GPUMode TriMul、KernelBench、MLX）。解法、评测报告与世界模型快照全部落盘，可从已有解法或世界模型状态续跑，并内置 OpenEvolve/ShinkaEvolve 基线做同目标对照。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "多后端任务适配器，复用各 benchmark 自带评测器与 local/Modal 模式"
+    },
+    "verification": {
+      "mechanisms": ["correctness", "runtime"],
+      "notes_zh": "按后端执行正确性试验与性能试验，比较延迟与加速"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 生成 + 世界模型决策下一步动作（难度上限与停滞窗口）",
+      "memory_zh": "有：世界模型快照与解法库持久化，可续跑复用",
+      "feedback_zh": "各 benchmark 评测结果与 W&B 逐轮分数记录"
+    },
+    "hardware": ["NVIDIA", "Other"],
+    "hardware_arch": ["NVIDIA-GPU-Hopper", "NVIDIA-GPU-Blackwell"],
+    "base_layer": ["torch", "Triton", "CUDA-C++"],
+    "engineering_practices": [
+      "用 task_base 协议加适配器把多个 benchmark 后端解耦到同一优化循环",
+      "世界模型快照与解法 JSONL 全量落盘，支持断点续跑与事后分析",
+      "内置演化搜索基线（OpenEvolve/ShinkaEvolve）做同目标直接对照",
+      "产物目录由 utils/paths.py 统一管理，CLI 侧可覆盖",
+      "W&B 记录每轮分数、生成代码与世界模型快照",
+      "评测提供 local 与 Modal 双后端，便于无 GPU 环境复现"
+    ],
+    "stated_limits": [
+      "需要 OpenAI 兼容 API 与 W&B key",
+      "GPU 推荐 H100/B200；MLX 后端仅适用于 Apple Silicon",
+      "世界模型默认关闭，需显式传 --world-model 开启"
+    ]
+  },
+  {
+    "canonical": "facebookresearch/kernel_bench_verified",
+    "role": "benchmark",
+    "role_summary_zh": "为 KernelBench 加入 TF32 基线与隐藏多分布测试的校验框架",
+    "entrypoints": [
+      "python scripts/generate_samples.py run_name=gpt-5.5_level1_test dataset_src=local level=1 num_samples=5 server_type=openai model_name=gpt-5.5",
+      "python scripts/eval_from_generations.py run_name=... level=1 num_gpu_devices=8 gpu_arch=\"['Hopper']\" build_cache=True precision=fp32 measure_performance=True",
+      "python scripts/eval_from_generations.py ... use_hidden_tests=True measure_performance=False",
+      "python scripts/generate_leaderboard.py --use_hidden_eval --baseline baseline_time_torch_tf32 --fp32_tolerance 1e-3 --out leaderboard.html",
+      "python scripts/generate_hidden_inputs.py --level 1 [--pid 90]"
+    ],
+    "key_modules": [
+      {"name": "hidden_tests/level{L}/{pid}_hidden.py", "purpose_zh": "每题四分布隐藏测试"},
+      {"name": "src/prompt_constructor.py", "purpose_zh": "prompt 构造与输入盲配置"},
+      {"name": "scripts/eval_from_generations.py", "purpose_zh": "标准与隐藏双模式评测"},
+      {"name": "scripts/generate_leaderboard.py", "purpose_zh": "生成交互式排行榜"},
+      {"name": "scripts/generate_hidden_inputs.py", "purpose_zh": "生成隐藏测试输入"},
+      {"name": "runs/{run_name}/eval_results.json", "purpose_zh": "标准评测结果"},
+      {"name": "runs/{run_name}/eval_results_hidden.json", "purpose_zh": "隐藏门控评测结果"},
+      {"name": "docs/INPUT_BLIND_GENERATION.md", "purpose_zh": "输入盲生成机制说明"}
+    ],
+    "arch_pattern": "扩展评测框架: 复用 KernelBench + TF32 基线 + 隐藏测试门控 + 交互式排行榜",
+    "arch_notes_zh": "不重造题库，而是在 KernelBench 之上加三件事：把 PyTorch 基线切到 TF32 以对齐真实部署的 Tensor Core 路径、为每题生成隐藏的四分布测试文件、对 4 个易 reward hack 的题在 prompt 中自动剥离测试输入。评测用 use_hidden_tests 与 use_hidden_eval 两个开关把标准结果和隐藏门控结果分流到不同文件，最后由 generate_leaderboard.py 产出以速度-显存权衡为坐标的交互式 HTML 排行榜。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "标准评测 + 四分布隐藏门控 + TF32 基线 + 速度显存双指标榜"
+    },
+    "verification": {
+      "mechanisms": ["correctness", "runtime"],
+      "notes_zh": "四分布隐藏输入全通过才算正确，FP32 容差 1e-3，另附 TF32 基线计时"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA"],
+    "hardware_arch": ["NVIDIA-GPU-Hopper"],
+    "base_layer": ["torch", "CUDA-C++"],
+    "engineering_practices": [
+      "把基线升级为 TF32，使加速比对齐真实部署的 Tensor Core 表现",
+      "用四分布变换（×3、×0.01、×-1）隐藏测试抓溢出下溢与符号取巧",
+      "对易 reward hack 的题自动从 prompt 剥离测试输入",
+      "标准评测与隐藏评测结果分文件产出，避免口径混淆",
+      "排行榜同时给出速度与显存两个几何平均指标呈现权衡",
+      "把新增输入盲题目配置集中在 STRIP_TEST_CONFIG_PIDS 一处维护"
+    ],
+    "stated_limits": [
+      "Verified 口径下 GPT-5.5 几何平均加速比仅 0.88×，说明标准口径高估",
+      "评测依赖本地多卡 GPU（示例用 8 卡）与上游 KernelBench 题库",
+      "需要 conda 环境、requirements.txt 与各 provider 的 API key"
+    ]
+  },
+  {
+    "canonical": "flagos-ai/FlagGems",
+    "role": "foundation-runtime",
+    "role_summary_zh": "基于 Triton 的跨芯片通用算子库，注册进 PyTorch ATen",
+    "entrypoints": [
+      "torch.* / torch.nn.functional.* API（经 ATen 注册后自动路由到 Triton 实现）",
+      "官方文档 Getting Started 安装与调用流程",
+      "官方文档 usage 使用说明"
+    ],
+    "key_modules": [
+      {"name": "ATen 注册层", "purpose_zh": "免改 API 切换到 Triton 实现"},
+      {"name": "Triton 算子库", "purpose_zh": "后端无关的算子集合"},
+      {"name": "pointwise 代码生成", "purpose_zh": "自动生成任意类型布局算子"},
+      {"name": "运行时分发器", "purpose_zh": "按函数快速分发 kernel"},
+      {"name": "C++ Triton dispatcher (WIP)", "purpose_zh": "C++ 侧函数分发"},
+      {"name": "多后端接口", "purpose_zh": "支持 10 个以上后端"}
+    ],
+    "arch_pattern": "后端中立的 Triton 算子库 + ATen 注册层 + 多后端分发",
+    "arch_notes_zh": "FlagGems 是 FlagOS 全栈中的算子层：用 Triton 写后端中立的算子集合，并通过注册 PyTorch 的 ATen backend，让用户不改动底层 API 即可把算子切到 Triton 实现，实现 develop once, run anywhere。README 列出的工程要点包括 eager 模式即可用（不依赖 torch.compile）、pointwise 算子的自动代码生成（支持任意输入类型与布局）、按函数的快速运行时分发、多后端接口（10+ 后端），以及仍在推进的 C++ Triton 函数分发器。",
+    "eval_harness": {
+      "present": false,
+      "design_zh": ""
+    },
+    "verification": {
+      "mechanisms": [],
+      "notes_zh": "README 未描述自动化正确性/性能校验流程，只列出手工优化算子与测试样例模型"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [],
+    "hardware_arch": [],
+    "base_layer": ["Triton", "PyTorch-ATen", "torch"],
+    "engineering_practices": [
+      "注册进 PyTorch ATen backend，用户无需修改底层 API 即可切换实现",
+      "算子实现保持后端中立，一套代码覆盖多类 AI 加速器",
+      "pointwise 算子走自动代码生成，支持任意输入类型与布局",
+      "eager 模式即可用，不绑定 torch.compile 降低集成门槛",
+      "提供按算子维度的运行时快速分发与 C++ Triton 分发器"
+    ],
+    "stated_limits": [
+      "C++ Triton 函数分发器仍在开发中（WIP）",
+      "只有部分算子经过手工性能优化",
+      "README 未列出多后端对应的具体芯片清单"
+    ]
+  },
+  {
+    "canonical": "flagos-ai/KernelGenBench",
+    "role": "benchmark",
+    "role_summary_zh": "多来源多芯片的 Triton kernel 生成基准（LLM 与 Agent 双赛道）",
+    "entrypoints": [
+      "pip install -r requirements/requirements_nvidia.txt && pip install -e .",
+      "python scripts/generate_kernel_and_verify.py --op-name aten::add --single-test --api-format openai --model-name your-model --base-url https://your-provider.example/v1 --api-key your-key",
+      "docs/source/getting-started/index.md",
+      "docs/source/operation-guide/llm-track/index.md",
+      "docs/source/operation-guide/agent-track/index.md"
+    ],
+    "key_modules": [
+      {"name": "scripts/generate_kernel_and_verify.py", "purpose_zh": "生成并校验单算子脚本"},
+      {"name": "requirements/", "purpose_zh": "分平台依赖文件"},
+      {"name": "docs/source/", "purpose_zh": "overview/getting-started/赛道/reference/faq 文档"},
+      {"name": "算子数据集", "purpose_zh": "ATen/vLLM/cuBLAS 三来源 210 算子"},
+      {"name": "LLM Track", "purpose_zh": "Pass@K 评测赛道"},
+      {"name": "Agent Track", "purpose_zh": "迭代生成评测赛道"},
+      {"name": "平台适配层", "purpose_zh": "NVIDIA/Ascend/MUSA/Hygon/MetaX 适配"}
+    ],
+    "arch_pattern": "多来源算子集 + 双赛道（LLM Pass@K / Agent 迭代）+ 多芯片后端",
+    "arch_notes_zh": "KernelGenBench 是 FlagOS 体系内的基准框架：210 个算子来自 ATen（110）、vLLM（50）、cuBLAS（50）三个来源，评测分 LLM 赛道（Pass@K）与 Agent 赛道（迭代生成）两条。对外统一用 generate_kernel_and_verify.py 入口，--api-format 只描述协议而不限定 provider，任何 OpenAI/Anthropic 兼容端点都能直接接入。工程上把平台差异收敛到 requirements/ 下的分平台依赖文件，硬件侧覆盖 NVIDIA、昇腾 NPU、MUSA、海光 DCU、沐曦与 MetaX。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "统一算子集 + 容差比对自动校验，LLM 赛道 Pass@K 与 Agent 赛道迭代"
+    },
+    "verification": {
+      "mechanisms": ["correctness"],
+      "notes_zh": "以容差比对做准确率自动校验"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "外部 CLI agent（Claude Code、OpenCode、AutoKernel、AKO4ALL、cuda-optimized-skill）",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA", "Ascend", "Other"],
+    "hardware_arch": [],
+    "base_layer": ["Triton", "torch"],
+    "engineering_practices": [
+      "算子集按 ATen/vLLM/cuBLAS 三来源分层构建，覆盖通用与推理算子",
+      "以 --api-format 描述协议而非固定 provider，兼容任意兼容端点",
+      "把平台依赖拆到 requirements/requirements_<platform>.txt 便于多芯片维护",
+      "分 LLM Track 与 Agent Track 两条赛道分别度量 Pass@K 与迭代优化能力",
+      "提供 --single-test 单算子冒烟入口便于快速验证链路"
+    ],
+    "stated_limits": [
+      "README 未给出各算子失败率等详细评测结果",
+      "目标语言限定为 Triton，未覆盖其他 DSL",
+      "README 只列芯片厂商，未说明具体型号与版本要求"
+    ]
+  },
+  {
+    "canonical": "flagos-ai/awesome-LLM-driven-kernel-generation",
+    "role": "listicle",
+    "role_summary_zh": "LLM 驱动 kernel 生成领域的文献分类清单与综述配套索引",
+    "entrypoints": [],
+    "key_modules": [
+      {"name": "LLM4Kernel 章节", "purpose_zh": "SFT 与 RL 两条后训练路线清单"},
+      {"name": "Agent4Kernel 章节", "purpose_zh": "学习/记忆/profiling/编排四维度"},
+      {"name": "Datasets 章节", "purpose_zh": "结构化数据集与算子库/框架索引"},
+      {"name": "Benchmarks 章节", "purpose_zh": "评测框架清单"},
+      {"name": "img/", "purpose_zh": "综述配图"}
+    ],
+    "arch_pattern": "纯文档分类清单: 按 taxonomy 分层索引条目",
+    "arch_notes_zh": "仓库不含代码，是综述（arXiv 2601.15727）配套的 awesome 列表。作者把领域工作划为四大流：LLM4Kernel（分 SFT 与 RL 两种后训练）、Agent4Kernel（再按学习机制、外部记忆管理、硬件 profiling 集成、多智能体编排四个维度）、Datasets 与 Benchmarks。条目统一以 [日期] 标题加论文/代码/数据集链接呈现，并附 GitHub star 徽章；数据集部分又细分结构化数据集与源码仓库（算子库、框架集成、DSL）两类。",
+    "eval_harness": {
+      "present": false,
+      "design_zh": ""
+    },
+    "verification": {
+      "mechanisms": [],
+      "notes_zh": ""
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": ["NVIDIA", "AMD", "Ascend", "Tenstorrent", "Other"],
+    "hardware_arch": [],
+    "base_layer": ["Triton", "CUDA-C++", "TileLang", "CUTLASS", "torch", "PyTorch-ATen", "vLLM", "SGLang", "FlashInfer", "AITer", "AKG", "ThunderKittens"],
+    "engineering_practices": [
+      "用统一 taxonomy 四大流分类，便于横向比较不同技术路线",
+      "每条记录统一为 [日期] 标题加论文/代码链接加 star 徽章格式便于索引",
+      "把 agent 方法拆成记忆、profiling、编排三个可比较维度",
+      "区分结构化数据集与源码仓库两类数据资源分别归类",
+      "持续接受 PR 补充新工作以跟上快速演进的领域"
+    ],
+    "stated_limits": [
+      "作者承认可能遗漏近期工作，欢迎 PR 或 issue 补充",
+      "条目多为链接与一句话描述，缺少统一的横向对比指标"
+    ]
+  },
+  {
+    "canonical": "flashinfer-ai/flashinfer-bench",
+    "role": "benchmark",
+    "role_summary_zh": "带生产 workload 的 kernel 基准套件与自我改进工作流",
+    "entrypoints": [
+      "pip install flashinfer-bench",
+      "import flashinfer_bench as fib",
+      "flashinfer-bench run --local flashinfer-trace",
+      "GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace"
+    ],
+    "key_modules": [
+      {"name": "flashinfer_bench Python 包", "purpose_zh": "基准套件的模块化 API"},
+      {"name": "FlashInfer-Trace 数据集", "purpose_zh": "真实部署环境的 kernel 与 workload"},
+      {"name": "FlashInfer Trace Schema", "purpose_zh": "数据集统一的描述规范"},
+      {"name": "flashinfer-bench CLI", "purpose_zh": "本地运行基准的命令行"},
+      {"name": "bench.flashinfer.ai 文档站", "purpose_zh": "快速上手与规范文档"}
+    ],
+    "arch_pattern": "数据集 + 固定 Schema 驱动的 pypi 基准套件",
+    "arch_notes_zh": "README 极简：flashinfer-bench 以 pip 包发布，提供 Python 模块（import flashinfer_bench as fib）与 CLI（flashinfer-bench run）两条入口。核心资产是官方 FlashInfer-Trace 数据集，包含真实 AI 系统部署环境下的 kernel 与 workload，遵循独立的 FlashInfer Trace Schema。数据集托管在 HuggingFace，用 GIT_LFS_SKIP_SMUDGE=1 只克隆 LFS 指针文件，大张量在跑基准时按需下载，避免一次性拉取巨量数据。整体定位是构建『AI 改进 AI 系统』的正循环。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "以 Trace 数据集的 kernel 与 workload 测性能并横向比较"
+    },
+    "verification": {
+      "mechanisms": [],
+      "notes_zh": "README 未描述正确性校验机制或容差设置"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [],
+    "hardware_arch": [],
+    "base_layer": ["FlashInfer"],
+    "engineering_practices": [
+      "用固定 Trace Schema 描述 kernel 与 workload，保证跨来源可比",
+      "数据集放 HuggingFace 并用 Git LFS 指针加按需下载，避免巨量张量一次拉取",
+      "以 pip 包加 Python API 加 CLI 三种形态提供入口",
+      "把基准与生产工作流合为同一体系，支撑 AI 自我改进的正循环",
+      "配套文档站与 Slack 协作渠道降低使用门槛"
+    ],
+    "stated_limits": [
+      "README 极简，未给出任务规模、评测指标或硬件要求",
+      "完整用法需跳转外部文档站"
+    ]
+  }
+]

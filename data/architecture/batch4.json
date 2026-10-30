@@ -1,0 +1,995 @@
+[
+  {
+    "canonical": "hgl71964/cuasmrl",
+    "role": "foundation-compiler",
+    "role_summary_zh": "Triton 编译器分支，含依赖 CuAssembler 的 cuasmrl 包",
+    "entrypoints": [
+      "python -m venv .venv --prompt triton && pip install -e python",
+      "pip install -e cuasmrl (需先 clone CuAssembler 并设置 PYTHONPATH)",
+      "git clone https://github.com/hgl71964/CuAssembler.git"
+    ],
+    "key_modules": [
+      {
+        "name": "cuasmrl/",
+        "purpose_zh": "cuasmrl 包（仅见安装说明）"
+      },
+      {
+        "name": "python/",
+        "purpose_zh": "Python 前端与构建脚本"
+      },
+      {
+        "name": "CuAssembler (外部克隆)",
+        "purpose_zh": "外部 CuAssembler 汇编器"
+      },
+      {
+        "name": "CMakeLists.txt",
+        "purpose_zh": "C++ 侧构建配置"
+      }
+    ],
+    "arch_pattern": "Triton 编译器主仓 + 附加 cuasmrl 包的 fork 结构",
+    "arch_notes_zh": "该仓库 README 几乎完全是 Triton 上游的源码构建说明（venv 依赖、clang+lld、ccache、vscode compile_commands 配置），仅在 Install 段落追加了 CuAssembler 的 clone 与 PYTHONPATH 设置、以及 pip install -e cuasmrl。README 未描述 cuasmrl 包自身的结构、训练流程或用法，也未提及任何 RL 细节。可确证的结构性事实是：这是一个 Triton 编译器 fork，需要按 triton → pytorch → triton 的顺序依次构建以保证版本匹配。",
+    "eval_harness": {
+      "present": false,
+      "design_zh": ""
+    },
+    "verification": {
+      "mechanisms": [
+        "none"
+      ],
+      "notes_zh": "README 未描述任何正确性校验机制"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD",
+      "CPU"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "Triton",
+      "CUDA-C++"
+    ],
+    "engineering_practices": [
+      "构建顺序固定为 triton → pytorch → 重装 triton，保证 ptxas/cuobjdump 与宿主版本一致",
+      "用 TRITON_BUILD_WITH_CLANG_LLD 走 clang+lld 加速链接",
+      "用 TRITON_BUILD_WITH_CCACHE 开 ccache 增量编译",
+      "pip install --no-build-isolation 避免每次 cmake 软链变化触发 ninja 全量重建 .a",
+      "把 compile_commands.json 喂给 VSCode C++ 扩展解决 C++ 补全"
+    ],
+    "stated_limits": [
+      "仅支持 Linux 平台",
+      "要求 NVIDIA GPU 计算能力 7.0 及以上",
+      "AMD GPU 与 CPU 支持仍在开发中；cuasmrl 需手动 clone CuAssembler 并设置 PYTHONPATH"
+    ]
+  },
+  {
+    "canonical": "hkust-nlp/KernelGYM",
+    "role": "training-pipeline",
+    "role_summary_zh": "GPU 分布式 kernel 评测环境 + Dr.Kernel RL 训练配方",
+    "entrypoints": [
+      "bash setup.sh",
+      "./start_all_with_monitor.sh (单机启动 API+worker+监控)",
+      "./start_worker_multinode.sh (多节点 worker)",
+      "python -m kernelgym.server.api.server",
+      "bash scripts/auto_configure.sh (自动生成 .env)",
+      "POST http://localhost:10907/evaluate",
+      "POST http://localhost:10907/workflow/submit"
+    ],
+    "key_modules": [
+      {
+        "name": "kernelgym/server/api/",
+        "purpose_zh": "FastAPI 接入层"
+      },
+      {
+        "name": "kernelgym/backend/",
+        "purpose_zh": "编译/加载/执行后端抽象"
+      },
+      {
+        "name": "kernelgym/toolkit/",
+        "purpose_zh": "正确性与性能评测工具集"
+      },
+      {
+        "name": "kernelgym/workflow/",
+        "purpose_zh": "多步评测工作流控制器"
+      },
+      {
+        "name": "kernelgym/schema/",
+        "purpose_zh": "任务定义与校验 schema"
+      },
+      {
+        "name": "drkernel/",
+        "purpose_zh": "VERL 集成的 RL 训练实现"
+      },
+      {
+        "name": "scripts/",
+        "purpose_zh": "部署与自动配置脚本"
+      }
+    ],
+    "arch_pattern": "评测服务三段式: API-任务队列-GPU worker，外加可插拔 backend/toolkit/workflow 三层抽象",
+    "arch_notes_zh": "整体是分布式评测服务：客户端 → FastAPI → Redis 任务队列 → 各节点 GPU worker，worker 内部再用子进程池隔离 CUDA 错误。核心抽象拆成 Backend（编译/加载/运行）、Toolkit（正确性与性能逻辑）、Workflow Controller（编排）三层，并以 register_backend/register_toolkit 方式支持扩展到物理模拟、渲染等新 GPU 任务类型。计时统一用 CUDA event 而非 wall-clock，并支持 warmup 与多次 trial。仓库内另有 drkernel/ 目录，提供与 VERL 框架对接的分布式 RL 训练、基于编译/正确性/性能的多维奖励函数与训练脚本。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "Redis 队列分发任务，GPU worker 子进程隔离执行，CUDA event 计时并按容差比对参考实现"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime"
+      ],
+      "notes_zh": "子进程隔离编译失败可恢复；rtol/atol 容差比对；CUDA event 计时"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "RL 策略模型多轮 rollout，规则化奖励函数",
+      "memory_zh": "无经验库复用，仅收集轨迹数据",
+      "feedback_zh": "编译/正确性/性能指标与 profiling"
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "CUDA-C++",
+      "Triton",
+      "torch",
+      "torch.compile"
+    ],
+    "engineering_practices": [
+      "用 Redis 队列做优先级任务调度，从单 GPU 平滑扩到多节点",
+      "每个 GPU worker 用子进程池隔离 CUDA 错误，避免级联崩溃",
+      "把 backend/toolkit/workflow 抽象成可注册插件，便于接入新 GPU 任务",
+      "计时统一用 CUDA event 并把 warmup/trial 次数做成可配参数",
+      "reference_code 与 kernel_code 分字段传入，grader 与被测 kernel 解耦",
+      "启动脚本自动探测 IP、端口与 GPU 列表生成 .env，保证一键可复现部署"
+    ],
+    "stated_limits": [
+      "依赖 Python 3.10+、CUDA 11.8+、Redis 服务，官方推荐 Linux (Ubuntu 20.04+)",
+      "目前成熟的任务类型是 kernel 生成，其他 GPU 任务需自行实现抽象",
+      "大规模训练需要多 GPU/多节点横向扩展才能承接上千样本批次"
+    ]
+  },
+  {
+    "canonical": "meta-pytorch/BackendBench",
+    "role": "benchmark",
+    "role_summary_zh": "评测 LLM 与人写 PyTorch 后端的正确性与性能套件",
+    "entrypoints": [
+      "pip install .",
+      "python -m BackendBench.scripts.setup_operator_directories",
+      "python BackendBench/scripts/main.py --suite smoke --backend aten",
+      "python BackendBench/scripts/main.py --suite opinfo --backend directory",
+      "python BackendBench/scripts/main.py --suite torchbench --backend directory"
+    ],
+    "key_modules": [
+      {
+        "name": "BackendBench/scripts/main.py",
+        "purpose_zh": "按 suite 调度评测"
+      },
+      {
+        "name": "BackendBench/scripts/setup_operator_directories.py",
+        "purpose_zh": "生成算子目录骨架"
+      },
+      {
+        "name": "算子实现目录(directory backend)",
+        "purpose_zh": "组织并动态替换算子"
+      },
+      {
+        "name": "docs/correctness.md",
+        "purpose_zh": "正确性方法说明"
+      }
+    ],
+    "arch_pattern": "PyTorch 后端目录约定 + 三套测试套件 (smoke/opinfo/torchbench) 动态替换算子",
+    "arch_notes_zh": "核心机制不是独立 runner，而是目录约定：开发者按规范在算子目录下放实现，运行时动态覆盖 PyTorch 核心算子，从而拼出一个可 pip 安装、对现有模型无需改代码的 PyTorch 后端。评测分三套：smoke 快速自检、opinfo 复用 PyTorch OpInfo 与 FACTO 做边界正确性、torchbench 用 Hugging Face 热门模型的真实张量形状测性能。设计上刻意以 PyTorch 自身标准为准，目的是让通过测试的 kernel 具备向上游 PyTorch 合并的资格。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "smoke/opinfo/torchbench 三套件；OpInfo+FACTO 测正确性，TorchBench 真实形状测性能"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime"
+      ],
+      "notes_zh": "直接复用 PyTorch OpInfo/FACTO 边界用例与 TorchBench 真实形状"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [],
+    "hardware_arch": [],
+    "base_layer": [
+      "PyTorch-ATen",
+      "torch"
+    ],
+    "engineering_practices": [
+      "用 PyTorch 自身的 OpInfo/FACTO 测试集作为 kernel 正确性标准",
+      "把算子实现按固定目录约定组织，便于上游贡献与运行时动态替换",
+      "性能测试复用 TorchBench/Hugging Face 模型的真实张量形状",
+      "先跑 smoke 套件做快速自检再跑完整套件，降低试错成本"
+    ],
+    "stated_limits": [
+      "kernel 必须达到 PyTorch 自身正确性标准才会被接受，宽松实现无法通过",
+      "README 未描述硬件要求与多卡并行机制"
+    ]
+  },
+  {
+    "canonical": "meta-pytorch/KernelAgent",
+    "role": "agent-loop",
+    "role_summary_zh": "多 Agent 生成并硬件引导优化 Triton kernel 的流水线",
+    "entrypoints": [
+      "python -m Fuser.auto_agent --problem /abs/path/problem.py --verify",
+      "python -m Fuser.pipeline --problem ... --extract-model gpt-5 --dispatch-jobs auto --workers 4",
+      "python scripts/triton_ui.py / kernel-agent / fuser-ui / pipeline-ui",
+      "python scripts/optimization_ui.py --port 8085",
+      "python examples/run_opt_manager.py --kernel-dir optimize_01_matvec --strategy beam_search",
+      "TritonKernelAgent(num_workers=4, max_rounds=8).generate_kernel(...)"
+    ],
+    "key_modules": [
+      {
+        "name": "Fuser/auto_agent.py",
+        "purpose_zh": "AST 静态路由决策"
+      },
+      {
+        "name": "Fuser/orchestrator.py",
+        "purpose_zh": "重写模块并编排流水线"
+      },
+      {
+        "name": "Fuser/subgraph_extractor.py",
+        "purpose_zh": "LLM 抽取可融合子图"
+      },
+      {
+        "name": "Fuser/dispatch_kernel_agent.py",
+        "purpose_zh": "并行派发 kernel 生成"
+      },
+      {
+        "name": "Fuser/compose_end_to_end.py",
+        "purpose_zh": "拼接端到端 Triton 程序"
+      },
+      {
+        "name": "triton_kernel_agent/",
+        "purpose_zh": "worker 池式生成 agent"
+      },
+      {
+        "name": "triton_kernel_agent/opt_worker_component/",
+        "purpose_zh": "优化环: 剖析/诊断/计时"
+      },
+      {
+        "name": "kernel_perf_agent/kernel_opt/roofline/",
+        "purpose_zh": "SOL 分类与提前终止"
+      }
+    ],
+    "arch_pattern": "分层多 Agent 流水线: 静态路由-子图融合-并行生成-端到端组合 + 硬件引导优化环",
+    "arch_notes_zh": "先用 AutoRouter 对问题做 AST 静态分析（注意力块、转置卷积、控制流、长算子链）决定走轻量直连路径还是完整 Fuser 流水线，路由决策缓存在 .fuse/router_cache.json 并可回退。Fuser 侧由 LLM 输出 JSON 子图描述（算子、shape、dtype、参数），按 shape 签名去重复用 kernel，Dispatcher 并行拉起多个 TritonKernelAgent 进程，Composer 把已验证 kernel 拼回单个 Triton 程序并跑自测。生成侧 worker 池迭代让 LLM 改进代码，在沙箱子进程中执行单测并禁止 PyTorch fallback，只有打印 PASS 且退出码 0 才算成功。优化侧以 NCU 28 项指标 + roofline 判定驱动 LLM 诊断与改写，对 PyTorch 参考做数值校验，再用 CUDA event 计时跟踪 best-so-far 并在性能退化时回滚。所有阶段产物落盘到 .fuse/<run_id> 与 .optimize/<run_id> 以支持复现。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "内部校验+基准：沙箱子进程单测对比 PyTorch，NCU 指标与 CUDA event 计时"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime",
+        "profile"
+      ],
+      "notes_zh": "沙箱子进程单测须打印 PASS，对 PyTorch 做数值校验，并采集 NCU 指标"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 决策 + AST 静态路由，规则驱动并行 worker",
+      "memory_zh": "router_cache 缓存路由，每轮 artifacts 落盘可复用",
+      "feedback_zh": "单测结果、NCU 指标与计时回退信号"
+    },
+    "hardware": [
+      "NVIDIA",
+      "Intel"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "Triton",
+      "torch"
+    ],
+    "engineering_practices": [
+      "静态 AST 路由决定轻量/完整路径，并缓存决策避免重复分析",
+      "子图按 shape 签名去重，让同一 kernel 被多个子图复用",
+      "每阶段写 run 目录 (.fuse/<run_id>、.optimize/<run_id>)，可复现并支持单会话重跑",
+      "沙箱子进程执行单测隔离 CUDA 崩溃，并显式禁止 PyTorch fallback 冒充实现",
+      "用 roofline 判定 + ≥95% SOL 提前终止，best-so-far 追踪与退化回滚",
+      "prompt 用 Jinja 模板管理，便于版本化与统一改造"
+    ],
+    "stated_limits": [
+      "Triton 需自行安装并锁版本以匹配驱动与工具链",
+      "要求 Python 3.8–3.12，Linux 或 macOS",
+      "Intel XPU 为附加支持路径，需兼容 GPU 与 Linux 驱动"
+    ]
+  },
+  {
+    "canonical": "meta-pytorch/tritonbench",
+    "role": "benchmark",
+    "role_summary_zh": "算子级 Triton 性能基准套件，衡量其与 PyTorch 集成效果",
+    "entrypoints": [
+      "python install.py",
+      "python run.py --op gemm",
+      "pip install -e . 后用 tritonbench.load_opbench_by_name(\"addmm\")(op_args).run()"
+    ],
+    "key_modules": [
+      {
+        "name": "run.py",
+        "purpose_zh": "按算子名运行基准的 CLI"
+      },
+      {
+        "name": "install.py",
+        "purpose_zh": "统一安装脚本"
+      },
+      {
+        "name": "tritonbench/utils/parser.py",
+        "purpose_zh": "库化调用参数解析"
+      },
+      {
+        "name": "git submodules (generative-recommenders, Liger-Kernel, tilelang, flash-attention, FBGEMM, ThunderKittens, AITer)",
+        "purpose_zh": "第三方定制 kernel 来源"
+      }
+    ],
+    "arch_pattern": "算子级基准套件 + git submodule 复用第三方 kernel 实现",
+    "arch_notes_zh": "它本质上是一组带样例输入的 PyTorch 自定义算子，用来看 Triton 实现本身以及它与 PyTorch 集成后的性能，而不是一个通用 harness。结构上最大的特点是 kernel 来源不自研，而是把 generative-recommenders、Liger-Kernel、tilelang、flash-attention、FBGEMM、ThunderKittens、AITer 等项目以 git submodule 形式引入，其中 CUDA 与 HIP 实现各取所需。同时支持两种用法：命令行按算子名跑，或 pip install -e . 后作为库按名字加载算子基准并注入自定义参数。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "按 op 名运行算子基准，度量 Triton 实现与 PyTorch 的性能差异"
+    },
+    "verification": {
+      "mechanisms": [
+        "runtime"
+      ],
+      "notes_zh": "README 只描述性能度量，未述正确性校验流程"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "Triton",
+      "CUTLASS",
+      "torch"
+    ],
+    "engineering_practices": [
+      "用 git submodule 固定第三方 kernel 来源版本，保证可比与可复现",
+      "算子基准按名字注册加载，可作为库在自定义脚本中复用",
+      "安装脚本默认装 PyTorch nightly 并使用其捆绑的 Triton 版本，避免版本错配",
+      "CUDA 与 HIP 实现分别从不同 submodule 取，兼顾 NVIDIA 与 AMD 覆盖"
+    ],
+    "stated_limits": [
+      "克隆后必须 git submodule update --init --recursive 才能跑通",
+      "默认安装 PyTorch nightly 并使用其自带的 Triton 版本"
+    ]
+  },
+  {
+    "canonical": "mindspore-ai/akg",
+    "role": "foundation-compiler",
+    "role_summary_zh": "算子优化与自动融合编译器，含大模型驱动算子生成子项目",
+    "entrypoints": [
+      "参考 akg_agents/README_CN.md 安装使用 AKG-AGENT",
+      "参考 akg-tvm/README.md 使用 AKG-TVM",
+      "参考 akg-mlir/README.md 使用 AKG-MLIR"
+    ],
+    "key_modules": [
+      {
+        "name": "akg_agents/",
+        "purpose_zh": "AKG-AGENT 多智能体算子生成"
+      },
+      {
+        "name": "akg-mlir/",
+        "purpose_zh": "MLIR 算子编译 pipeline"
+      },
+      {
+        "name": "MindSpore Dialect 图编译方言",
+        "purpose_zh": "图级算子编译"
+      },
+      {
+        "name": "Linalg/Affine/GPU 方言扩展",
+        "purpose_zh": "增强循环融合调度"
+      },
+      {
+        "name": "AscendNPU IR 对接",
+        "purpose_zh": "昇腾后端融合算子生成"
+      },
+      {
+        "name": "AscendKernelBench 评测平台",
+        "purpose_zh": "算子生成评测"
+      },
+      {
+        "name": "算子知识库",
+        "purpose_zh": "算子生成知识沉淀"
+      }
+    ],
+    "arch_pattern": "编译器主线 + 大模型 Agent 副线的双子项目仓库 (AKG-MLIR / AKG-AGENT)",
+    "arch_notes_zh": "2.4 之后重构为两个子项目：AKG-AGENT 是大模型驱动的算子生成工具，提供基于 Multi-agent 的算子自动生成框架、AscendKernelBench 评测平台与算子知识库，当前支持用 LLM 生成 Triton-Ascend（Atlas A2/A3）与 SWFT（300I DUO）DSL 并完成 kernel 编译；AKG-MLIR 则是基于 MLIR 的深度学习编译器，含 CPU/GPU/Ascend 的完整算子编译 pipeline、MindSpore Dialect 图编译方言以及 Linalg/Affine/GPU 方言扩展，并对接 AscendNPU IR 支持昇腾后端融合算子生成。两个子项目可各自独立安装构建，共用同一仓库的多后端支持目标。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "AKG-AGENT 内置 AscendKernelBench 评测平台与算子知识库"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile"
+      ],
+      "notes_zh": "生成 DSL 后需完成算子 kernel 编译"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 多智能体协作生成算子 DSL",
+      "memory_zh": "提供算子知识库沉淀经验",
+      "feedback_zh": "kernel 编译结果（README 未细化）"
+    },
+    "hardware": [
+      "NVIDIA",
+      "Ascend",
+      "CPU"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "AKG",
+      "Triton",
+      "MLIR"
+    ],
+    "engineering_practices": [
+      "编译器主线与大模型 Agent 副线分仓为独立子项目，各自独立安装构建",
+      "基于 MLIR 方言扩展 (MindSpore Dialect/Linalg/Affine/GPU) 复用编译基础设施",
+      "配套算子知识库与 AscendKernelBench 评测平台形成生成-评测闭环",
+      "统一多硬件后端适配：CPU、NVIDIA、V100/A100、Atlas 800T A2/A3、300I DUO"
+    ],
+    "stated_limits": [
+      "各子项目需分别按其文档独立安装构建",
+      "AKG-AGENT 当前仅支持生成 Triton-Ascend 与 SWFT(300I DUO) 的 DSL"
+    ]
+  },
+  {
+    "canonical": "ornith-ai/CUDA-L1",
+    "role": "training-pipeline",
+    "role_summary_zh": "对比式 RL 优化 CUDA kernel，发布多 GPU 优化产物与基线分数",
+    "entrypoints": [
+      "取 optimized_cuda_code/<device>.json 中的代码片段在对应 GPU 上逐条运行复现",
+      "在 KernelBench 的 250 个 PyTorch workload 上评测 speedup 与成功率"
+    ],
+    "key_modules": [
+      {
+        "name": "optimized_cuda_code/",
+        "purpose_zh": "按 GPU 发布的优化 kernel"
+      },
+      {
+        "name": "KernelBench 数据集",
+        "purpose_zh": "外部评测任务来源"
+      },
+      {
+        "name": "四种基线配置",
+        "purpose_zh": "四组对比基线配置"
+      }
+    ],
+    "arch_pattern": "对比式 RL 训练 + 产物仓库 (逐行 JSON 记录 ref/custom/cuda_graph 代码与四组 score)",
+    "arch_notes_zh": "README 描述的是研究成果与发布产物，而非训练代码入口：核心是对比式强化学习框架，用比较学习的方式增强 CUDA 优化。发布物按 GPU 型号分别组织（h100.json 等），每行一个 JSON 对象，记录 KernelBench 的 level_id/task_id、参考 CUDA 代码、CUDA-L1 生成的 custom_code、CUDA Graph 版本代码，以及 default、torch.compile、torch.compile+ReduceOverhead、CUDA Graph 四种基线下的时间比 score。评测在 A100、3090、H100、H20、L40 上对照四组基线统计 mean/max/分位数加速比与成功数。README 明确披露了 RL 阶段的 reward hacking 风险（利用计时测量与缓存结果）并列出对应修复项。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "KernelBench 250 任务，跑四组基线配置比较 speedup 与成功数"
+    },
+    "verification": {
+      "mechanisms": [
+        "runtime"
+      ],
+      "notes_zh": "用 KernelBench 计时并修正 stream 同步；未述数值校验细节"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Ampere",
+      "NVIDIA-GPU-Hopper",
+      "NVIDIA-GPU-Ada"
+    ],
+    "base_layer": [
+      "CUDA-C++",
+      "torch"
+    ],
+    "engineering_practices": [
+      "移除评测缓存以避免虚假加速结果",
+      "同时对照 torch.compile、torch.compile RO、CUDA Graph 与自定义 backend flag 四组基线",
+      "修正 KernelBench 评测的 stream 计时同步，消除测量误差",
+      "按 GPU 型号分别发布 kernel 与 score，避免跨机型误用",
+      "公开 reward hacking 案例并主动征集反馈"
+    ],
+    "stated_limits": [
+      "RL 训练对 reward hacking 敏感，已发现利用计时测量与缓存结果的作弊",
+      "5090/4090 支持仍在 to-do 列表中",
+      "custom_code 为 null 表示未生成更快代码或直接复制了参考代码"
+    ]
+  },
+  {
+    "canonical": "ornith-ai/CUDA-L2",
+    "role": "dataset-or-model",
+    "role_summary_zh": "RL 优化 HGEMM，发布超 cuBLAS 的 kernel 集合与评测脚本",
+    "entrypoints": [
+      "./eval_one_file.sh --mnk 64_4096_64 --acc_precise fp32 --device_type a100 --warmup_seconds 5 --benchmark_seconds 10 --base_dir ./results --gpu_device_id 7 --mode offline",
+      "./eval_one_file.sh ... --mode server --target_qps 100",
+      "git clone -b v4.2.1 https://github.com/NVIDIA/cutlass.git cutlass"
+    ],
+    "key_modules": [
+      {
+        "name": "eval_one_file.sh",
+        "purpose_zh": "离线/服务器双模式评测入口"
+      },
+      {
+        "name": "CUTLASS v4.2.1 依赖",
+        "purpose_zh": "kernel 编译依赖 CUTLASS"
+      },
+      {
+        "name": "A100/3090/H100 HGEMM kernel 集",
+        "purpose_zh": "已发布的优化 kernel 资产"
+      },
+      {
+        "name": "torch.matmul/cuBLAS/cuBLASLt 基线",
+        "purpose_zh": "对比参照实现"
+      }
+    ],
+    "arch_pattern": "RL 产出的 kernel 资产库 + 离线/服务器双模式评测脚本（对标 cuBLAS 系列）",
+    "arch_notes_zh": "README 呈现的是一个产物型仓库：系统本体是 LLM 加 RL 自动优化半精度 GEMM 的 CUDA kernel，发布形态是按硬件与累加器精度分批放出的 kernel 集合（已放出 A100、RTX 3090、H100 上 1000 组配置，区分 16 位与 32 位累加器）。评测只有一条路径 eval_one_file.sh，用 mnk、累加器精度、设备类型、warmup/benchmark 秒数、gpu id 与 offline/server 模式等参数驱动，server 模式还需指定目标 QPS。工程上把 CUTLASS 锁死到 v4.2.1 并要求显式设置 CUTLASS_DIR 与 TORCH_CUDA_ARCH_LIST，因为版本或路径不对会静默失败。跨机型复用被明确否定：A100 上训练的 kernel 只保证在 A100 上有加速。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "eval_one_file.sh 离线/服务端模式测时间与 QPS，对标 torch.matmul 与 cuBLAS 系列"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "runtime"
+      ],
+      "notes_zh": "依赖 CUTLASS 编译，warmup+定时压测；未述数值校验"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Ampere",
+      "NVIDIA-GPU-Hopper"
+    ],
+    "base_layer": [
+      "CUTLASS",
+      "CUDA-C++",
+      "torch"
+    ],
+    "engineering_practices": [
+      "固定 CUTLASS v4.2.1 并用 CUTLASS_DIR 显式指定路径，避免静默失败",
+      "用 TORCH_CUDA_ARCH_LIST 显式指定目标架构（8.0 / 9.0a）编译",
+      "区分 fp16 与 fp32 累加器精度以匹配不同 matmul 语义",
+      "离线与 server 双模式评测，server 模式按目标 QPS 压测贴近服务场景",
+      "按 GPU 型号分别训练与发布 kernel，禁止跨机型直接复用"
+    ],
+    "stated_limits": [
+      "必须使用 CUTLASS v4.2.1，版本或路径错误会静默失败或无结果",
+      "A100 上训练的 kernel 只保证在 A100 上有加速",
+      "矩阵维度不在配置中需取最近邻补零；尚未覆盖更密集配置与更多 GPU 架构"
+    ]
+  },
+  {
+    "canonical": "parallelcodefoundry/ParEval",
+    "role": "benchmark",
+    "role_summary_zh": "评测 LLM 写并行代码能力的离线基准流水线",
+    "entrypoints": [
+      "python generate/generate.py (生成 LLM 输出)",
+      "python drivers/run-all.py (评测输出)",
+      "python analysis/metrics.py (后处理与指标)",
+      "cd drivers/cpp && make (构建 C++ driver)"
+    ],
+    "key_modules": [
+      {
+        "name": "prompts/",
+        "purpose_zh": "评测提示词与工具脚本"
+      },
+      {
+        "name": "generate/",
+        "purpose_zh": "生成 LLM 输出的脚本"
+      },
+      {
+        "name": "drivers/",
+        "purpose_zh": "评测 LLM 输出的驱动脚本"
+      },
+      {
+        "name": "analysis/",
+        "purpose_zh": "分析结果并计算指标"
+      },
+      {
+        "name": "tpl/",
+        "purpose_zh": "第三方 submodule 依赖"
+      }
+    ],
+    "arch_pattern": "离线三段式流水线: prompts → generate → drivers → analysis",
+    "arch_notes_zh": "仓库按流程而非按功能划分目录，prompts 放提示词，generate 产出 LLM 代码，drivers 负责编译运行与评测，analysis 做结果后处理与指标计算，tpl 用 submodule 固定第三方依赖。通用工作流是三步命令串联：generate.py 生成 → run-all.py 评测 → metrics.py 计算指标。C++ driver 用 makefile 构建，检测不到 CUDA、HIP 或 Kokkos 库时会自动跳过对应目标，从而让没有 GPU 的机器也能评 CPU/OpenMP 部分。环境依赖被显式列出：Python 3.7+、支持 C++17 与 OpenMP 的编译器、Make、CMake 与 MPI。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "C++ driver 编译运行 LLM 产出的并行代码，按 prompt 分组评测并汇总指标"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "runtime"
+      ],
+      "notes_zh": "makefile 编译 C++ driver，缺库自动跳过对应目标"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD",
+      "CPU"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "CUDA-C++",
+      "HIP"
+    ],
+    "engineering_practices": [
+      "把提示词、生成、驱动评测、指标分析拆成四个独立目录，流程可复现",
+      "makefile 在检测不到 CUDA/HIP/Kokkos 库时自动跳过对应目标，降低环境门槛",
+      "把 Kokkos 等第三方依赖做成 git submodule 并给出独立构建步骤",
+      "requirements.txt 锁定测试过的依赖版本"
+    ],
+    "stated_limits": [
+      "需要 Python 3.7+、支持 C++17 与 OpenMP 的编译器、Make、CMake 与 MPI 实现",
+      "测试 CUDA/HIP 题目需 NVIDIA 与 AMD GPU 及各自软件栈",
+      "Kokkos 需手动 cmake 编译安装后才纳入测试"
+    ]
+  },
+  {
+    "canonical": "qhy991/Awesome-LLM-Kernel-Agent",
+    "role": "listicle",
+    "role_summary_zh": "LLM 驱动 kernel 生成研究的分类索引与时间线图谱",
+    "entrypoints": [
+      "cd llm_kernel_agent_landscape && make all (校验+渲染+同步 README)",
+      "cd llm_kernel_agent_landscape && make svg pptx drawio",
+      "编辑 data/entries.yaml 新增论文或系统",
+      "编辑 data/timeline.yaml / data/timeline_dates.yaml 调整时间线"
+    ],
+    "key_modules": [
+      {
+        "name": "data/entries.yaml",
+        "purpose_zh": "论文/系统条目数据源"
+      },
+      {
+        "name": "data/timeline.yaml",
+        "purpose_zh": "精选时间线数据"
+      },
+      {
+        "name": "data/timeline_dates.yaml",
+        "purpose_zh": "完整时间线日期与覆盖项"
+      },
+      {
+        "name": "data/mermaid_config.yaml",
+        "purpose_zh": "图标题与标记配置"
+      },
+      {
+        "name": "llm_kernel_agent_landscape/",
+        "purpose_zh": "YAML 转 Mermaid 渲染与同步"
+      },
+      {
+        "name": "README.md",
+        "purpose_zh": "主产物：分类表与时间线"
+      }
+    ],
+    "arch_pattern": "YAML 数据源 + Makefile 渲染 Mermaid 分类图/时间线 + 标记区块自动回写 README",
+    "arch_notes_zh": "真正的仓库产物是 README 本身：127+ 篇 LLM kernel 生成工作被组织成 Mermaid 时间线与五分类流程图（模型/后训练、Agent 工作流、数据资产、评测、集成系统），正文还用表格给出标题、会议、日期、代码链接、作者、机构与主题标签。图形生成被工程化为一条流水线：条目与时间线存在 YAML 中，由 llm_kernel_agent_landscape/ 下的 make 目标做校验、渲染并回写 README 中带 BEGIN/END 标记的区块，从而避免手改 Mermaid 出错。维护指南直接给出按目标该改哪个 YAML 文件的对照表，并支持额外导出 SVG/PPTX/drawio 用于汇报。",
+    "eval_harness": {
+      "present": false,
+      "design_zh": ""
+    },
+    "verification": {
+      "mechanisms": [
+        "none"
+      ],
+      "notes_zh": "索引型仓库，无 kernel 校验机制"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD",
+      "Ascend",
+      "TPU",
+      "Other"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "None"
+    ],
+    "engineering_practices": [
+      "以 YAML 为唯一数据源，Makefile 统一做校验、渲染与 README 回写",
+      "用 BEGIN/END 标记区块在 README 中插入自动生成内容",
+      "同一份数据渲染分类图与时间线两种视图",
+      "为每条记录打主题标签 (CUDA/Triton/RL/Agent 等) 便于横向检索",
+      "维护指南提供目标到文件的对照表，降低贡献门槛"
+    ],
+    "stated_limits": [
+      "社区维护，需按既有格式新增并保持时间倒序、查重",
+      "低质量或与主题无关的资源不会合并",
+      "最近一次更新为 2026 年 8 月，时效性依赖人工维护"
+    ]
+  },
+  {
+    "canonical": "taratt/cutegen",
+    "role": "agent-loop",
+    "role_summary_zh": "基于 CuTe 的 LLM kernel 生成-测试-修正 agent 框架",
+    "entrypoints": [
+      "python cutegen/main.py (主流程)",
+      "python -u scripts/smoke_test_ptx_runtime.py (PTX 运行时自检)",
+      "python -u scripts/run_profiled_sample.py --backend ptx|triton",
+      "KERNEL_BACKEND=ptx python -u cutegen/replay_saved_nodes.py --path saved_nodes/ptx/... --num_warmups 5 --num_trials 100",
+      "KERNEL_BACKEND=triton USE_PROFILING=false python -u -m cutegen.main"
+    ],
+    "key_modules": [
+      {
+        "name": "cutegen/config.py",
+        "purpose_zh": "集中配置入口"
+      },
+      {
+        "name": "cutegen/main.py",
+        "purpose_zh": "主流程与参考文件"
+      },
+      {
+        "name": "cutegen/replay_saved_nodes.py",
+        "purpose_zh": "重放已保存节点计时"
+      },
+      {
+        "name": "scripts/run_profiled_sample.py",
+        "purpose_zh": "按类别深度的剖析样例运行"
+      },
+      {
+        "name": "saved_nodes/<backend>/",
+        "purpose_zh": "节点化结果持久化"
+      },
+      {
+        "name": "scripts/smoke_test_ptx_runtime.py",
+        "purpose_zh": "PTX 运行时自检"
+      },
+      {
+        "name": "scripts/test_triton_*.py",
+        "purpose_zh": "GPU 集成自检脚本"
+      }
+    ],
+    "arch_pattern": "生成-测试-修正循环 + 节点持久化 (generate-test-refine, 延迟 profiling)",
+    "arch_notes_zh": "核心抽象是多后端共用一条流水线：CUDA、CuTe、PTX、Triton 四个后端复用同一套编译、正确性检查、CUDA event 计时、Nsight Compute 剖析、重试修复与节点持久化逻辑，后端只由 KERNEL_BACKEND 环境变量切换。PTX 路径走 CUDA Driver API 集成，结果保存在 saved_nodes/ptx/ 下。剖析是可选且可延迟的，USE_PROFILING=false 即关闭 ncu，另有按类别设定剖析深度的样例脚本，以控制 profiling 开销。节点式持久化让每个中间结果都可离线重放复现，replay_saved_nodes.py 能用与评测完全一致的流程重新计时。README 还区分了实验入口与 GPU 集成自检脚本两类命令。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "编译→全量正确性→CUDA event 计时(5 warmup/100 trial)→可选 NCU→重试修复"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime",
+        "profile"
+      ],
+      "notes_zh": "全量正确性检查 + CUDA event 计时 + NCU 剖析 + 重试修复循环"
+    },
+    "agent_loop": {
+      "present": true,
+      "control_zh": "LLM 生成 + 规则化重试/修复循环",
+      "memory_zh": "saved_nodes 持久化节点，可重放复用",
+      "feedback_zh": "正确性失败、计时结果与 NCU profile"
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "CUDA-C++",
+      "CUTLASS",
+      "Triton"
+    ],
+    "engineering_practices": [
+      "统一后端抽象让 CUDA/CuTe/PTX/Triton 共用同一编译-校验-计时-剖析流水线",
+      "把每个生成结果按节点持久化到 saved_nodes，可离线重放复现",
+      "profiling 开关化并支持延迟 profiling 以控制 ncu 开销",
+      "token 用量按实验记入 CSV (TOKEN_USAGE_CSV_PATH 可配置) 以核算成本",
+      "把 GPU 集成自检脚本与实验脚本分离，便于排查环境问题"
+    ],
+    "stated_limits": [
+      "需手动安装 NCU 与 CUTLASS，并正确设置 NSIGHT_COMPUTE_BIN、CUTLASS_BASE_PATH、CUDACXX",
+      "CUDA 12.8 及以上需额外重装 cu128 版 torch",
+      "配置集中在 config.py 与 main.py 的 ref 文件，定制需改代码"
+    ]
+  },
+  {
+    "canonical": "tensormux/kernel-skills",
+    "role": "dataset-or-model",
+    "role_summary_zh": "面向 AI 编码代理的 kernel 技能手册库（SKILL.md）",
+    "entrypoints": [
+      "npm install @krxgu/kernel-skills",
+      "npx @krxgu/kernel-skills list",
+      "kernel-skills list|search|show|path|bundle|categories|tags",
+      "TypeScript API: searchSkills / getSkill / bundleSkills",
+      "npm run validate:skills 与 npm run generate:index"
+    ],
+    "key_modules": [
+      {
+        "name": "skills/<category>/<skill>/",
+        "purpose_zh": "技能正文与元数据文件"
+      },
+      {
+        "name": "schema/skill.schema.json",
+        "purpose_zh": "技能元数据 JSON Schema"
+      },
+      {
+        "name": "generated/skills.index.json",
+        "purpose_zh": "构建期生成的检索索引"
+      },
+      {
+        "name": "src/ (registry, search, bundle, cli)",
+        "purpose_zh": "TypeScript CLI 与 API"
+      },
+      {
+        "name": "scripts/ (generate-index, validate-skills)",
+        "purpose_zh": "构建期索引生成与校验"
+      },
+      {
+        "name": "proof/",
+        "purpose_zh": "每个技能的实测前后证据"
+      }
+    ],
+    "arch_pattern": "Markdown 技能库为真源 + JSON Schema 元数据 + 构建期索引生成 + npm 分发 (CLI 与 TS API)",
+    "arch_notes_zh": "内容真源是 skills/ 下每个技能目录中的 SKILL.md（遵循 11 段模板）加一份 skill.json 元数据，两者配对存放。构建期把全部 skill.json 聚合成 generated/skills.index.json，CLI 与 TypeScript API 只读这份索引，因此运行期不需要解析 Markdown。schema/skill.schema.json 限定允许的 category (cuda/triton/patterns/quantization/portability/inference) 与 difficulty 取值，validate-skills 脚本在提交前拦截缺字段、重复 id、目录名与 category 不符、空 tags、SKILL.md 小于 400 字节等问题。npm 包只是分发层，README 明确声明自己不是编译器、不是 benchmark harness、不是服务运行时、也不是自主 agent，且不执行生成的代码。质量要求靠 proof/ 目录里的实测前后证据来支撑，例如 softmax 技能用 8 组形状的通过/失败矩阵证明指导前后的差异。",
+    "eval_harness": {
+      "present": false,
+      "design_zh": ""
+    },
+    "verification": {
+      "mechanisms": [
+        "static-check"
+      ],
+      "notes_zh": "只对 skill 元数据做 schema 静态校验，不执行 kernel"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "无内置循环，技能作为提示注入 agent 上下文",
+      "memory_zh": "技能库本身是可复用的知识资产",
+      "feedback_zh": "无运行时反馈，README 明示不执行代码"
+    },
+    "hardware": [
+      "NVIDIA",
+      "AMD"
+    ],
+    "hardware_arch": [
+      "NVIDIA-GPU-Hopper",
+      "NVIDIA-GPU-Ada",
+      "AMD-GPU-MI300"
+    ],
+    "base_layer": [
+      "CUDA-C++",
+      "HIP",
+      "Triton",
+      "vLLM"
+    ],
+    "engineering_practices": [
+      "以 SKILL.md 为真源、skill.json 为机器可读元数据，双轨维护",
+      "构建期生成 skills.index.json，CLI 与 API 只读索引，不在运行期解析 Markdown",
+      "用 JSON Schema 加 validate-skills 脚本做提交前静态校验",
+      "每个技能必须配 proof/ 下的实测前后证据才被认可",
+      "npm 包按语义化版本发布，patch/minor/major 分别对应内容修订、新增技能与破坏性变更",
+      "提供 bundle 命令把多个技能组合打包投喂给 agent"
+    ],
+    "stated_limits": [
+      "明确不做编译器、benchmark harness、服务运行时与自主 agent，也不执行生成的代码",
+      "新增技能须遵循 11 段 SKILL.md 模板，低质量或超范围内容不合并",
+      "SKILL.md 小于 400 字节会被校验脚本拒绝"
+    ]
+  },
+  {
+    "canonical": "thunlp/TritonBench",
+    "role": "benchmark",
+    "role_summary_zh": "评测 LLM 生成 Triton 算子的双通道基准与数据集",
+    "entrypoints": [
+      "0_call_acc.py --source source/path/or/folder --target target/path/or/folder --GPUs [0,1,2,3]",
+      "1_exe_acc.py --folder root/of/multiple/folders/or/folder --GPUs [0,1,2,3]",
+      "python run_bench/write_file.py --input_folder_path /folder/of/pyfiles --results_path /folder/of/output/results",
+      "python run_bench/multiprocess_gpu_run.py",
+      "python 2_efficiency.py --gen_folder /folder/of/output/results"
+    ],
+    "key_modules": [
+      {
+        "name": "eval_G/",
+        "purpose_zh": "TritonBench-G 评测脚本"
+      },
+      {
+        "name": "eval_T/",
+        "purpose_zh": "TritonBench-T 评测脚本"
+      },
+      {
+        "name": "performance_metrics/perf_G, perf_T",
+        "purpose_zh": "性能测量与多 GPU 运行"
+      },
+      {
+        "name": "TritonBench_G_v1 / TritonBench_T_v1",
+        "purpose_zh": "可执行任务目录"
+      },
+      {
+        "name": "TritonBench_*_alpac_v1.json",
+        "purpose_zh": "Alpaca 格式指令数据"
+      },
+      {
+        "name": "train_crawl.json / train_synth.json",
+        "purpose_zh": "8k RAG 训练语料"
+      },
+      {
+        "name": "各主流模型生成结果",
+        "purpose_zh": "论文基线输出"
+      }
+    ],
+    "arch_pattern": "双通道评测 (生成式 G / 任务式 T) + 三段式打分: 调用准确-执行准确-性能效率",
+    "arch_notes_zh": "TritonBench-G 面向模型从指令生成算子，需先做代码相似度评估再评执行；TritonBench-T 面向给定算子的直接改写，不评相似度，只评调用正确性、执行正确性与加速比。打分被拆成三个可独立执行的脚本：0_call_acc.py 做静态调用匹配，1_exe_acc.py 做执行正确率，2_efficiency.py 汇总性能与加速比。性能链路是 write_file.py 生成输入文件、multiprocess_gpu_run.py 多进程多 GPU 跑、再由 2_efficiency.py 汇总；README 明确要求准确率与效率评测必须顺序执行。G 通道额外用 CodeBLEU 衡量代码相似度，把像不像与对不对分开评。数据侧提供 Alpaca 格式的简版/复杂指令、可执行任务目录与统计，以及由 4024 条 BERT 去重爬取语料与 4133 条 Jiuci 合成语料合并的 8k RAG 语料。",
+    "eval_harness": {
+      "present": true,
+      "design_zh": "G/T 双通道；调用匹配→执行正确率→多 GPU 性能加速比，G 另加 CodeBLEU"
+    },
+    "verification": {
+      "mechanisms": [
+        "compile",
+        "correctness",
+        "runtime"
+      ],
+      "notes_zh": "调用匹配 + 执行正确率 + 计时加速比三重判定"
+    },
+    "agent_loop": {
+      "present": false,
+      "control_zh": "",
+      "memory_zh": "",
+      "feedback_zh": ""
+    },
+    "hardware": [
+      "NVIDIA"
+    ],
+    "hardware_arch": [],
+    "base_layer": [
+      "Triton",
+      "torch"
+    ],
+    "engineering_practices": [
+      "把评测拆成 call/exe/efficiency 三个可独立执行的脚本并规定执行顺序",
+      "性能测量支持多 GPU 多进程并行以加速评测",
+      "G 通道同时评代码相似度与执行结果，区分像与对",
+      "训练语料分 crawl（BERT 相似度去重）与 synth（合成）两路并合并供 RAG 使用",
+      "随仓库发布主流模型的生成结果作为基线对照"
+    ],
+    "stated_limits": [
+      "需固定 triton 3.1.0 与 torch>=2.5.1，并手动修改 eval_G/eval_T 中的 py_interpreter 路径",
+      "准确率与效率评测必须顺序执行，不能并行",
+      "G 与 T 两通道需分别按各自目录配置执行"
+    ]
+  }
+]

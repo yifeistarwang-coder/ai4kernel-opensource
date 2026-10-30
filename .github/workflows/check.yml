@@ -1,0 +1,56 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate data files
+        run: |
+          python3 -m json.tool data/seeds.json > /dev/null
+          python3 -m json.tool data/github-metadata.json > /dev/null
+          python3 -m json.tool data/repos.json > /dev/null
+          python3 -m json.tool data/architecture.json > /dev/null
+
+      - name: Regenerate docs and check for drift
+        run: |
+          python3 scripts/build_docs.py
+          git diff --exit-code -- docs/ data/architecture.json
+
+      - name: Check index completeness
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          idx = json.load(open("data/repos.json", encoding="utf-8"))
+          repos = idx["repos"]
+          problems = []
+          if not repos:
+              problems.append("repos.json has no repos")
+          for r in repos:
+              if not r.get("canonical") or "/" not in r["canonical"]:
+                  problems.append(f"bad canonical: {r}")
+              if not r.get("url", "").startswith("https://"):
+                  problems.append(f"bad url: {r.get('canonical')}")
+              if r.get("group") is None and r.get("work_ids"):
+                  problems.append(f"linked repo without group: {r['canonical']}")
+          arch = json.load(open("data/architecture.json", encoding="utf-8"))
+          covered = {a["canonical"] for a in arch["architectures"]}
+          missing = [r["canonical"] for r in repos if r["canonical"] not in covered]
+          if missing:
+              problems.append(f"no architecture record for: {missing}")
+          if problems:
+              print("\n".join(problems))
+              sys.exit(1)
+          print(f"ok: {len(repos)} repos, {len(covered)} with architecture records")
+          PY

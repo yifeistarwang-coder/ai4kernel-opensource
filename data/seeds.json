@@ -1,0 +1,672 @@
+{
+  "landscape_snapshot": "2026-10-30",
+  "landscape_version": 2,
+  "github": [
+    {
+      "slug": "0satan0/KernelMem",
+      "work_ids": [
+        "kernelskill"
+      ],
+      "source_ids": [
+        "kernelskill-repository"
+      ]
+    },
+    {
+      "slug": "AI9Stars/AutoTriton",
+      "work_ids": [
+        "autotriton"
+      ],
+      "source_ids": [
+        "autotriton-repository"
+      ]
+    },
+    {
+      "slug": "aisa-group/InferenceBench",
+      "work_ids": [
+        "inferencebench"
+      ],
+      "source_ids": [
+        "inferencebench-repository"
+      ]
+    },
+    {
+      "slug": "alibaba/atrex-bench",
+      "work_ids": [
+        "atrex-bench"
+      ],
+      "source_ids": [
+        "atrex-bench-repository"
+      ]
+    },
+    {
+      "slug": "AMD-AGI/AgentKernelArena",
+      "work_ids": [
+        "arena"
+      ],
+      "source_ids": [
+        "arena-repository"
+      ]
+    },
+    {
+      "slug": "AMD-AGI/AMDKernelVault",
+      "work_ids": [
+        "amdkernelvault"
+      ],
+      "source_ids": [
+        "amdkernelvault-repository"
+      ]
+    },
+    {
+      "slug": "AMD-AGI/Apex",
+      "work_ids": [
+        "apex"
+      ],
+      "source_ids": [
+        "apex-repository"
+      ]
+    },
+    {
+      "slug": "AMD-AGI/GEAK",
+      "work_ids": [
+        "geak"
+      ],
+      "source_ids": [
+        "geak-repository"
+      ]
+    },
+    {
+      "slug": "AMD-AGI/hip_kernel_llm_lab",
+      "work_ids": [
+        "amdkernelvault"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "AMDResearch/NPUEval",
+      "work_ids": [
+        "npueval"
+      ],
+      "source_ids": [
+        "npueval-repository"
+      ]
+    },
+    {
+      "slug": "Anjiang-Wei/Astra",
+      "work_ids": [
+        "astra"
+      ],
+      "source_ids": [
+        "astra-repository"
+      ]
+    },
+    {
+      "slug": "BonnieW05/KernelBenchX",
+      "work_ids": [
+        "kernelbenchx"
+      ],
+      "source_ids": [
+        "kernelbenchx-repository"
+      ]
+    },
+    {
+      "slug": "ByteDance-Seed/cudaLLM",
+      "work_ids": [
+        "cudallm"
+      ],
+      "source_ids": [
+        "cudallm-repository"
+      ]
+    },
+    {
+      "slug": "BytedTsinghua-SIA/CUDA-Agent",
+      "work_ids": [
+        "cuda-agent"
+      ],
+      "source_ids": [
+        "cuda-agent-repository"
+      ]
+    },
+    {
+      "slug": "caoshiyi/K-Search",
+      "work_ids": [
+        "k-search"
+      ],
+      "source_ids": [
+        "k-search-repository"
+      ]
+    },
+    {
+      "slug": "CSJianYang/Industrial-Coder",
+      "work_ids": [
+        "incoder32b"
+      ],
+      "source_ids": [
+        "incoder32b-repository"
+      ]
+    },
+    {
+      "slug": "CUDA-Bench/CUDABench",
+      "work_ids": [
+        "cudabench"
+      ],
+      "source_ids": [
+        "cudabench-repository"
+      ]
+    },
+    {
+      "slug": "deepreinforce-ai/CUDA-L1",
+      "work_ids": [
+        "cuda-l1"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "deepreinforce-ai/CUDA-L2",
+      "work_ids": [
+        "cuda-l2"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "Dogacel/auto-gpu-kernel",
+      "work_ids": [
+        "auto-gpu-kernel"
+      ],
+      "source_ids": [
+        "auto-gpu-kernel-repository"
+      ]
+    },
+    {
+      "slug": "facebookresearch/kernel_bench_verified",
+      "work_ids": [
+        "verified"
+      ],
+      "source_ids": [
+        "verified-repository"
+      ]
+    },
+    {
+      "slug": "flagos-ai/awesome-LLM-driven-kernel-generation",
+      "work_ids": [],
+      "source_ids": [
+        "awesome-kernel-generation"
+      ]
+    },
+    {
+      "slug": "flagos-ai/FlagGems",
+      "work_ids": [
+        "flaggems"
+      ],
+      "source_ids": [
+        "flaggems-repository"
+      ]
+    },
+    {
+      "slug": "flagos-ai/KernelGenBench",
+      "work_ids": [
+        "kernelgenbench"
+      ],
+      "source_ids": [
+        "kernelgenbench-repository"
+      ]
+    },
+    {
+      "slug": "flashinfer-ai/flashinfer-bench",
+      "work_ids": [
+        "flashinfer-bench"
+      ],
+      "source_ids": [
+        "flashinfer-bench-repository"
+      ]
+    },
+    {
+      "slug": "HazyResearch/ThunderKittens",
+      "work_ids": [
+        "thunderkittens"
+      ],
+      "source_ids": [
+        "thunderkittens-repository"
+      ]
+    },
+    {
+      "slug": "hgl71964/cuasmrl",
+      "work_ids": [
+        "cuasmrl"
+      ],
+      "source_ids": [
+        "cuasmrl-repository"
+      ]
+    },
+    {
+      "slug": "hkust-nlp/KernelGYM",
+      "work_ids": [
+        "dr-kernel"
+      ],
+      "source_ids": [
+        "dr-kernel-repository"
+      ]
+    },
+    {
+      "slug": "ISO-Bench/ISO-Bench",
+      "work_ids": [
+        "iso-bench"
+      ],
+      "source_ids": [
+        "iso-bench-repository"
+      ]
+    },
+    {
+      "slug": "meta-pytorch/BackendBench",
+      "work_ids": [
+        "backendbench"
+      ],
+      "source_ids": [
+        "backendbench-repository"
+      ]
+    },
+    {
+      "slug": "meta-pytorch/KernelAgent",
+      "work_ids": [
+        "kernelagent"
+      ],
+      "source_ids": [
+        "kernelagent-repository"
+      ]
+    },
+    {
+      "slug": "meta-pytorch/tritonbench",
+      "work_ids": [
+        "meta-tritonbench"
+      ],
+      "source_ids": [
+        "meta-tritonbench-repository"
+      ]
+    },
+    {
+      "slug": "mindspore-ai/akg",
+      "work_ids": [
+        "akg-agent"
+      ],
+      "source_ids": [
+        "akg-agent-repository"
+      ]
+    },
+    {
+      "slug": "NVIDIA/compute-eval",
+      "work_ids": [
+        "compute-eval"
+      ],
+      "source_ids": [
+        "compute-eval-repository"
+      ]
+    },
+    {
+      "slug": "NVIDIA/cutlass",
+      "work_ids": [
+        "cutlass"
+      ],
+      "source_ids": [
+        "cutlass-repository"
+      ]
+    },
+    {
+      "slug": "NVIDIA/SOL-ExecBench",
+      "work_ids": [
+        "sol-execbench"
+      ],
+      "source_ids": [
+        "sol-execbench-repository"
+      ]
+    },
+    {
+      "slug": "OptimAI-Lab/CudaForge",
+      "work_ids": [
+        "cudaforge"
+      ],
+      "source_ids": [
+        "cudaforge-repository"
+      ]
+    },
+    {
+      "slug": "ornith-ai/CUDA-L1",
+      "work_ids": [
+        "cuda-l1"
+      ],
+      "source_ids": [
+        "cuda-l1-repository"
+      ]
+    },
+    {
+      "slug": "ornith-ai/CUDA-L2",
+      "work_ids": [
+        "cuda-l2"
+      ],
+      "source_ids": [
+        "cuda-l2-repository"
+      ]
+    },
+    {
+      "slug": "parallelcodefoundry/ParEval",
+      "work_ids": [
+        "pareval"
+      ],
+      "source_ids": [
+        "pareval-repository"
+      ]
+    },
+    {
+      "slug": "qhy991/Awesome-LLM-Kernel-Agent",
+      "work_ids": [],
+      "source_ids": [
+        "awesome-kernel-agent"
+      ]
+    },
+    {
+      "slug": "QiMeng-IPRC/QiMeng-Kernel",
+      "work_ids": [
+        "qimeng-kernel"
+      ],
+      "source_ids": [
+        "qimeng-kernel-repository"
+      ]
+    },
+    {
+      "slug": "QiMeng-IPRC/QiMeng-MuPa",
+      "work_ids": [
+        "qimeng-mupa"
+      ],
+      "source_ids": [
+        "qimeng-mupa-repository"
+      ]
+    },
+    {
+      "slug": "RightNow-AI/autokernel",
+      "work_ids": [
+        "autokernel"
+      ],
+      "source_ids": [
+        "autokernel-repository"
+      ]
+    },
+    {
+      "slug": "RLsys-Foundation/TritonForge",
+      "work_ids": [
+        "tritonforge"
+      ],
+      "source_ids": [
+        "tritonforge-repository"
+      ]
+    },
+    {
+      "slug": "ROCm/aiter",
+      "work_ids": [
+        "aiter"
+      ],
+      "source_ids": [
+        "aiter-repository"
+      ]
+    },
+    {
+      "slug": "SakanaAI/robust-kbench",
+      "work_ids": [
+        "robust-kbench"
+      ],
+      "source_ids": [
+        "robust-kbench-repository"
+      ]
+    },
+    {
+      "slug": "ScalingIntelligence/KernelBench",
+      "work_ids": [
+        "kernelbench"
+      ],
+      "source_ids": [
+        "kernelbench-repository"
+      ]
+    },
+    {
+      "slug": "ScalingIntelligence/kernelbench-tinker",
+      "work_ids": [
+        "tinker"
+      ],
+      "source_ids": [
+        "tinker-repository"
+      ]
+    },
+    {
+      "slug": "Snowflake-AI-Research/fastkernels",
+      "work_ids": [
+        "fastkernels"
+      ],
+      "source_ids": [
+        "fastkernels-repository"
+      ]
+    },
+    {
+      "slug": "StigLidu/AdaExplore",
+      "work_ids": [
+        "adaexplore"
+      ],
+      "source_ids": [
+        "adaexplore-repository"
+      ]
+    },
+    {
+      "slug": "taratt/cutegen",
+      "work_ids": [
+        "cutegen"
+      ],
+      "source_ids": [
+        "cutegen-repository"
+      ]
+    },
+    {
+      "slug": "tensormux/kernel-skills",
+      "work_ids": [
+        "kernel-skills"
+      ],
+      "source_ids": [
+        "kernel-skills-repository"
+      ]
+    },
+    {
+      "slug": "thunlp/TritonBench",
+      "work_ids": [
+        "tritonbench"
+      ],
+      "source_ids": [
+        "tritonbench-repository"
+      ]
+    },
+    {
+      "slug": "tile-ai/BitBLAS",
+      "work_ids": [
+        "bitblas"
+      ],
+      "source_ids": [
+        "bitblas-repository"
+      ]
+    },
+    {
+      "slug": "tile-ai/tilelang",
+      "work_ids": [
+        "tilelang"
+      ],
+      "source_ids": [
+        "tilelang-repository"
+      ]
+    },
+    {
+      "slug": "triton-lang/triton",
+      "work_ids": [
+        "triton"
+      ],
+      "source_ids": [
+        "triton-repository"
+      ]
+    },
+    {
+      "slug": "ucb-bar/autocomp",
+      "work_ids": [
+        "autocomp"
+      ],
+      "source_ids": [
+        "autocomp-repository"
+      ]
+    },
+    {
+      "slug": "Wangyaoyuu/SparseRL",
+      "work_ids": [
+        "sparserl"
+      ],
+      "source_ids": [
+        "sparserl-repository"
+      ]
+    },
+    {
+      "slug": "weich97/NPUKernelBench",
+      "work_ids": [
+        "ascend-kernel-gen"
+      ],
+      "source_ids": [
+        "ascend-kernel-gen-repository"
+      ]
+    },
+    {
+      "slug": "wzzll123/MultiKernelBench",
+      "work_ids": [
+        "multikernelbench"
+      ],
+      "source_ids": [
+        "multikernelbench-repository"
+      ]
+    },
+    {
+      "slug": "zhang677/AccelOpt",
+      "work_ids": [
+        "accelopt"
+      ],
+      "source_ids": [
+        "accelopt-repository"
+      ]
+    },
+    {
+      "slug": "zhang677/PCL-lite",
+      "work_ids": [
+        "aspl"
+      ],
+      "source_ids": [
+        "aspl-repository"
+      ]
+    },
+    {
+      "slug": "zhang677/PTXBench",
+      "work_ids": [
+        "ptxbench"
+      ],
+      "source_ids": [
+        "ptxbench-repository"
+      ]
+    }
+  ],
+  "huggingface": [
+    {
+      "slug": "amd/AIG-Datasets",
+      "work_ids": [
+        "amdkernelvault"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "ByteDance-Seed/cudaLLM-8B",
+      "work_ids": [
+        "cudallm"
+      ],
+      "source_ids": [
+        "cudallm-model"
+      ]
+    },
+    {
+      "slug": "cognition-ai/Kevin-32B",
+      "work_ids": [
+        "kevin"
+      ],
+      "source_ids": [
+        "kevin-model"
+      ]
+    },
+    {
+      "slug": "facebook/KernelLLM",
+      "work_ids": [
+        "kernelllm"
+      ],
+      "source_ids": [
+        "kernelllm-model"
+      ]
+    },
+    {
+      "slug": "GPUMODE/KernelBook",
+      "work_ids": [
+        "kernelbook"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "hpcgroup/hpc-instruct",
+      "work_ids": [
+        "hpc-instruct"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "lkongam/KernelCoder",
+      "work_ids": [
+        "concur"
+      ],
+      "source_ids": [
+        "concur-model"
+      ]
+    },
+    {
+      "slug": "MooreThreads/MusaCoder-27B",
+      "work_ids": [
+        "musacoder"
+      ],
+      "source_ids": [
+        "musacoder-model"
+      ]
+    },
+    {
+      "slug": "SakanaAI/AI-CUDA-Engineer-Archive",
+      "work_ids": [
+        "ai-cuda-archive"
+      ],
+      "source_ids": []
+    },
+    {
+      "slug": "ScalingIntelligence/kernelbench-samples",
+      "work_ids": [
+        "kernelbench-samples"
+      ],
+      "source_ids": []
+    }
+  ],
+  "other_hosts": [
+    {
+      "slug": "https://gitcode.com/cann/cannbot-skills",
+      "work_ids": [
+        "cannbot-cake"
+      ],
+      "source_ids": [
+        "cannbot-cake-repository"
+      ]
+    }
+  ],
+  "counts": {
+    "github": 64,
+    "huggingface": 10,
+    "other_hosts": 1,
+    "works_with_repo": 60,
+    "works_total": 129
+  }
+}

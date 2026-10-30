@@ -1,0 +1,32 @@
+# Changelog
+
+本文件记录本仓的结构性变化。数据快照的变化不在此逐条列出，
+以 `data/repos.json` 的 `landscape_snapshot` 字段与各文件内容为准。
+
+## 2026-10-30 — 首版
+
+从 [AI4Kernel Landscape](https://github.com/yifeistarwang-coder/ai4kernel_landscape)
+（快照 `2026-10-30`）中筛出已开源部分，整理为独立索引仓。
+
+### 新增
+
+- **开源仓库索引**（`docs/01-repo-index.md`）：61 个 GitHub 仓库 + 10 个 HuggingFace
+  模型/数据集 + 1 个其他平台仓库，按分类、组织、许可分表，并记录仓库改名/迁移。
+- **抽象知识**（`docs/02-engineering-knowledge.md`）：七层参考分层、七种架构形态、
+  340 条按主题归类的工程实践、项目自述限制归类、目录骨架与搭建里程碑。
+- **项目对比**（`docs/03-comparison.md`）：架构、基础层、硬件厂商、硬件架构四个对比轴，
+  含全量对照表、项目间依赖边与 61 份单项目档案。
+- **数据层**：
+  - `data/seeds.json` — 从 landscape 数据层提取的仓库与产物线索
+  - `data/github-metadata.json` — GitHub API 快照（元数据 + 顶层目录结构）
+  - `data/repos.json` / `data/repos.csv` — 合并后的完整索引与扁平表格
+  - `data/architecture.json` / `data/architecture/batch*.json` — 结构化架构事实
+- **生成管线**（`scripts/`）：`build_seeds.py` → `fetch_metadata.py` →
+  `build_index.py` → `build_docs.py`，全流程可复现。
+- **CI**（`.github/workflows/check.yml`）：校验 JSON 可解析、文档重生成无漂移、索引完整性。
+
+### 已知边界
+
+- 许可字段是 GitHub API 的自动识别结果，`NOASSERTION` 与空白项必须回到上游 `LICENSE` 核对。
+- 架构结论来自 README 与顶层目录结构，未做源码审计，未运行任何项目。
+- README 原文缓存写入 `.cache/` 且不进版本库，避免第三方版权与再分发问题。
