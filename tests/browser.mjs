@@ -1,15 +1,17 @@
 /* 站点冒烟测试：逐个视图检查渲染、交互与控制台错误。
  *
+ * 默认测本地构建产物；传 BASE_URL 可以直接测已部署的站点：
+ *   node tests/browser.mjs
+ *   BASE_URL=https://yifeistarwang-coder.github.io/ai4kernel-opensource node tests/browser.mjs
+ *
  * 需要 playwright：
- *   NODE_PATH=../ai4kernel_landscape/node_modules node tests/browser.mjs
- * 服务站点：
- *   python3 -m http.server 4173 --directory dist
+ *   npm ci && npx playwright install chromium
  */
 import { chromium } from 'playwright';
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 
-const PORT = Number(process.env.PORT || 0);
+const EXTERNAL = process.env.BASE_URL;
 const SHOTS = process.env.SHOTS || 'test-results';
 
 const problems = [];
@@ -58,13 +60,17 @@ async function waitForServer(base, retries = 40) {
 }
 
 async function main() {
-  const server = startServer();
-  const port = await resolvePort(server);
-  const BASE = `http://127.0.0.1:${port}`;
-  if (!(await waitForServer(BASE))) {
-    console.error('server did not start');
-    server.kill();
-    process.exit(1);
+  let server = null;
+  let BASE = EXTERNAL;
+  if (!BASE) {
+    server = startServer();
+    const port = await resolvePort(server);
+    BASE = `http://127.0.0.1:${port}`;
+    if (!(await waitForServer(BASE))) {
+      console.error('server did not start');
+      server.kill();
+      process.exit(1);
+    }
   }
 
   const browser = await chromium.launch();
@@ -224,7 +230,7 @@ async function main() {
   if (globalRows === 0 || globalRows >= 61) note(`global search: gave ${globalRows} rows`);
 
   await browser.close();
-  server.kill();
+  if (server) server.kill();
 
   if (consoleErrors.length) note(`console errors: ${consoleErrors.slice(0, 5).join(' | ')}`);
   if (failedRequests.length) note(`failed requests: ${failedRequests.slice(0, 5).join(' | ')}`);
